@@ -1,3 +1,10 @@
 .venv
 /app/db.sqlite3
 .env
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+*.db

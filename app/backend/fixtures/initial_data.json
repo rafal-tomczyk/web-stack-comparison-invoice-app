@@ -110,6 +110,34 @@
   }
 },
 {
+  "model": "backend.client",
+  "pk": 5,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Ania",
+    "surname": "Barbela",
+    "nip": "",
+    "regon": "",
+    "email": "ania.barbela@mail.pl",
+    "phone_number": "503144332"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 6,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Jan",
+    "surname": "Mewa",
+    "nip": "",
+    "regon": "",
+    "email": "mewa220@mail.pl",
+    "phone_number": "503444221"
+  }
+},
+{
   "model": "backend.product",
   "pk": 1,
   "fields": {
