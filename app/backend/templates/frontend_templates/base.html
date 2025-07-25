@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Fakturowanie Pro{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  </head>
+  <body>
+    <nav class="container-fluid">
+      <ul>
+        <li><strong>Fakturowanie Pro</strong></li>
+      </ul>
+      <ul>
+        <li><a href="{% url 'tmp_login' %}">Login</a></li>
+        <li><a href="{% url 'tmp_register' %}">Zarejestruj się</a></li>
+      </ul>
+    </nav>
+
+    <main class="container">
+        {%block content%}
+        {% endblock %}
+    </main>
+
+    <section aria-label="Subscribe example">
+      <div class="container">
+        <article>
+          <hgroup>
+            <h2>Dołącz do newslettera</h2>
+            <h3>Otrzymuj porady, aktualizacje i promocje</h3>
+          </hgroup>
+          <form class="grid">
+            <input type="text" id="firstname" name="firstname" placeholder="Imię" aria-label="Imię" required="">
+            <input type="email" id="email" name="email" placeholder="Twój e-mail" aria-label="Twój e-mail" required="">
+            <button type="submit" onclick="event.preventDefault()">Zapisz się</button>
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <footer class="container">
+      <small><a href="#">Polityka prywatności</a> • <a href="#">Regulamin</a></small>
+    </footer>
+
+</body></html>

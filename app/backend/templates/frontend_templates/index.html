@@ -1,12 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-  <p>Baba hasan drinken wasa</p>
-  <a href="{% url 'register' %}">Register</a>
-  <a href="{% url 'login' %}">Login</a>
-</body>
-</html>
+{% extends "frontend_templates/base.html" %}
+{% block title %}Strona główna {% endblock %}
+{% block content %}
+<div class="grid">
+        <section>
+          <hgroup>
+            <h2>Nowoczesna aplikacja do fakturowania</h2>
+            <h3>Wystawiaj faktury szybko, łatwo i bez stresu</h3>
+          </hgroup>
+          <p>Fakturowanie Pro to intuicyjne narzędzie do zarządzania Twoimi fakturami. Idealne dla freelancerów, małych firm i przedsiębiorców.</p>
+          <figure>
+            <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80" alt="Laptop z aplikacją do faktur">
+            <figcaption><a href="https://unsplash.com/photos/BbQLHCpVUqA" target="_blank">Zdjęcie: Unsplash</a></figcaption>
+          </figure>
+
+          <h3>Funkcje aplikacji</h3>
+          <p>
+            • Generowanie faktur PDF<br>
+            • Historia transakcji<br>
+            • Możliwość eksportu do Excel<br>
+            • Powiadomienia e-mail
+          </p>
+
+          <h3>Dlaczego warto?</h3>
+          <p>
+            Nasza aplikacja została stworzona z myślą o prostocie i efektywności. Dzięki niej oszczędzisz czas i skupisz się na tym, co ważne – rozwijaniu swojego biznesu.
+          </p>
+        </section>
+</div>
+{% endblock %}
