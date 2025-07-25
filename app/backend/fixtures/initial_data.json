@@ -17,7 +17,7 @@
   "model": "backend.user",
   "pk": 2,
   "fields": {
-    "password": "testuser",
+    "password": "pbkdf2_sha256$1000000$WfaK7VBv4IDMo3Ubcg38eG$Bf+5MuKBvYeHrIcOmWLP3lzLad0basqNoRqbzZT598E=",
     "last_login": null,
     "is_superuser": false,
     "email": "testuser@test.com",
