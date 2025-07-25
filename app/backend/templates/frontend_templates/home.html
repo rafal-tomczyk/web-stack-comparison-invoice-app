@@ -8,10 +8,13 @@
   <p>
     {% if user.is_authenticated %}
     Hello {{ user.email }}
-    <a href="{% url 'logout' %}">Logout</a>
+    <form method="post" action="{% url 'tmp_logout' %}">
+      {% csrf_token %}
+      <button type="submit">Logout</button>
+    </form>
     {% else %}
-    <a href="{% url 'login' %}">Zaloguj się</a>
-    <a href="{% url 'register' %}">Zarejestruj się</a>
+    <a href="{% url 'tmp_login' %}">Zaloguj się</a>
+    <a href="{% url 'tmp_register' %}">Zarejestruj się</a>
     {% endif %}
   </p>
 </body>
