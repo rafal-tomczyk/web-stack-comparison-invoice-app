@@ -9,11 +9,18 @@
   <body>
     <nav class="container-fluid">
       <ul>
-        <li><strong>Fakturowanie Pro</strong></li>
+        <li><a href="{% url 'tmp_index' %}"><strong>Fakturowanie Pro</strong></a></li>
       </ul>
       <ul>
-        <li><a href="{% url 'tmp_login' %}">Login</a></li>
-        <li><a href="{% url 'tmp_register' %}">Zarejestruj się</a></li>
+        {% if user.is_authenticated %}
+          <form method="post" action="{% url 'tmp_logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+          </form>
+        {% else %}
+          <li><a href="{% url 'tmp_login' %}">Login</a></li>
+          <li><a href="{% url 'tmp_register' %}">Zarejestruj się</a></li>
+        {% endif %}
       </ul>
     </nav>
 

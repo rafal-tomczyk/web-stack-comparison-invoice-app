@@ -38,4 +38,6 @@ def register(request):
     )
 
 def home(request):
-    return render(request, "frontend_templates/home.html")
+    if request.user.is_authenticated:
+        return render(request, "frontend_templates/home_authenticated.html")
+    return render(request, "frontend_templates/home_public.html")

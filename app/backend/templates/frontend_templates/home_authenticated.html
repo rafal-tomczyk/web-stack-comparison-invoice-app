@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-  <p>
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Strona Główna {% endblock %}
+
+{% block content %}
+<p>
     {% if user.is_authenticated %}
     Hello {{ user.email }}
     <form method="post" action="{% url 'tmp_logout' %}">
@@ -16,6 +14,6 @@
     <a href="{% url 'tmp_login' %}">Zaloguj się</a>
     <a href="{% url 'tmp_register' %}">Zarejestruj się</a>
     {% endif %}
-  </p>
-</body>
-</html>
+</p>
+
+{% endblock %}
