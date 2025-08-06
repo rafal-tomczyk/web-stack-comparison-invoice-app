@@ -13,10 +13,17 @@
       </ul>
       <ul>
         {% if user.is_authenticated %}
-          <form method="post" action="{% url 'tmp_logout' %}">
+          <li><a href="{% url 'tmp_home' %}">Strona Główna</a></li>
+          <li><a href="{% url 'tmp_products' %}">Produkty</a></li>
+          <li><a href="{% url 'tmp_invoices' %}">Faktury</a></li>
+          <li><a href="{% url 'tmp_clients' %}">Klienci</a></li>
+          <li>
+            <form method="post" action="{% url 'tmp_logout' %}">
             {% csrf_token %}
             <button type="submit">Logout</button>
           </form>
+          </li>
+
         {% else %}
           <li><a href="{% url 'tmp_login' %}">Login</a></li>
           <li><a href="{% url 'tmp_register' %}">Zarejestruj się</a></li>

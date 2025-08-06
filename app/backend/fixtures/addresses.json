@@ -1,0 +1,282 @@
+[
+  {
+    "model": "backend.address",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "address_type": "user",
+      "region": "Śląskie",
+      "zip_code": "42-690",
+      "city": "Hanusek",
+      "street": "Chrobrego",
+      "number": "103",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "address_type": "company",
+      "region": "Śląskie",
+      "zip_code": "42-690",
+      "city": "Hanusek",
+      "street": "Chrobrego",
+      "number": "103",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 3,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Śląskie",
+      "zip_code": "40-074",
+      "city": "Katowice",
+      "street": "Raciborska",
+      "number": "22",
+      "apartment": "14b"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Mazowieckie",
+      "zip_code": "00-123",
+      "city": "Warszawa",
+      "street": "Nowowiejska",
+      "number": "20",
+      "apartment": "5a"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 5,
+    "fields": {
+      "user": 2,
+      "address_type": "company",
+      "region": "Pomorskie",
+      "zip_code": "80-001",
+      "city": "Gdańsk",
+      "street": "Szeroka",
+      "number": "55",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 6,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Wielkopolskie",
+      "zip_code": "61-001",
+      "city": "Poznań",
+      "street": "Jeżycka",
+      "number": "12",
+      "apartment": "3b"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 7,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Małopolskie",
+      "zip_code": "31-456",
+      "city": "Kraków",
+      "street": "Floriańska",
+      "number": "15",
+      "apartment": "7"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 8,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Lubelskie",
+      "zip_code": "20-012",
+      "city": "Lublin",
+      "street": "Krakowskie Przedmieście",
+      "number": "8",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 9,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Dolnośląskie",
+      "zip_code": "50-200",
+      "city": "Wrocław",
+      "street": "Świdnicka",
+      "number": "25",
+      "apartment": "2"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 10,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Łódzkie",
+      "zip_code": "90-001",
+      "city": "Łódź",
+      "street": "Piotrkowska",
+      "number": "100",
+      "apartment": "12"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 11,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Kujawsko-Pomorskie",
+      "zip_code": "85-070",
+      "city": "Bydgoszcz",
+      "street": "Gdańska",
+      "number": "5",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 12,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Podkarpackie",
+      "zip_code": "35-001",
+      "city": "Rzeszów",
+      "street": "3 Maja",
+      "number": "9",
+      "apartment": "4"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 13,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Zachodniopomorskie",
+      "zip_code": "70-001",
+      "city": "Szczecin",
+      "street": "Księcia Bogusława X",
+      "number": "30",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 14,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Świętokrzyskie",
+      "zip_code": "25-001",
+      "city": "Kielce",
+      "street": "Sienkiewicza",
+      "number": "45",
+      "apartment": "1"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 15,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Opolskie",
+      "zip_code": "45-001",
+      "city": "Opole",
+      "street": "Ozimska",
+      "number": "12",
+      "apartment": "6"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 16,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Podlaskie",
+      "zip_code": "15-001",
+      "city": "Białystok",
+      "street": "Lipowa",
+      "number": "9",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 17,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Warmińsko-Mazurskie",
+      "zip_code": "10-001",
+      "city": "Olsztyn",
+      "street": "Wojska Polskiego",
+      "number": "8",
+      "apartment": "3"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 18,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Lubuskie",
+      "zip_code": "66-001",
+      "city": "Zielona Góra",
+      "street": "Łukasiewicza",
+      "number": "14",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 19,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Łódzkie",
+      "zip_code": "90-250",
+      "city": "Łódź",
+      "street": "Wólczańska",
+      "number": "7",
+      "apartment": "9"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": 20,
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Śląskie",
+      "zip_code": "43-100",
+      "city": "Tychy",
+      "street": "Bielska",
+      "number": "44",
+      "apartment": "2"
+    }
+  }
+]

@@ -1,0 +1,280 @@
+[{
+  "model": "backend.client",
+  "pk": 1,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "",
+    "name": "Arek",
+    "surname": "Drukarzyński",
+    "nip": "",
+    "regon": "",
+    "email": "arek.drukarzynski@test.com",
+    "phone_number": ""
+  }
+},
+  {
+  "model": "backend.client",
+  "pk": 2,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "Wodoużywacze",
+    "name": "Kamil",
+    "surname": "Wodnik",
+    "nip": "5252473916",
+    "regon": "146258370",
+    "email": "wodouzywacze@test.com",
+    "phone_number": ""
+  }
+},
+  {
+  "model": "backend.client",
+  "pk": 3,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "Skład Papierniczy 'Biały'",
+    "name": "Anna",
+    "surname": "Papier",
+    "nip": "6728391284",
+    "regon": "748392041",
+    "email": "anna.papier@bialy.pl",
+    "phone_number": "502333221"
+  }
+},
+  {
+  "model": "backend.client",
+  "pk": 4,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "HydroHelp",
+    "name": "Grzegorz",
+    "surname": "Ruralski",
+    "nip": "5219347651",
+    "regon": "789123456",
+    "email": "kontakt@hydrohelp.pl",
+    "phone_number": "503444332"
+  }
+},
+  {
+  "model": "backend.client",
+  "pk": 5,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Ania",
+    "surname": "Barbela",
+    "nip": "",
+    "regon": "",
+    "email": "ania.barbela@mail.pl",
+    "phone_number": "503144332"
+  }
+},
+  {
+  "model": "backend.client",
+  "pk": 6,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Jan",
+    "surname": "Mewa",
+    "nip": "",
+    "regon": "",
+    "email": "mewa220@mail.pl",
+    "phone_number": "503444221"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 7,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "Papierniczy Express",
+    "name": "Marek",
+    "surname": "Papierowski",
+    "nip": "6578392014",
+    "regon": "934820174",
+    "email": "marek@papierniczyexpress.pl",
+    "phone_number": "501222111"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 8,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "",
+    "name": "Ewa",
+    "surname": "Rolniczak",
+    "nip": "",
+    "regon": "",
+    "email": "ewa.rolniczak@mail.com",
+    "phone_number": "504123456"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 9,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "AquaMax",
+    "name": "Damian",
+    "surname": "Strumień",
+    "nip": "8329102837",
+    "regon": "738291045",
+    "email": "kontakt@aquamax.pl",
+    "phone_number": "509888777"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 10,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Karolina",
+    "surname": "Szymczak",
+    "nip": "",
+    "regon": "",
+    "email": "karolina.szymczak@mail.com",
+    "phone_number": "506123987"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 11,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "PrintHouse",
+    "name": "Piotr",
+    "surname": "Kserowski",
+    "nip": "7482910391",
+    "regon": "908273645",
+    "email": "piotr@printhouse.pl",
+    "phone_number": "501987654"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 12,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "WodKanPro",
+    "name": "Jakub",
+    "surname": "Wodnikowski",
+    "nip": "6728391029",
+    "regon": "829374651",
+    "email": "jakub@wodkanpro.pl",
+    "phone_number": "507654321"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 13,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "",
+    "name": "Barbara",
+    "surname": "Kowalska",
+    "nip": "",
+    "regon": "",
+    "email": "barbara.kowalska@mail.pl",
+    "phone_number": "502345678"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 14,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "HydroSystem",
+    "name": "Adam",
+    "surname": "Strumieński",
+    "nip": "7582930192",
+    "regon": "934827364",
+    "email": "adam@hydrosystem.pl",
+    "phone_number": "508888999"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 15,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "",
+    "name": "Magdalena",
+    "surname": "Czarnecka",
+    "nip": "",
+    "regon": "",
+    "email": "magda.czarna@mail.com",
+    "phone_number": "506765432"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 16,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "AquaFlow",
+    "name": "Patryk",
+    "surname": "Rurak",
+    "nip": "6238910347",
+    "regon": "718263940",
+    "email": "patryk@aquaflow.pl",
+    "phone_number": "504444555"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 17,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "",
+    "name": "Joanna",
+    "surname": "Piórkowska",
+    "nip": "",
+    "regon": "",
+    "email": "joanna.pior@mail.com",
+    "phone_number": "503112233"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 18,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "BlueWater",
+    "name": "Tomasz",
+    "surname": "Falowski",
+    "nip": "7328901734",
+    "regon": "809273645",
+    "email": "tomasz@bluewater.pl",
+    "phone_number": "507123789"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 19,
+  "fields": {
+    "company": 1,
+    "clients_company_name": "PaperPro",
+    "name": "Andrzej",
+    "surname": "Papierski",
+    "nip": "6128391720",
+    "regon": "728394015",
+    "email": "andrzej@paperpro.pl",
+    "phone_number": "509456123"
+  }
+},
+{
+  "model": "backend.client",
+  "pk": 20,
+  "fields": {
+    "company": 2,
+    "clients_company_name": "",
+    "name": "Sylwia",
+    "surname": "Nowicka",
+    "nip": "",
+    "regon": "",
+    "email": "sylwia.nowicka@mail.pl",
+    "phone_number": "502999888"
+}
+}]

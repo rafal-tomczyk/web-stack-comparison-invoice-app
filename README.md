@@ -18,34 +18,10 @@ This repository contains a comparison of three approaches to building a simple i
 ---
 ## Structure
 
-my-invoices-project/        ← root repozytorium (tam gdzie jest .git)<br>
-├── README.md               ← opis projektu <br>
-├── requirements.txt        ← zależności Pythona<br>
-├── Dockerfile              ← budowanie obrazu aplikacji Django<br>
-├── docker-compose.yml      ← uruchomienie serwisów (Django + Postgres)<br>
-├── manage.py               ← punkt wejścia do Django<br>
-├── myproject/              ← konfiguracja projektu Django (settings, urls itd.)<br>
-│   ├── __init__.py<br>
-│   ├── settings.py<br>
-│   ├── urls.py<br>
-│   ├── wsgi.py<br>
-│   └── asgi.py<br>
-├── invoices_common/        ← wspólne modele i logika biznesowa<br>
-│   ├── __init__.py<br>
-│   └── ...<br>
-├── invoices_django/        ← appka Django (template rendering)<br>
-│   ├── __init__.py<br>
-│   └── ...<br>
-├── invoices_htmx/          ← appka Django + HTMX<br>
-│   ├── __init__.py<br>
-│   └── ...<br>
-├── invoices_react/         ← appka Django + React frontend<br>
-│   ├── __init__.py<br>
-│   └── ...<br>
-└── frontend_react/         ← opcjonalnie, surowy kod Reacta (jeśli nie budujesz go w invoices_react/static)<br>
-    ├── package.json<br>
-    └── src/<br>
 
+---
+## How to run
+To log in basic account use 
 
 ---
 # About the Thesis

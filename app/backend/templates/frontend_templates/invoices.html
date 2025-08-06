@@ -1,0 +1,46 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Faktury {% endblock %}
+
+{% block content %}
+<h2>Lista faktur</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Numer</th>
+            <th>Klient</th>
+            <th>Data wystawienia</th>
+            <th>Termin płatności</th>
+            <th>Metoda płatności</th>
+            <th>Status</th>
+            <th>Kwota netto</th>
+            <th>Kwota brutto</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invoice in invoices %}
+        <tr>
+            <td>{{ invoice.number }}</td>
+            <td>{{ invoice.client }}</td>
+            <td>{{ invoice.issue_date }}</td>
+            <td>{{ invoice.due_date }}</td>
+            <td>{{ invoice.get_payment_method_display }}</td>
+            <td>
+                {% if invoice.paid %}
+                    <span style="color:green;">Opłacona</span>
+                {% else %}
+                    <span style="color:red;">Nieopłacona</span>
+                {% endif %}
+            </td>
+            <td>{{ invoice.total_net }} zł</td>
+            <td>{{ invoice.total_gross }} zł</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">Brak faktur do wyświetlenia</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

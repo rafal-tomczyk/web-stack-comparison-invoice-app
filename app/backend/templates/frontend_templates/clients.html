@@ -1,0 +1,39 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Klienci {% endblock %}
+
+{% block content %}
+{% if clients %}
+<table>
+    <thead>
+        <tr>
+            <th>Nazwa firmy / Imię i nazwisko</th>
+            <th>NIP</th>
+            <th>REGON</th>
+            <th>Email</th>
+            <th>Telefon</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for client in clients %}
+        <tr>
+            <td>
+                {% if client.clients_company_name %}
+                    {{ client.clients_company_name }}
+                {% else %}
+                    {{ client.name }} {{ client.surname }}
+                {% endif %}
+            </td>
+            <td>{{ client.nip }}</td>
+            <td>{{ client.regon }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.phone_number }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Brak klientów do wyświetlenia.</p>
+{% endif %}
+
+{% endblock %}

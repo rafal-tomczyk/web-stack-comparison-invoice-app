@@ -1,0 +1,207 @@
+[
+  {
+  "model": "backend.product",
+  "pk": 1,
+  "fields": {
+    "company": 1,
+    "name": "Duży papier szpula",
+    "description": "Papier w rozmiarze A3.",
+    "unit_type": "pcs",
+    "net_price": "100.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 2,
+  "fields": {
+    "company": 1,
+    "name": "Mały papier gładki",
+    "description": "Mały papier A5 idealny do druku zdjęć.",
+    "unit_type": "pcs",
+    "net_price": "50.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 3,
+  "fields": {
+    "company": 2,
+    "name": "Lanie wody",
+    "description": "Polega na laniu wody przez określony czas.",
+    "unit_type": "h",
+    "net_price": "20.00",
+    "tax_rate": "6.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 4,
+  "fields": {
+    "company": 2,
+    "name": "Wylewanie za kołnież",
+    "description": "Polega na wylewaniu wody z określonego miejsca",
+    "unit_type": "h",
+    "net_price": "60.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 5,
+  "fields": {
+    "company": 1,
+    "name": "Papier kredowy A4",
+    "description": "Gładki papier do druku broszur.",
+    "unit_type": "pcs",
+    "net_price": "80.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 6,
+  "fields": {
+    "company": 2,
+    "name": "Zakręcanie kurków",
+    "description": "Usługa zakręcania zaworów wodnych.",
+    "unit_type": "h",
+    "net_price": "45.00",
+    "tax_rate": "8.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 7,
+  "fields": {
+    "company": 2,
+    "name": "Udrażnianie rur",
+    "description": "Przepychanie i udrażnianie instalacji wodnej.",
+    "unit_type": "h",
+    "net_price": "90.00",
+    "tax_rate": "12.00"
+  }
+},
+
+{
+  "model": "backend.product",
+  "pk": 8,
+  "fields": {
+    "company": 1,
+    "name": "Papier ozdobny",
+    "description": "Papier w różnych kolorach do tworzenia zaproszeń.",
+    "unit_type": "pcs",
+    "net_price": "120.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 9,
+  "fields": {
+    "company": 1,
+    "name": "Papier fotograficzny",
+    "description": "Błyszczący papier do wydruku zdjęć.",
+    "unit_type": "pcs",
+    "net_price": "150.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 10,
+  "fields": {
+    "company": 1,
+    "name": "Teczki kartonowe",
+    "description": "Zestaw teczek do archiwizacji dokumentów.",
+    "unit_type": "pcs",
+    "net_price": "30.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 11,
+  "fields": {
+    "company": 1,
+    "name": "Papier samoprzylepny",
+    "description": "Papier do drukowania naklejek.",
+    "unit_type": "pcs",
+    "net_price": "90.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 12,
+  "fields": {
+    "company": 1,
+    "name": "Papier ekologiczny",
+    "description": "Recyklingowy papier do użytku biurowego.",
+    "unit_type": "pcs",
+    "net_price": "70.00",
+    "tax_rate": "12.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 13,
+  "fields": {
+    "company": 2,
+    "name": "Naprawa przecieków",
+    "description": "Usuwanie wycieków z instalacji wodnej.",
+    "unit_type": "h",
+    "net_price": "100.00",
+    "tax_rate": "8.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 14,
+  "fields": {
+    "company": 2,
+    "name": "Czyszczenie filtrów",
+    "description": "Konserwacja i czyszczenie filtrów wodnych.",
+    "unit_type": "h",
+    "net_price": "50.00",
+    "tax_rate": "8.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 15,
+  "fields": {
+    "company": 2,
+    "name": "Instalacja liczników",
+    "description": "Montaż liczników do pomiaru zużycia wody.",
+    "unit_type": "h",
+    "net_price": "120.00",
+    "tax_rate": "8.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 16,
+  "fields": {
+    "company": 2,
+    "name": "Przegląd instalacji",
+    "description": "Kontrola stanu instalacji wodno-kanalizacyjnej.",
+    "unit_type": "h",
+    "net_price": "80.00",
+    "tax_rate": "8.00"
+  }
+},
+{
+  "model": "backend.product",
+  "pk": 17,
+  "fields": {
+    "company": 2,
+    "name": "Montaż zaworów",
+    "description": "Profesjonalny montaż zaworów wodnych.",
+    "unit_type": "h",
+    "net_price": "60.00",
+    "tax_rate": "8.00"
+  }
+}
+]

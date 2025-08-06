@@ -16,12 +16,27 @@ if not User.objects.filter(email='admin@example.com').exists():
     User.objects.create_superuser('admin@example.com', 'admin')
 "
 
-echo "Loading initial data if no companies..."
+if [ "$RESET_DB" = "true" ]; then
+    echo "Resetting database..."
+    python manage.py flush --no-input
+fi
+
+echo "Loading initial data..."
 python manage.py shell -c "
+from django.core.management import call_command
 from backend.models import Company
-if not Company.objects.exists():
-    from django.core.management import call_command
-    call_command('loaddata', 'backend/fixtures/initial_data.json')
+if '$RESET_DB' == 'true' or not Company.objects.exists():
+    fixtures = [
+        'backend/fixtures/users.json',
+        'backend/fixtures/companies.json',
+        'backend/fixtures/clients.json',
+        'backend/fixtures/products.json',
+        'backend/fixtures/invoices.json',
+        'backend/fixtures/invoice_items.json',
+        'backend/fixtures/addresses.json'
+    ]
+    for fixture in fixtures:
+        call_command('loaddata', fixture)
 "
 
 echo "Starting server..."
