@@ -1,52 +1,240 @@
 [
-  {"model": "backend.invoiceitem", "pk": 1, "fields": {"invoice": 1, "product": 1, "quantity": "2.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "200.00", "tax_amount": "24.00", "gross_total": "224.00"}},
-  {"model": "backend.invoiceitem", "pk": 2, "fields": {"invoice": 1, "product": 2, "quantity": "1.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "50.00", "tax_amount": "6.00", "gross_total": "56.00"}},
-  {"model": "backend.invoiceitem", "pk": 3, "fields": {"invoice": 2, "product": 3, "quantity": "3.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "60.00", "tax_amount": "3.60", "gross_total": "63.60"}},
-  {"model": "backend.invoiceitem", "pk": 4, "fields": {"invoice": 2, "product": 4, "quantity": "1.50", "net_price": "60.00", "tax_rate": "12.00", "net_total": "90.00", "tax_amount": "10.80", "gross_total": "100.80"}},
-  {"model": "backend.invoiceitem", "pk": 5, "fields": {"invoice": 3, "product": 5, "quantity": "4.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "320.00", "tax_amount": "38.40", "gross_total": "358.40"}},
-  {"model": "backend.invoiceitem", "pk": 6, "fields": {"invoice": 3, "product": 6, "quantity": "2.00", "net_price": "45.00", "tax_rate": "8.00", "net_total": "90.00", "tax_amount": "7.20", "gross_total": "97.20"}},
-  {"model": "backend.invoiceitem", "pk": 7, "fields": {"invoice": 4, "product": 7, "quantity": "1.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "90.00", "tax_amount": "10.80", "gross_total": "100.80"}},
-  {"model": "backend.invoiceitem", "pk": 8, "fields": {"invoice": 4, "product": 1, "quantity": "0.50", "net_price": "100.00", "tax_rate": "12.00", "net_total": "50.00", "tax_amount": "6.00", "gross_total": "56.00"}},
-  {"model": "backend.invoiceitem", "pk": 9, "fields": {"invoice": 5, "product": 2, "quantity": "10.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "500.00", "tax_amount": "60.00", "gross_total": "560.00"}},
-  {"model": "backend.invoiceitem", "pk": 10, "fields": {"invoice": 5, "product": 3, "quantity": "1.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "20.00", "tax_amount": "1.20", "gross_total": "21.20"}},
-  {"model": "backend.invoiceitem", "pk": 11, "fields": {"invoice": 6, "product": 4, "quantity": "5.00", "net_price": "60.00", "tax_rate": "12.00", "net_total": "300.00", "tax_amount": "36.00", "gross_total": "336.00"}},
-  {"model": "backend.invoiceitem", "pk": 12, "fields": {"invoice": 6, "product": 5, "quantity": "2.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "160.00", "tax_amount": "19.20", "gross_total": "179.20"}},
-  {"model": "backend.invoiceitem", "pk": 13, "fields": {"invoice": 7, "product": 6, "quantity": "3.00", "net_price": "45.00", "tax_rate": "8.00", "net_total": "135.00", "tax_amount": "10.80", "gross_total": "145.80"}},
-  {"model": "backend.invoiceitem", "pk": 14, "fields": {"invoice": 7, "product": 7, "quantity": "2.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "180.00", "tax_amount": "21.60", "gross_total": "201.60"}},
-  {"model": "backend.invoiceitem", "pk": 15, "fields": {"invoice": 8, "product": 1, "quantity": "6.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "600.00", "tax_amount": "72.00", "gross_total": "672.00"}},
-  {"model": "backend.invoiceitem", "pk": 16, "fields": {"invoice": 8, "product": 2, "quantity": "4.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "200.00", "tax_amount": "24.00", "gross_total": "224.00"}},
-  {"model": "backend.invoiceitem", "pk": 17, "fields": {"invoice": 9, "product": 3, "quantity": "7.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "140.00", "tax_amount": "8.40", "gross_total": "148.40"}},
-  {"model": "backend.invoiceitem", "pk": 18, "fields": {"invoice": 9, "product": 4, "quantity": "1.00", "net_price": "60.00", "tax_rate": "12.00", "net_total": "60.00", "tax_amount": "7.20", "gross_total": "67.20"}},
-  {"model": "backend.invoiceitem", "pk": 19, "fields": {"invoice": 10, "product": 5, "quantity": "5.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "400.00", "tax_amount": "48.00", "gross_total": "448.00"}},
-  {"model": "backend.invoiceitem", "pk": 20, "fields": {"invoice": 10, "product": 6, "quantity": "3.50", "net_price": "45.00", "tax_rate": "8.00", "net_total": "157.50", "tax_amount": "12.60", "gross_total": "170.10"}},
-  {"model": "backend.invoiceitem", "pk": 21, "fields": {"invoice": 11, "product": 7, "quantity": "1.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "90.00", "tax_amount": "10.80", "gross_total": "100.80"}},
-  {"model": "backend.invoiceitem", "pk": 22, "fields": {"invoice": 11, "product": 1, "quantity": "2.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "200.00", "tax_amount": "24.00", "gross_total": "224.00"}},
-  {"model": "backend.invoiceitem", "pk": 23, "fields": {"invoice": 12, "product": 2, "quantity": "3.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "150.00", "tax_amount": "18.00", "gross_total": "168.00"}},
-  {"model": "backend.invoiceitem", "pk": 24, "fields": {"invoice": 12, "product": 3, "quantity": "2.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "40.00", "tax_amount": "2.40", "gross_total": "42.40"}},
-  {"model": "backend.invoiceitem", "pk": 25, "fields": {"invoice": 13, "product": 4, "quantity": "4.00", "net_price": "60.00", "tax_rate": "12.00", "net_total": "240.00", "tax_amount": "28.80", "gross_total": "268.80"}},
-  {"model": "backend.invoiceitem", "pk": 26, "fields": {"invoice": 13, "product": 5, "quantity": "1.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "80.00", "tax_amount": "9.60", "gross_total": "89.60"}},
-  {"model": "backend.invoiceitem", "pk": 27, "fields": {"invoice": 14, "product": 6, "quantity": "2.00", "net_price": "45.00", "tax_rate": "8.00", "net_total": "90.00", "tax_amount": "7.20", "gross_total": "97.20"}},
-  {"model": "backend.invoiceitem", "pk": 28, "fields": {"invoice": 14, "product": 7, "quantity": "3.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "270.00", "tax_amount": "32.40", "gross_total": "302.40"}},
-  {"model": "backend.invoiceitem", "pk": 29, "fields": {"invoice": 15, "product": 1, "quantity": "1.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "100.00", "tax_amount": "12.00", "gross_total": "112.00"}},
-  {"model": "backend.invoiceitem", "pk": 30, "fields": {"invoice": 15, "product": 2, "quantity": "5.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "250.00", "tax_amount": "30.00", "gross_total": "280.00"}},
-  {"model": "backend.invoiceitem", "pk": 31, "fields": {"invoice": 16, "product": 3, "quantity": "4.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "80.00", "tax_amount": "4.80", "gross_total": "84.80"}},
-  {"model": "backend.invoiceitem", "pk": 32, "fields": {"invoice": 16, "product": 4, "quantity": "1.50", "net_price": "60.00", "tax_rate": "12.00", "net_total": "90.00", "tax_amount": "10.80", "gross_total": "100.80"}},
-  {"model": "backend.invoiceitem", "pk": 33, "fields": {"invoice": 17, "product": 5, "quantity": "3.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "240.00", "tax_amount": "28.80", "gross_total": "268.80"}},
-  {"model": "backend.invoiceitem", "pk": 34, "fields": {"invoice": 17, "product": 6, "quantity": "2.50", "net_price": "45.00", "tax_rate": "8.00", "net_total": "112.50", "tax_amount": "9.00", "gross_total": "121.50"}},
-  {"model": "backend.invoiceitem", "pk": 35, "fields": {"invoice": 18, "product": 7, "quantity": "1.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "90.00", "tax_amount": "10.80", "gross_total": "100.80"}},
-  {"model": "backend.invoiceitem", "pk": 36, "fields": {"invoice": 18, "product": 1, "quantity": "2.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "200.00", "tax_amount": "24.00", "gross_total": "224.00"}},
-  {"model": "backend.invoiceitem", "pk": 37, "fields": {"invoice": 19, "product": 2, "quantity": "3.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "150.00", "tax_amount": "18.00", "gross_total": "168.00"}},
-  {"model": "backend.invoiceitem", "pk": 38, "fields": {"invoice": 19, "product": 3, "quantity": "4.00", "net_price": "20.00", "tax_rate": "6.00", "net_total": "80.00", "tax_amount": "4.80", "gross_total": "84.80"}},
-  {"model": "backend.invoiceitem", "pk": 39, "fields": {"invoice": 20, "product": 4, "quantity": "1.00", "net_price": "60.00", "tax_rate": "12.00", "net_total": "60.00", "tax_amount": "7.20", "gross_total": "67.20"}},
-  {"model": "backend.invoiceitem", "pk": 40, "fields": {"invoice": 20, "product": 5, "quantity": "2.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "160.00", "tax_amount": "19.20", "gross_total": "179.20"}},
-  {"model": "backend.invoiceitem", "pk": 41, "fields": {"invoice": 1, "product": 6, "quantity": "1.00", "net_price": "45.00", "tax_rate": "8.00", "net_total": "45.00", "tax_amount": "3.60", "gross_total": "48.60"}},
-  {"model": "backend.invoiceitem", "pk": 42, "fields": {"invoice": 2, "product": 7, "quantity": "0.75", "net_price": "90.00", "tax_rate": "12.00", "net_total": "67.50", "tax_amount": "8.10", "gross_total": "75.60"}},
-  {"model": "backend.invoiceitem", "pk": 43, "fields": {"invoice": 3, "product": 1, "quantity": "2.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "200.00", "tax_amount": "24.00", "gross_total": "224.00"}},
-  {"model": "backend.invoiceitem", "pk": 44, "fields": {"invoice": 4, "product": 2, "quantity": "5.00", "net_price": "50.00", "tax_rate": "12.00", "net_total": "250.00", "tax_amount": "30.00", "gross_total": "280.00"}},
-  {"model": "backend.invoiceitem", "pk": 45, "fields": {"invoice": 5, "product": 3, "quantity": "1.50", "net_price": "20.00", "tax_rate": "6.00", "net_total": "30.00", "tax_amount": "1.80", "gross_total": "31.80"}},
-  {"model": "backend.invoiceitem", "pk": 46, "fields": {"invoice": 6, "product": 4, "quantity": "2.00", "net_price": "60.00", "tax_rate": "12.00", "net_total": "120.00", "tax_amount": "14.40", "gross_total": "134.40"}},
-  {"model": "backend.invoiceitem", "pk": 47, "fields": {"invoice": 7, "product": 5, "quantity": "3.00", "net_price": "80.00", "tax_rate": "12.00", "net_total": "240.00", "tax_amount": "28.80", "gross_total": "268.80"}},
-  {"model": "backend.invoiceitem", "pk": 48, "fields": {"invoice": 8, "product": 6, "quantity": "1.00", "net_price": "45.00", "tax_rate": "8.00", "net_total": "45.00", "tax_amount": "3.60", "gross_total": "48.60"}},
-  {"model": "backend.invoiceitem", "pk": 49, "fields": {"invoice": 9, "product": 7, "quantity": "2.00", "net_price": "90.00", "tax_rate": "12.00", "net_total": "180.00", "tax_amount": "21.60", "gross_total": "201.60"}},
-  {"model": "backend.invoiceitem", "pk": 50, "fields": {"invoice": 10, "product": 1, "quantity": "1.00", "net_price": "100.00", "tax_rate": "12.00", "net_total": "100.00", "tax_amount": "12.00", "gross_total": "112.00"}}
+  {
+    "model": "backend.invoiceitem",
+    "pk": 1,
+    "fields": {
+      "invoice": 1,
+      "product": "a3b1e4c6-2f7a-4d3b-9a2d-123456789abc",
+      "quantity": "2.00",
+      "net_price": "100.00",
+      "tax_rate": "12.00",
+      "net_total": "200.00",
+      "tax_amount": "24.00",
+      "gross_total": "224.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 2,
+    "fields": {
+      "invoice": 2,
+      "product": "5c9e2d4f-8b9a-4e8c-9114-def012345678",
+      "quantity": "5.00",
+      "net_price": "50.00",
+      "tax_rate": "12.00",
+      "net_total": "250.00",
+      "tax_amount": "30.00",
+      "gross_total": "280.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 3,
+    "fields": {
+      "invoice": 2,
+      "product": "c267e8f7-fd8f-4ee8-9aeb-f0f1f60a9a7e",
+      "quantity": "1.00",
+      "net_price": "100.00",
+      "tax_rate": "12.00",
+      "net_total": "100.00",
+      "tax_amount": "12.00",
+      "gross_total": "112.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 4,
+    "fields": {
+      "invoice": 3,
+      "product": "49d9217e-773a-4f0c-9a77-5badeb25b37f",
+      "quantity": "4.00",
+      "net_price": "30.00",
+      "tax_rate": "12.00",
+      "net_total": "120.00",
+      "tax_amount": "14.40",
+      "gross_total": "134.40"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 5,
+    "fields": {
+      "invoice": 4,
+      "product": "7e1d13b2-6f0a-4129-9123-3e65ab4321f1",
+      "quantity": "3.00",
+      "net_price": "80.00",
+      "tax_rate": "12.00",
+      "net_total": "240.00",
+      "tax_amount": "28.80",
+      "gross_total": "268.80"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 6,
+    "fields": {
+      "invoice": 4,
+      "product": "ed5e2e59-0b7d-4067-b04c-969f0f156d4a",
+      "quantity": "0.5",
+      "net_price": "80.00",
+      "tax_rate": "12.00",
+      "net_total": "40.00",
+      "tax_amount": "4.80",
+      "gross_total": "44.80"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 7,
+    "fields": {
+      "invoice": 5,
+      "product": "a3b1e4c6-2f7a-4d3b-9a2d-123456789abc",
+      "quantity": "5.00",
+      "net_price": "100.00",
+      "tax_rate": "12.00",
+      "net_total": "500.00",
+      "tax_amount": "60.00",
+      "gross_total": "560.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 8,
+    "fields": {
+      "invoice": 6,
+      "product": "c873b1de-1537-43a1-85e2-0cb43c9520a8",
+      "quantity": "2.00",
+      "net_price": "70.00",
+      "tax_rate": "12.00",
+      "net_total": "140.00",
+      "tax_amount": "16.80",
+      "gross_total": "156.80"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 9,
+    "fields": {
+      "invoice": 6,
+      "product": "49d9217e-773a-4f0c-9a77-5badeb25b37f",
+      "quantity": "0.33",
+      "net_price": "30.00",
+      "tax_rate": "12.00",
+      "net_total": "10.00",
+      "tax_amount": "1.20",
+      "gross_total": "11.20"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 10,
+    "fields": {
+      "invoice": 7,
+      "product": "782a1b7a-2bcd-4c0b-8897-5c07a77bbd2e",
+      "quantity": "2.00",
+      "net_price": "150.00",
+      "tax_rate": "12.00",
+      "net_total": "300.00",
+      "tax_amount": "36.00",
+      "gross_total": "336.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 11,
+    "fields": {
+      "invoice": 7,
+      "product": "7e1d13b2-6f0a-4129-9123-3e65ab4321f1",
+      "quantity": "1.50",
+      "net_price": "80.00",
+      "tax_rate": "12.00",
+      "net_total": "120.00",
+      "tax_amount": "14.40",
+      "gross_total": "134.40"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 12,
+    "fields": {
+      "invoice": 8,
+      "product": "c267e8f7-fd8f-4ee8-9aeb-f0f1f60a9a7e",
+      "quantity": "2.00",
+      "net_price": "120.00",
+      "tax_rate": "12.00",
+      "net_total": "240.00",
+      "tax_amount": "28.80",
+      "gross_total": "268.80"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 13,
+    "fields": {
+      "invoice": 8,
+      "product": "c873b1de-1537-43a1-85e2-0cb43c9520a8",
+      "quantity": "1.00",
+      "net_price": "70.00",
+      "tax_rate": "12.00",
+      "net_total": "70.00",
+      "tax_amount": "8.40",
+      "gross_total": "78.40"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 14,
+    "fields": {
+      "invoice": 9,
+      "product": "ed5e2e59-0b7d-4067-b04c-969f0f156d4a",
+      "quantity": "2.50",
+      "net_price": "90.00",
+      "tax_rate": "12.00",
+      "net_total": "225.00",
+      "tax_amount": "27.00",
+      "gross_total": "252.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 15,
+    "fields": {
+      "invoice": 9,
+      "product": "49d9217e-773a-4f0c-9a77-5badeb25b37f",
+      "quantity": "1.67",
+      "net_price": "30.00",
+      "tax_rate": "12.00",
+      "net_total": "50.00",
+      "tax_amount": "6.00",
+      "gross_total": "56.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 16,
+    "fields": {
+      "invoice": 10,
+      "product": "a3b1e4c6-2f7a-4d3b-9a2d-123456789abc",
+      "quantity": "3.00",
+      "net_price": "100.00",
+      "tax_rate": "12.00",
+      "net_total": "300.00",
+      "tax_amount": "36.00",
+      "gross_total": "336.00"
+    }
+  },
+  {
+    "model": "backend.invoiceitem",
+    "pk": 17,
+    "fields": {
+      "invoice": 10,
+      "product": "5c9e2d4f-8b9a-4e8c-9114-def012345678",
+      "quantity": "1.20",
+      "net_price": "50.00",
+      "tax_rate": "12.00",
+      "net_total": "60.00",
+      "tax_amount": "7.20",
+      "gross_total": "67.20"
+    }
+  }
 ]

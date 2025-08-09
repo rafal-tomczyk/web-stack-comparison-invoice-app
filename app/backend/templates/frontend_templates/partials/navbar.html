@@ -1,0 +1,28 @@
+<nav class="navbar bg-base-300 text-base-content px-6">
+  <div class="navbar-start">
+    <a class="btn btn-ghost normal-case text-xl">Pro Fac</a>
+  </div>
+
+  <div class="navbar-end">
+    {% if user.is_authenticated %}
+      <ul class="menu menu-horizontal p-0 gap-2 items-center">
+        <li><a href="{% url 'tmp_home' %}">Strona Główna</a></li>
+        <li><a href="{% url 'tmp_products' %}">Produkty</a></li>
+        <li><a href="{% url 'tmp_invoices' %}">Faktury</a></li>
+        <li><a href="{% url 'tmp_clients' %}">Klienci</a></li>
+        <li><a href="{% url 'tmp_choose_company' %}">Firmy</a></li>
+        <li>
+          <form method="post" action="{% url 'tmp_logout' %}">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-ghost" type="submit">Logout</button>
+          </form>
+        </li>
+      </ul>
+    {% else %}
+      <div class="flex gap-2">
+        <a class="btn btn-primary btn-sm" href="{% url 'tmp_login' %}">Login</a>
+        <a class="btn btn-ghost btn-sm" href="{% url 'tmp_register' %}">Zarejestruj się</a>
+      </div>
+    {% endif %}
+  </div>
+</nav>

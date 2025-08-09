@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
+import uuid
 
 
 # Create your models here.
@@ -80,6 +81,7 @@ class Product(models.Model):
         ('kg', 'Kilogramy'),
     ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     company = models.ForeignKey(
         "Company",
         on_delete=models.PROTECT,
@@ -93,6 +95,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def calc_brutto(self):
+        return self.net_price * (1 + self.tax_rate / 100)
 
 
 class Invoice(models.Model):

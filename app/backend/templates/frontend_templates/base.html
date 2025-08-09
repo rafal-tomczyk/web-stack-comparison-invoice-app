@@ -1,37 +1,18 @@
 <!DOCTYPE html>
+{% load static tailwind_tags %}
 <html lang="pl">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Fakturowanie Pro{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <title>{% block title %}Pro Fac{% endblock %}</title>
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    {% tailwind_css %}
+
   </head>
-  <body>
-    <nav class="container-fluid">
-      <ul>
-        <li><a href="{% url 'tmp_index' %}"><strong>Fakturowanie Pro</strong></a></li>
-      </ul>
-      <ul>
-        {% if user.is_authenticated %}
-          <li><a href="{% url 'tmp_home' %}">Strona Główna</a></li>
-          <li><a href="{% url 'tmp_products' %}">Produkty</a></li>
-          <li><a href="{% url 'tmp_invoices' %}">Faktury</a></li>
-          <li><a href="{% url 'tmp_clients' %}">Klienci</a></li>
-          <li>
-            <form method="post" action="{% url 'tmp_logout' %}">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-          </form>
-          </li>
+  <body data-theme="magisterka">
+    {% include "frontend_templates/partials/navbar.html" %}
 
-        {% else %}
-          <li><a href="{% url 'tmp_login' %}">Login</a></li>
-          <li><a href="{% url 'tmp_register' %}">Zarejestruj się</a></li>
-        {% endif %}
-      </ul>
-    </nav>
-
-    <main class="container">
+    <main class="container --color-base-content">
         {%block content%}
         {% endblock %}
     </main>

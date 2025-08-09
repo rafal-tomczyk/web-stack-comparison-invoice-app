@@ -1,0 +1,12 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Usuń produkt {% endblock %}
+
+{% block content %}
+<h1>Czy na pewno chcesz usunąć produkt "{{ object.name }}"?</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Usuń</button>
+    <a href="{% url 'tmp_products' %}">Anuluj</a>
+</form>
+{% endblock %}

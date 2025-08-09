@@ -1,0 +1,13 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Edycja produktu {% endblock %}
+
+{% block content %}
+<h1>Edytuj produkt</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Zapisz</button>
+</form>
+<a href="{% url 'tmp_products' %}">Powrót do listy produktów</a>
+{% endblock %}

@@ -4,37 +4,38 @@
 
 {% block content %}
 <p>
-    {% if user.is_authenticated %}
-        Hello {{ user.email }}
-        {% if clients %}
-        <table>
-            <thead>
-              <tr>
-                <th>Nazwa firmy</th>
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for client in clients %}
-                <tr>
-                  <td>{{ client.clients_company_name }}</td>
-                  <td>{{ client.name }}</td>
-                  <td>{{ client.surname }}</td>
-                  <td>{{ client.email }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+    {% if active_company %}
+        <h3>Firma: {{ active_company.name }}</h3>
 
+        <h4>Ostatnie faktury</h4>
+        <ul>
+            {% for invoice in invoices %}
+                <li>{{ invoice.number }} – {{ invoice.client }} – {{ invoice.total_gross }} zł</li>
+            {% empty %}
+                <li>Brak faktur</li>
+            {% endfor %}
+        </ul>
 
+        <h4>Top 5 produktów</h4>
+        <ul>
+            {% for product in top_products %}
+                <li>{{ product.name }} – {{ product.total_revenue|default:"0" }} zł</li>
+            {% empty %}
+                <li>Brak produktów</li>
+            {% endfor %}
+        </ul>
+
+        <h4>Top 5 klientów</h4>
+        <ul>
+            {% for client in top_clients %}
+                <li>{{ client }} – {{ client.total_spent|default:"0" }} zł</li>
+            {% empty %}
+                <li>Brak klientów</li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <a href="{% url 'tmp_login' %}">Zaloguj się</a>
-        <a href="{% url 'tmp_register' %}">Zarejestruj się</a>
+        <p>Nie wybrano firmy.</p>
     {% endif %}
-
 </p>
 
 {% endblock %}

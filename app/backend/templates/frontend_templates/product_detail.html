@@ -1,0 +1,15 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %} Szczegóły produktu {% endblock %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+<p>{{ product.description }}</p>
+<p>Jednostka: {{ product.get_unit_type_display }}</p>
+<p>Cena netto: {{ product.net_price }} PLN</p>
+<p>Stawka VAT: {{ product.tax_rate }}%</p>
+<p>Cena brutto: {{ product.calc_brutto|floatformat:2 }}zł</p>
+<a href="{% url 'tmp_product_edit' product.pk %}">Edytuj</a> |
+<a href="{% url 'tmp_product_delete' product.pk %}">Usuń</a> |
+<a href="{% url 'tmp_products' %}">Wróć do listy</a>
+{% endblock %}

@@ -21,6 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("templates/", include("backend.urls.templates_urls")),
+    path("__reload__/", include("django_browser_reload.urls"))
     # path("htmx/", include("backend.urls.htmx_urls")),
     # path("api/", include("backend.urls.api_urls"))
 ]

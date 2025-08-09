@@ -11,26 +11,26 @@
       "payment_method": "cash",
       "paid": true,
       "note": "Szybka płatność",
-      "total_net": "150.00",
-      "total_tax": "18.00",
-      "total_gross": "168.00"
+      "total_net": "200.00",
+      "total_tax": "24.00",
+      "total_gross": "224.00"
     }
   },
   {
     "model": "backend.invoice",
     "pk": 2,
     "fields": {
-      "company": 2,
-      "client": 2,
+      "company": 1,
+      "client": 19,
       "number": "2/2025",
-      "issue_date": "2025-01-15",
-      "due_date": "2025-01-29",
+      "issue_date": "2025-02-15",
+      "due_date": "2025-03-01",
       "payment_method": "transfer",
       "paid": false,
-      "note": "Czeka na płatność",
-      "total_net": "200.00",
-      "total_tax": "24.00",
-      "total_gross": "224.00"
+      "note": "",
+      "total_net": "350.00",
+      "total_tax": "42.00",
+      "total_gross": "392.00"
     }
   },
   {
@@ -40,11 +40,11 @@
       "company": 1,
       "client": 3,
       "number": "3/2025",
-      "issue_date": "2025-02-05",
-      "due_date": "2025-02-19",
+      "issue_date": "2025-03-05",
+      "due_date": "2025-03-19",
       "payment_method": "card",
       "paid": true,
-      "note": "",
+      "note": "Zrealizowano zgodnie z terminem",
       "total_net": "120.00",
       "total_tax": "14.40",
       "total_gross": "134.40"
@@ -54,133 +54,14 @@
     "model": "backend.invoice",
     "pk": 4,
     "fields": {
-      "company": 2,
-      "client": 4,
+      "company": 1,
+      "client": 7,
       "number": "4/2025",
-      "issue_date": "2025-02-20",
-      "due_date": "2025-03-06",
-      "payment_method": "cash",
-      "paid": false,
-      "note": "Opóźniona płatność",
-      "total_net": "180.00",
-      "total_tax": "21.60",
-      "total_gross": "201.60"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 5,
-    "fields": {
-      "company": 1,
-      "client": 5,
-      "number": "5/2025",
-      "issue_date": "2025-03-10",
-      "due_date": "2025-03-24",
-      "payment_method": "transfer",
-      "paid": true,
-      "note": "Faktura opłacona",
-      "total_net": "250.00",
-      "total_tax": "30.00",
-      "total_gross": "280.00"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 6,
-    "fields": {
-      "company": 2,
-      "client": 6,
-      "number": "6/2025",
-      "issue_date": "2025-03-25",
-      "due_date": "2025-04-08",
-      "payment_method": "card",
-      "paid": true,
-      "note": "",
-      "total_net": "90.00",
-      "total_tax": "10.80",
-      "total_gross": "100.80"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 7,
-    "fields": {
-      "company": 1,
-      "client": 1,
-      "number": "7/2025",
-      "issue_date": "2025-04-05",
-      "due_date": "2025-04-19",
-      "payment_method": "cash",
-      "paid": false,
-      "note": "Do zapłaty",
-      "total_net": "130.00",
-      "total_tax": "15.60",
-      "total_gross": "145.60"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 8,
-    "fields": {
-      "company": 2,
-      "client": 2,
-      "number": "8/2025",
-      "issue_date": "2025-04-15",
-      "due_date": "2025-04-29",
-      "payment_method": "transfer",
-      "paid": true,
-      "note": "Opłacona",
-      "total_net": "210.00",
-      "total_tax": "25.20",
-      "total_gross": "235.20"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 9,
-    "fields": {
-      "company": 1,
-      "client": 3,
-      "number": "9/2025",
-      "issue_date": "2025-05-01",
-      "due_date": "2025-05-15",
-      "payment_method": "card",
-      "paid": true,
-      "note": "",
-      "total_net": "175.00",
-      "total_tax": "21.00",
-      "total_gross": "196.00"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 10,
-    "fields": {
-      "company": 2,
-      "client": 4,
-      "number": "10/2025",
-      "issue_date": "2025-05-20",
-      "due_date": "2025-06-03",
+      "issue_date": "2025-04-12",
+      "due_date": "2025-04-26",
       "payment_method": "cash",
       "paid": false,
       "note": "Czeka na płatność",
-      "total_net": "160.00",
-      "total_tax": "19.20",
-      "total_gross": "179.20"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 11,
-    "fields": {
-      "company": 1,
-      "client": 5,
-      "number": "11/2025",
-      "issue_date": "2025-06-05",
-      "due_date": "2025-06-19",
-      "payment_method": "transfer",
-      "paid": true,
-      "note": "Faktura końcowa",
       "total_net": "280.00",
       "total_tax": "33.60",
       "total_gross": "313.60"
@@ -188,155 +69,104 @@
   },
   {
     "model": "backend.invoice",
-    "pk": 12,
-    "fields": {
-      "company": 2,
-      "client": 6,
-      "number": "12/2025",
-      "issue_date": "2025-06-25",
-      "due_date": "2025-07-09",
-      "payment_method": "card",
-      "paid": true,
-      "note": "",
-      "total_net": "95.00",
-      "total_tax": "11.40",
-      "total_gross": "106.40"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 13,
+    "pk": 5,
     "fields": {
       "company": 1,
-      "client": 1,
-      "number": "13/2025",
-      "issue_date": "2025-07-01",
-      "due_date": "2025-07-15",
-      "payment_method": "cash",
-      "paid": false,
-      "note": "Do zapłaty",
-      "total_net": "115.00",
-      "total_tax": "13.80",
-      "total_gross": "128.80"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 14,
-    "fields": {
-      "company": 2,
-      "client": 2,
-      "number": "14/2025",
-      "issue_date": "2025-07-10",
-      "due_date": "2025-07-24",
+      "client": 8,
+      "number": "5/2025",
+      "issue_date": "2025-05-08",
+      "due_date": "2025-05-22",
       "payment_method": "transfer",
       "paid": true,
-      "note": "Opłacona",
-      "total_net": "220.00",
-      "total_tax": "26.40",
-      "total_gross": "246.40"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 15,
-    "fields": {
-      "company": 1,
-      "client": 3,
-      "number": "15/2025",
-      "issue_date": "2025-07-20",
-      "due_date": "2025-08-03",
-      "payment_method": "card",
-      "paid": true,
       "note": "",
-      "total_net": "170.00",
-      "total_tax": "20.40",
-      "total_gross": "190.40"
+      "total_net": "500.00",
+      "total_tax": "60.00",
+      "total_gross": "560.00"
     }
   },
   {
     "model": "backend.invoice",
-    "pk": 16,
-    "fields": {
-      "company": 2,
-      "client": 4,
-      "number": "16/2025",
-      "issue_date": "2025-08-01",
-      "due_date": "2025-08-15",
-      "payment_method": "cash",
-      "paid": false,
-      "note": "Zaległa płatność",
-      "total_net": "140.00",
-      "total_tax": "16.80",
-      "total_gross": "156.80"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 17,
+    "pk": 6,
     "fields": {
       "company": 1,
-      "client": 5,
-      "number": "17/2025",
+      "client": 17,
+      "number": "6/2025",
+      "issue_date": "2025-06-15",
+      "due_date": "2025-06-29",
+      "payment_method": "cash",
+      "paid": true,
+      "note": "Stały klient",
+      "total_net": "150.00",
+      "total_tax": "18.00",
+      "total_gross": "168.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 7,
+    "fields": {
+      "company": 1,
+      "client": 15,
+      "number": "7/2025",
+      "issue_date": "2025-07-02",
+      "due_date": "2025-07-16",
+      "payment_method": "card",
+      "paid": false,
+      "note": "",
+      "total_net": "420.00",
+      "total_tax": "50.40",
+      "total_gross": "470.40"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 8,
+    "fields": {
+      "company": 1,
+      "client": 11,
+      "number": "8/2025",
       "issue_date": "2025-08-10",
       "due_date": "2025-08-24",
       "payment_method": "transfer",
       "paid": true,
-      "note": "Faktura opłacona",
-      "total_net": "260.00",
-      "total_tax": "31.20",
-      "total_gross": "291.20"
+      "note": "Opłacono przed terminem",
+      "total_net": "310.00",
+      "total_tax": "37.20",
+      "total_gross": "347.20"
     }
   },
   {
     "model": "backend.invoice",
-    "pk": 18,
+    "pk": 9,
     "fields": {
-      "company": 2,
-      "client": 6,
-      "number": "18/2025",
-      "issue_date": "2025-08-20",
-      "due_date": "2025-09-03",
-      "payment_method": "card",
-      "paid": true,
+      "company": 1,
+      "client": 13,
+      "number": "9/2025",
+      "issue_date": "2025-09-14",
+      "due_date": "2025-09-28",
+      "payment_method": "cash",
+      "paid": false,
       "note": "",
-      "total_net": "100.00",
-      "total_tax": "12.00",
-      "total_gross": "112.00"
+      "total_net": "275.00",
+      "total_tax": "33.00",
+      "total_gross": "308.00"
     }
   },
   {
     "model": "backend.invoice",
-    "pk": 19,
+    "pk": 10,
     "fields": {
       "company": 1,
       "client": 1,
-      "number": "19/2025",
-      "issue_date": "2025-09-01",
-      "due_date": "2025-09-15",
-      "payment_method": "cash",
-      "paid": false,
-      "note": "Do zapłaty",
-      "total_net": "130.00",
-      "total_tax": "15.60",
-      "total_gross": "145.60"
-    }
-  },
-  {
-    "model": "backend.invoice",
-    "pk": 20,
-    "fields": {
-      "company": 2,
-      "client": 2,
-      "number": "20/2025",
-      "issue_date": "2025-09-10",
-      "due_date": "2025-09-24",
-      "payment_method": "transfer",
+      "number": "10/2025",
+      "issue_date": "2025-10-05",
+      "due_date": "2025-10-19",
+      "payment_method": "card",
       "paid": true,
-      "note": "Opłacona",
-      "total_net": "210.00",
-      "total_tax": "25.20",
-      "total_gross": "235.20"
+      "note": "",
+      "total_net": "360.00",
+      "total_tax": "43.20",
+      "total_gross": "403.20"
     }
   }
 ]
