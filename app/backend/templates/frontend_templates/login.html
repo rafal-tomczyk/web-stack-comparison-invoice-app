@@ -1,19 +1,21 @@
 {% extends "frontend_templates/base.html" %}
+{% load crispy_forms_tags %}
 {% block title %}Logowanie{% endblock %}
 {% block content %}
-    <main class="container">
-      <div class="grid">
-        <section>
-          <hgroup>
-            <h2>Zaloguj się</h2>
-            <h3>Uzyskaj dostęp do swojego konta</h3>
-          </hgroup>
-          <form method="post">
-              {% csrf_token %}
-              {{ form.as_p }}
-            <button type="submit">Zaloguj się</button>
-          </form>
-        </section>
-      </div>
-    </main>
+<div class="flex justify-center items-center min-h-screen">
+  <section class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <hgroup class="text-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Zaloguj się</h2>
+      <h3 class="text-lg text-gray-600 mt-2">Uzyskaj dostęp do swojego konta</h3>
+    </hgroup>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-primary w-full p-6">Zaloguj</button>
+    </form>
+
+  </section>
+</div>
 {% endblock %}

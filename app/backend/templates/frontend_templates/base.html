@@ -1,40 +1,21 @@
 <!DOCTYPE html>
-{% load static tailwind_tags %}
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Pro Fac{% endblock %}</title>
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
-    {% tailwind_css %}
+{% load static %}
+<html lang="pl" data-theme="magisterka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Pro Fac{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'icons/favicon.pngf' %}">
+</head>
+<body class="bg-base-200 text-base-content min-h-screen flex flex-col">
+  {% include "frontend_templates/partials/navbar.html" %}
 
-  </head>
-  <body data-theme="magisterka">
-    {% include "frontend_templates/partials/navbar.html" %}
+  <main class="container mx-auto p-4 sm:p-6 lg:px-12 flex-1 mb-8">
+      {%block content%}
+      {% endblock %}
+  </main>
 
-    <main class="container --color-base-content">
-        {%block content%}
-        {% endblock %}
-    </main>
-
-    <section aria-label="Subscribe example">
-      <div class="container">
-        <article>
-          <hgroup>
-            <h2>Dołącz do newslettera</h2>
-            <h3>Otrzymuj porady, aktualizacje i promocje</h3>
-          </hgroup>
-          <form class="grid">
-            <input type="text" id="firstname" name="firstname" placeholder="Imię" aria-label="Imię" required="">
-            <input type="email" id="email" name="email" placeholder="Twój e-mail" aria-label="Twój e-mail" required="">
-            <button type="submit" onclick="event.preventDefault()">Zapisz się</button>
-          </form>
-        </article>
-      </div>
-    </section>
-
-    <footer class="container">
-      <small><a href="#">Polityka prywatności</a> • <a href="#">Regulamin</a></small>
-    </footer>
+  {% include "frontend_templates/partials/footer.html" %}
 
 </body></html>

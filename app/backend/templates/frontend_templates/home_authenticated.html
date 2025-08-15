@@ -3,39 +3,198 @@
 {% block title %} Strona Główna {% endblock %}
 
 {% block content %}
-<p>
-    {% if active_company %}
-        <h3>Firma: {{ active_company.name }}</h3>
 
-        <h4>Ostatnie faktury</h4>
-        <ul>
-            {% for invoice in invoices %}
-                <li>{{ invoice.number }} – {{ invoice.client }} – {{ invoice.total_gross }} zł</li>
-            {% empty %}
-                <li>Brak faktur</li>
-            {% endfor %}
-        </ul>
 
-        <h4>Top 5 produktów</h4>
-        <ul>
-            {% for product in top_products %}
-                <li>{{ product.name }} – {{ product.total_revenue|default:"0" }} zł</li>
-            {% empty %}
-                <li>Brak produktów</li>
-            {% endfor %}
-        </ul>
+<!-- Górny row -->
+<div class="top">
+  {% if active_company %}
+  <h3 class="text-3xl font-bold mb-4">{{ active_company.name }}</h3>
 
-        <h4>Top 5 klientów</h4>
-        <ul>
-            {% for client in top_clients %}
-                <li>{{ client }} – {{ client.total_spent|default:"0" }} zł</li>
-            {% empty %}
-                <li>Brak klientów</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nie wybrano firmy.</p>
-    {% endif %}
-</p>
+  <div class="boxes flex gap-8">
+
+
+    <!-- Left top -->
+    <div class="top-left card w-1/2 h-full flex-grow">
+
+      <!-- Ostatnie faktury -->
+      <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
+      <div class="card-title text-center w-full pt-4 pl-6 pb-4 font-semibold text-lg">Ostatnie faktury</div>
+      <div class="grid grid-cols-3 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+        <p class="text-left">Klient</p>
+        <p class="text-center">Numer</p>
+        <p class="text-right">Wartość</p>
+      </div>
+
+      <!-- Wiersze z fakturami -->
+        <div class="card-body p-6">
+          {% for invoice in invoices %}
+          <div class="grid grid-cols-3 items-center py-2 border-b border-gray-200 last:border-b-0">
+            <!-- Client -->
+            <div class="text-left text-sm text-gray-700">
+              {{ invoice.client }}
+            </div>
+
+            <!-- Invoice num -->
+            <div class="text-center text-l text-gray-800">
+              {{ invoice.number }}
+            </div>
+
+            <!-- Gross -->
+            <div class="text-right text-sm font-bold text-gray-900">
+              {{ invoice.total_gross }} zł
+            </div>
+          </div>
+          {% empty %}
+          <div class="text-gray-500 text-center py-6">
+            Brak faktur
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Right top -->
+    <div class="top-right card w-1/2 flex">
+      <!-- Plot -->
+      <div class="card w-full h-2/3 bg-base-100 flex flex-col justify-center items-center shadow-lg border border-base-300">
+        <div class="card-title text-center pt-4 text-lg font-semibold">Wykres przychodów</div>
+        <div class="card-body w-full px-6">
+          <canvas id="monthlyRevenueChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Additional info -->
+      <div class="top-right-bottom flex gap-8 mt-8 h-1/3">
+  <!-- Karta miesięcznych przychodów -->
+  <div class="card w-1/2 bg-base-100 shadow-lg border border-base-300 flex flex-col justify-center items-center">
+    <div class="card-title text-center pt-4 text-lg font-semibold">Przychody miesięczne</div>
+    <div class="card-body p-6 text-primary text-center font-bold text-4xl">
+      {{ monthly_revenue }}
+    </div>
+  </div>
+
+  <!-- Karta rocznych przychodów -->
+  <div class="card w-1/2 bg-base-100 shadow-lg border border-base-300 flex flex-col justify-center items-center">
+    <div class="card-title text-center pt-4 text-lg font-semibold">Przychody roczne</div>
+    <div class="card-body p-6 text-accent text-center font-bold text-4xl">
+      {{ yearly_revenue }}
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Dolny row -->
+<div class="bottom mt-8 flex gap-8 mt-8">
+
+<!-- Card 1 -->
+  <div class="card w-1/3 bg-base-100 shadow-lg border border-base-300 align-center justify-center">
+    <div class="card-title text-center w-full pt-4 pl-6"><p>Top 5 produktów</p></div>
+
+    <div class="card-body p-6">
+      {% for product in top_products %}
+      <div class="flex justify-between items-center border-b border-gray-200 py-2 last:border-b-0">
+        <!-- Nazwa produktu -->
+        <div class="text-left">
+          <h5 class="text-l text-gray-800">{{ product.name }}</h5>
+        </div>
+        <!-- Total revenue -->
+        <div class="text-right">
+          <p class="text-sm text-gray-700">{{ product.total_revenue|default:"0" }} zł</p>
+        </div>
+      </div>
+      {% empty %}
+      <!-- When no products -->
+      <div class="text-gray-500 text-center py-6">
+        Brak produktów
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+<!-- Card 2 -->
+  <div class="card w-1/3 bg-base-100 shadow-lg border border-base-300">
+    <div class="card-title w-full pt-4 pl-6">Top 5 klientów</div>
+    <div class="card-body p-6">
+      {% for client in top_clients %}
+      <div class="flex justify-between items-center border-b border-gray-200 py-2 last:border-b-0">
+        <!-- Client's name -->
+        <div class="text-left">
+          <h5 class="text-l text-gray-800">{{ client }}</h5>
+        </div>
+        <!-- Client's spending -->
+        <div class="text-right">
+          <p class="text-sm text-gray-700">{{ client.total_spent|default:"0" }} zł</p>
+        </div>
+      </div>
+      {% empty %}
+      <!-- When no clients -->
+      <div class="text-gray-500 text-center py-6">
+        Brak klientów
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+<!-- Card 3 -->
+  <div class="card w-1/3 bg-base-100 border border-base-300 shadow-lg rounded-box flex items-center justify-center">
+    <calendar-date class="cally ">
+      <svg aria-label="Previous" class="fill-current size-4" slot="previous" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M15.75 19.5 8.25 12l7.5-7.5"></path></svg>
+      <svg aria-label="Next" class="fill-current size-4" slot="next" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m8.25 4.5 7.5 7.5-7.5 7.5"></path></svg>
+      <calendar-month></calendar-month>
+    </calendar-date>
+  </div>
+</div>
+
+<script type="module" src="https://unpkg.com/cally"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dane dla wykresu (przekaż zmienną `monthly_revenues` z Django jako listę)
+    const monthlyRevenues = {{ monthly_revenues|safe }};
+
+    // Konfiguracja wykresu
+    const config = {
+        type: 'bar',
+        data: {
+            // Nazwy miesięcy na osi X (po polsku)
+            labels: [
+                'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+                'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
+            ],
+            datasets: [{
+                label: "", // Pusta etykieta zestawu danych
+                data: monthlyRevenues, // Dane przychodów (dynamiczne)
+                backgroundColor: 'oklch(0.819 0.111 230.462)', // Kolor słupków
+            }]
+        },
+        options: {
+            responsive: true, // Skalowanie wykresu do rozmiaru ekranu
+            scales: {
+                y: {
+                    beginAtZero: true // Zaczynamy skalę Y od zera
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false, // Wyłączenie legendy
+                }
+            }
+        }
+    };
+
+    // Utworzenie wykresu w elemencie canvas
+    const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+    const monthlyRevenueChart = new Chart(ctx, config);
+
+</script>
+
+
+{% else %}
+<p class="text-lg text-gray-600">Nie wybrano firmy.</p>
+{% endif %}
 
 {% endblock %}

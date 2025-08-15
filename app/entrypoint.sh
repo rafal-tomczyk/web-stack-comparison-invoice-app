@@ -2,9 +2,12 @@
 
 set -e
 
-echo "Waiting for database..."
 
+echo "Started entrypoint.sh"
+echo "Connected to database..."
 echo "Applying migrations..."
+
+python manage.py tailwind install
 python manage.py makemigrations
 python manage.py migrate
 
@@ -40,4 +43,6 @@ if '$RESET_DB' == 'true' or not Company.objects.exists():
 "
 
 echo "Starting server..."
-exec "$@"
+python manage.py tailwind start &
+sleep 3
+python manage.py runserver 0.0.0.0:8000

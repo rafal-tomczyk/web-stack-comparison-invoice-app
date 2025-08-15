@@ -1,0 +1,59 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %}Dodaj Produkt{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">Produkty</h2>
+  <a href="{% url 'tmp_products' %}" class="btn btn-error btn-md shadow-md">
+    Wróć do listy produktów
+  </a>
+</div>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
+  <form method="post">
+    {% csrf_token %}
+    
+    <!-- Formularz -->
+    <div class="grid gap-4">
+      <!-- Renderowanie pól formularza -->
+      <div class="form-control">
+        {{ form.name.label_tag }}
+        {{ form.name }}
+        {{ form.name.errors }}
+      </div>
+      
+      <div class="form-control">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {{ form.description.errors }}
+      </div>
+      
+      <div class="form-control">
+        {{ form.unit_type.label_tag }}
+        {{ form.unit_type }}
+        {{ form.unit_type.errors }}
+      </div>
+      
+      <div class="form-control">
+        {{ form.net_price.label_tag }}
+        {{ form.net_price }}
+        {{ form.net_price.errors }}
+      </div>
+      
+      <div class="form-control">
+        {{ form.tax_rate.label_tag }}
+        {{ form.tax_rate }}
+        {{ form.tax_rate.errors }}
+      </div>
+    </div>
+    
+    <!-- Przycisk 'Dodaj produkt' -->
+    <div class="mt-6">
+      <button type="submit" class="btn btn-primary btn-md shadow-md">
+        Dodaj produkt
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

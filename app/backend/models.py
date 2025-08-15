@@ -81,7 +81,7 @@ class Product(models.Model):
         ('kg', 'Kilogramy'),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     company = models.ForeignKey(
         "Company",
         on_delete=models.PROTECT,

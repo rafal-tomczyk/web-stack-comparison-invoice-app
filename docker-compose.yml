@@ -18,20 +18,6 @@ services:
     ports:
       - "5432:5432"
 
-  web:
-    build:
-      context: .
-      dockerfile: app/Django.Dockerfile
-    container_name: django_app
-    volumes:
-      - ./app:/invoice_app
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - .env
 
   pgadmin:
     image: dpage/pgadmin4
@@ -45,6 +31,24 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+
+
+  django:
+    build:
+      context: .
+      dockerfile: Django.Dockerfile
+    container_name: django_app
+    volumes:
+      - .:/all_folders_from_the_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+
 
 volumes:
   postgres_data:

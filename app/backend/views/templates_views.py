@@ -1,14 +1,19 @@
+import json
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
-from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView, \
+    CreateView
 from rest_framework.reverse import reverse_lazy
 
-from ..forms.templates_forms.forms import RegisterForm
+from ..forms.templates_forms.forms import RegisterForm, LoginForm, ProductForm, \
+    ClientForm
+from django.db.models.functions import Round, TruncMonth
 
 from ..models import Client, Company, User, Invoice, Product
 
@@ -19,13 +24,13 @@ def index(request):
 
 def login_view(request):
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             auth_login(request, user)
             return redirect("tmp_choose_company")
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
     return render(
         request,
         "frontend_templates/login.html",
@@ -52,7 +57,7 @@ def get_top_products(company, limit=5):
     return (
         Product.objects.filter(company=company)
         .annotate(
-            total_revenue=Sum(F("invoiceitem__quantity") * F("invoiceitem__net_price")),
+            total_revenue=Round(Sum(F("invoiceitem__quantity") * F("invoiceitem__net_price")), precision=2),
             total_quantity=Sum("invoiceitem__quantity")
         )
         .filter(total_revenue__isnull=False)
@@ -63,23 +68,58 @@ def get_top_products(company, limit=5):
 def home(request):
     active_company = None
     invoices, top_products, top_clients = [], [], []
+    monthly_revenue: float = 0
+    yearly_revenue: float = 0
+    monthly_revenues: list[float] = [0] * 12
+    monthly_revenues_json = {}
     company_id = request.session.get('active_company_id')
     if company_id:
         try:
             active_company = Company.objects.get(id=int(company_id), user=request.user)
+            # Last invoices
             invoices = Invoice.objects.filter(company=company_id).order_by(
                 "-issue_date")[:10]
 
+            # Top products
             top_products = get_top_products(active_company)
 
+            # Top Clients
             top_clients = (
                 Client.objects.filter(company=active_company)
                 .annotate(total_spent=Sum("invoices__total_gross"))
                 .filter(total_spent__isnull=False)
                 .order_by("-total_spent")[:5]
             )
+
+            # Monthly revenue
+            now = datetime.now()
+            revenues = Invoice.objects.filter(
+                company=active_company,
+                issue_date__year=now.year
+            ).annotate(
+                month=TruncMonth('issue_date')
+            ).values('month').annotate(
+                total_revenue=Sum('total_gross')
+            ).order_by('month')
+
+            for revenue in revenues:
+                month_index = revenue['month'].month - 1
+                monthly_revenues[month_index] = revenue['total_revenue'] or 0
+                monthly_revenues_json = json.dumps(monthly_revenues,
+                                                   default=str)
+
+            monthly_revenue = monthly_revenues[now.month - 1]
+
+            # Yearly revenue
+            yearly_revenue = Invoice.objects.filter(
+                company=active_company,
+                issue_date__year=now.year
+            ).aggregate(total_revenue=Sum('total_gross'))['total_revenue'] or 0
+
+
         except Company.DoesNotExist:
             active_company = None
+
     return render(
         request,
         "frontend_templates/home_authenticated.html",
@@ -88,6 +128,9 @@ def home(request):
             "invoices": invoices,
             "top_products": top_products,
             "top_clients": top_clients,
+            "monthly_revenues": monthly_revenues_json,
+            "monthly_revenue": monthly_revenue,
+            "yearly_revenue": yearly_revenue
         }
     )
 
@@ -112,6 +155,39 @@ class ClientsListView(LoginRequiredMixin, ListView):
     model = Client
     template_name = "frontend_templates/clients.html"
     context_object_name = "clients"
+    paginate_by = 10
+
+    def get_queryset(self):
+        company_id: int = self.request.session.get('active_company_id')
+        if company_id:
+            return Client.objects.filter(company__user=self.request.user, company_id=company_id)
+        return Client.objects.none()
+
+class ClientCreateView(LoginRequiredMixin, CreateView):
+    model = Client
+    template_name = "frontend_templates/client_create.html"
+    form_class = ClientForm
+    success_url = reverse_lazy('tmp_clients')
+
+    def form_valid(self, form):
+        active_company_id = self.request.session.get('active_company_id')
+        if not active_company_id:
+            form.add_error(None, "Nie wybrano aktywnej firmy.")
+            return self.form_invalid(form)
+
+        try:
+            company = Company.objects.get(id=active_company_id)
+        except Company.DoesNotExist:
+            form.add_error(None, "Aktywna firma nie istnieje.")
+            return self.form_invalid(form)
+
+        form.instance.company = company
+        return super().form_valid(form)
+
+class ClientDetailView(LoginRequiredMixin, DetailView):
+    model = Client
+    template_name = "frontend_templates/client_detail.html"
+    context_object_name = "client"
 
     def get_queryset(self):
         return Client.objects.filter(company__user=self.request.user)
@@ -121,18 +197,23 @@ class InvoicesListView(LoginRequiredMixin, ListView):
     model = Invoice
     template_name = "frontend_templates/invoices.html"
     context_object_name = "invoices"
+    paginate_by = 10
 
     def get_queryset(self):
-        return Invoice.objects.filter(company__user=self.request.user)
+        company_id: int = self.request.session.get('active_company_id')
+        if company_id:
+            return Invoice.objects.filter(company__user=self.request.user, company_id=company_id)
+        return Invoice.objects.none()
 
 
 class ProductsListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = "frontend_templates/products.html"
     context_object_name = "products"
+    paginate_by = 10
 
     def get_queryset(self):
-        company_id = self.request.session.get('active_company_id')
+        company_id: int = self.request.session.get('active_company_id')
         if company_id:
             return Product.objects.filter(company_id=company_id, company__user=self.request.user)
         return Product.objects.none()
@@ -145,6 +226,28 @@ class ProductsDetailView(DetailView):
 
     def get_queryset(self):
         return Product.objects.filter(company__user=self.request.user)
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'frontend_templates/product_create.html'
+    success_url = reverse_lazy('tmp_products')
+
+    def form_valid(self, form):
+        active_company_id = self.request.session.get('active_company_id')
+        if not active_company_id:
+            form.add_error(None, "Nie wybrano aktywnej firmy.")
+            return self.form_invalid(form)
+
+        try:
+            company = Company.objects.get(id=active_company_id)
+        except Company.DoesNotExist:
+            form.add_error(None, "Aktywna firma nie istnieje.")
+            return self.form_invalid(form)
+
+        form.instance.company = company
+        return super().form_valid(form)
+
 
 class ProductUpdateView(UpdateView):
     model = Product

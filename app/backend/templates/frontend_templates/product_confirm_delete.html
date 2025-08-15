@@ -3,10 +3,21 @@
 {% block title %} Usuń produkt {% endblock %}
 
 {% block content %}
-<h1>Czy na pewno chcesz usunąć produkt "{{ object.name }}"?</h1>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Usuń</button>
-    <a href="{% url 'tmp_products' %}">Anuluj</a>
-</form>
+<div class="container mx-auto max-w-md p-6 bg-white shadow-xl rounded-[var(--radius-box)] border border-gray-200">
+    <!-- Nagłówek -->
+    <h1 class="text-xl font-bold text-center mb-6">
+        Czy na pewno chcesz usunąć produkt "{{ object.name }}"?
+    </h1>
+
+    <!-- Formularz -->
+    <form method="post" class="flex gap-4 justify-center dash">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-error btn-lg dash">
+            Usuń
+        </button>
+        <a href="{% url 'tmp_products' %}" class="btn btn-secondary btn-lg">
+            Anuluj
+        </a>
+    </form>
+</div>
 {% endblock %}

@@ -3,13 +3,61 @@
 {% block title %} Szczegóły produktu {% endblock %}
 
 {% block content %}
-<h1>{{ product.name }}</h1>
-<p>{{ product.description }}</p>
-<p>Jednostka: {{ product.get_unit_type_display }}</p>
-<p>Cena netto: {{ product.net_price }} PLN</p>
-<p>Stawka VAT: {{ product.tax_rate }}%</p>
-<p>Cena brutto: {{ product.calc_brutto|floatformat:2 }}zł</p>
-<a href="{% url 'tmp_product_edit' product.pk %}">Edytuj</a> |
-<a href="{% url 'tmp_product_delete' product.pk %}">Usuń</a> |
-<a href="{% url 'tmp_products' %}">Wróć do listy</a>
+<h1 class="text-4xl font-bold mb-4">
+  Szczegóły produktu
+</h1>
+
+<!-- Dwukolumnowy układ -->
+<div class="flex flex-col lg:flex-row lg:gap-8">
+  <!-- Lewa strona -->
+  <div class="basis-1/2">
+    <!-- Nazwa produktu -->
+    <h2 class="text-2xl font-bold text-secondary mb-4">
+      {{ product.name }}
+    </h2>
+
+    <!-- Opis produktu -->
+    <p class="text-gray-700 mb-6 text-justify">
+      {{ product.description }}
+    </p>
+
+    <!-- Przyciski akcji -->
+    <div class="flex gap-3">
+      <a href="{% url 'tmp_product_edit' product.pk %}"
+         class="btn btn-accent btn-md">
+        Edytuj
+      </a>
+      <a href="{% url 'tmp_product_delete' product.pk %}"
+         class="btn btn-error btn-md">
+        Usuń
+      </a>
+      <a href="{% url 'tmp_products' %}"
+         class="btn btn-secondary btn-md">
+        Wróć do listy
+      </a>
+    </div>
+  </div>
+
+  <!-- Prawa strona -->
+  <div class="basis-1/2">
+    <div class="stats bg-base-100 shadow-lg p-4">
+      <div class="stat">
+        <div class="stat-title">Jednostka</div>
+        <div class="stat-value">{{ product.get_unit_type_display }}</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Cena netto</div>
+        <div class="stat-value text-warning">{{ product.net_price }} PLN</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Stawka VAT</div>
+        <div class="stat-value text-info">{{ product.tax_rate }}%</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Cena brutto</div>
+        <div class="stat-value text-success">{{ product.calc_brutto|floatformat:2 }} zł</div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

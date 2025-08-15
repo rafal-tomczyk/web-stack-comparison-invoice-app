@@ -3,37 +3,92 @@
 {% block title %} Klienci {% endblock %}
 
 {% block content %}
-{% if clients %}
-<table>
-    <thead>
-        <tr>
-            <th>Nazwa firmy / Imię i nazwisko</th>
-            <th>NIP</th>
-            <th>REGON</th>
-            <th>Email</th>
-            <th>Telefon</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">Klienci</h2>
+  <a href="{% url 'tmp_client_add' %}" class="btn btn-primary btn-md shadow-md">
+    Dodaj klienta
+  </a>
+</div>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
+  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">Lista klientów</div>
+
+  <!-- Nagłówki kolumn -->
+  <div class="grid grid-cols-5 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+    <p class="text-left pl-4">Nazwa klienta</p>
+    <p class="text-left">NIP</p>
+    <p class="text-left">REGON</p>
+    <p class="text-left">Email</p>
+    <p class="text-left">Telefon</p>
+  </div>
+
+  <!-- Lista klientów -->
+  <div class="card-body p-6 gap-0">
     {% for client in clients %}
-        <tr>
-            <td>
-                {% if client.clients_company_name %}
-                    {{ client.clients_company_name }}
-                {% else %}
-                    {{ client.name }} {{ client.surname }}
-                {% endif %}
-            </td>
-            <td>{{ client.nip }}</td>
-            <td>{{ client.regon }}</td>
-            <td>{{ client.email }}</td>
-            <td>{{ client.phone_number }}</td>
-        </tr>
+    <div class="grid grid-cols-5 items-center border-b border-gray-200 hover:bg-base-300 last:border-b-0 py-4">
+      <!-- Nazwa firmy / Imię i nazwisko -->
+      <div class="text-left text-sm font-semibold pl-4">
+        {% if client.clients_company_name %}
+        {{ client.clients_company_name }}
+        {% else %}
+        {{ client.name }} {{ client.surname }}
+        {% endif %}
+      </div>
+      <!-- NIP -->
+      <div class="text-left text-sm text-gray-700">
+        {{ client.nip }}
+      </div>
+      <!-- REGON -->
+      <div class="text-left text-sm text-gray-700">
+        {{ client.regon }}
+      </div>
+      <!-- Email -->
+      <div class="text-left text-sm text-gray-700">
+        {{ client.email }}
+      </div>
+      <!-- Telefon -->
+      <div class="text-left text-sm text-gray-700">
+        {{ client.phone_number }}
+      </div>
+    </div>
+
+    {% empty %}
+    <!-- Gdy brak klientów -->
+    <div class="text-gray-500 text-center py-6">
+      Brak klientów do wyświetlenia.
+    </div>
     {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>Brak klientów do wyświetlenia.</p>
+  </div>
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<div class="flex justify-center mt-6">
+  <div class="btn-group">
+    <!-- Button prev -->
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">← Poprzednia</a>
+    {% else %}
+      <button class="btn btn-sm btn-disabled">← Poprzednia</button>
+    {% endif %}
+
+    <!-- Pagination -->
+    {% for page_number in page_obj.paginator.page_range %}
+      {% if page_number == page_obj.number %}
+        <button class="btn btn-primary btn-md shadow-md hover:bg-primary">{{ page_number }}</button>
+      {% else %}
+        <a href="?page={{ page_number }}" class="btn btn-neutral btn-sm shadow-md hover:bg-accent hover:border-accent">{{ page_number }}</a>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Button next -->
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-neutral btn-sm text-white hover:bg-accent hover:border-accent">Następna →</a>
+    {% else %}
+      <button class="btn btn-sm btn-disabled">Następna →</button>
+    {% endif %}
+  </div>
+</div>
 {% endif %}
 
 {% endblock %}

@@ -1,24 +1,131 @@
 {% extends "frontend_templates/base.html" %}
 {% block title %}Fakturowanie Pro{% endblock %}
 {% block content %}
-<div class="grid">
-  <section>
-    <hgroup>
-      <h2>Wystawiaj faktury po swojemu</h2>
-      <h3>szybko, łatwo i bez stresu</h3>
-    </hgroup>
-    <p>Fakturowanie Pro to intuicyjne narzędzie do zarządzania Twoimi fakturami. Idealne dla freelancerów, małych firm i przedsiębiorców.</p>
-    <figure>
-      <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80" alt="Laptop z aplikacją do faktur">
-    </figure>
+<div class="relative bg-cover shadow-xl border border-gray-300 w-full h-[24rem] rounded-l-lg"
+     style="background-image: url('https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1440&amp;q=80'); background-position: 20% 95%">
 
-    <h3>Działaj szybciej:</h3>
-    <p>
-      Generowanie faktur PDF<br>
-      Wykresy przychodów<br>
-      Historia transakcji<br>
-      Możliwość eksportu do Excel<br>
-    </p>
-  </section>
+  <!-- Element glass po prawej stronie -->
+  <div class="absolute inset-y-0 right-0 w-1/2 bg-white/70 backdrop-blur-lg shadow-lg p-12  flex flex-col">
+    <h2 class="text-2xl font-bold mb-4 text-info">Wystawiaj faktury po swojemu!</h2>
+    <p class="mb-6">Dobra księgowość to ta, którą się nie martwisz.</p>
+    <h3 class="font-semibold mb-2">Działaj szybciej:</h3>
+    <ul class="space-y-2 text-sm">
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Generowanie faktur PDF
+      </li>
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Wykresy przychodów
+      </li>
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Historia transakcji
+      </li>
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Eksport do Excel
+      </li>
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Informacje o firmie w jednym miejscu
+      </li>
+      <li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-success" fill="none" viewBox="0 0 24 24" style="stroke: var(--color-info);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Dostęp do stałych klientów
+      </li>
+    </ul>
+  </div>
 </div>
+
+<div class="flex gap-6 mt-8">
+  <div class="card bg-gray-50 shadow-lg border border-gray-300 rounded-lg p-6 w-1/2">
+    <hgroup class="card-header text-center mb-4">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">
+        Dołącz do newslettera
+      </h2>
+      <h3 class="text-sm text-gray-600">
+        Otrzymuj porady, aktualizacje i promocje
+      </h3>
+    </hgroup>
+    <form class="space-y-4">
+      <input
+        type="text"
+        id="firstname"
+        name="firstname"
+        placeholder="Imię"
+        aria-label="Imię"
+        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+        required=""
+      />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Twój e-mail"
+        aria-label="Twój e-mail"
+        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+        required=""
+      />
+      <button
+        type="submit"
+        onclick="event.preventDefault()"
+        class="btn btn-primary w-full"
+      >
+        Zapisz się
+      </button>
+    </form>
+  </div>
+
+  <div class="card bg-gray-50 shadow-lg border rounded-lg p-6 w-1/2">
+    <hgroup class="card-header text-center mb-4">
+      <h2 class="text-xl font-bold text-gray-800 mb-2">
+        Dołącz do newslettera
+      </h2>
+      <h3 class="text-sm text-gray-600">
+        Zostań na bieżąco z promocjami
+      </h3>
+    </hgroup>
+    <form class="space-y-4">
+      <input
+        type="text"
+        id="firstname"
+        name="firstname"
+        placeholder="Imię"
+        aria-label="Imię"
+        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+        required=""
+      />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Twój e-mail"
+        aria-label="Twój e-mail"
+        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
+        required=""
+      />
+      <button
+        type="submit"
+        onclick="event.preventDefault()"
+        class="btn btn-primary w-full"
+      >
+        Zapisz się
+      </button>
+    </form>
+  </div>
+</div>
+
 {% endblock %}
