@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.conf import settings
 import uuid
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -66,7 +68,7 @@ class Client(models.Model):
     nip = models.CharField(max_length=20, blank=True)
     regon = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True, null=True)
-    phone_number = models.CharField(max_length=50, blank=True)
+    phone_number = PhoneNumberField(region="PL", blank=True, null=True)
 
     def __str__(self):
         if self.clients_company_name:

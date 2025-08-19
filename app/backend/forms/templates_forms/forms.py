@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from ...models import User, Product, Client
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
 class RegisterForm(UserCreationForm):
@@ -85,6 +87,17 @@ class ProductForm(forms.ModelForm):
         return net_price
 
 class ClientForm(forms.ModelForm):
+    phone_number = PhoneNumberField(
+        widget=forms.TextInput(attrs={
+            'class': 'input input-bordered w-full',
+            'placeholder': 'Numer telefonu',
+            'type': 'tel'
+        }),
+        label="Numer telefonu",
+        region="PL",
+        required=False
+    )
+
     class Meta:
         model = Client
 
@@ -114,10 +127,6 @@ class ClientForm(forms.ModelForm):
                 'class': 'input input-bordered w-full',
                 'placeholder': 'Adres e-mail'
             }),
-            'phone_number': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
-                'placeholder': 'Numer telefonu'
-            }),
         }
         labels = {
             'clients_company_name': 'Nazwa firmy klienta',
@@ -128,3 +137,41 @@ class ClientForm(forms.ModelForm):
             'email': 'E-mail',
             'phone_number': 'Numer telefonu',
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        self._validate_name_or_company(cleaned_data)
+        self._validate_number_and_email(cleaned_data)
+
+
+
+        return cleaned_data
+
+    @staticmethod
+    def _validate_name_or_company(cleaned_data):
+        company_name = cleaned_data.get('clients_company_name')
+        name = cleaned_data.get('name')
+        surname = cleaned_data.get('surname')
+
+        if not company_name and not (name and surname):
+            raise forms.ValidationError(
+                "Podaj nazwę firmy lub imię i nazwisko klienta"
+            )
+
+    def _validate_number_and_email(self, cleaned_data):
+        email = cleaned_data.get('email')
+        phone_number = cleaned_data.get('phone_number')
+        print(phone_number)
+        if not email and not phone_number:
+            raise forms.ValidationError(
+                "Podaj email albo nr. telefonu"
+            )
+        self._validate_number(phone_number)
+
+
+    @staticmethod
+    def _validate_number(number):
+        if len(number) != 12:
+            raise forms.ValidationError(
+                "Podaj numer o długości 9 cyfr"
+            )

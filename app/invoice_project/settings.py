@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "tailwind",
     "theme",
     "crispy_forms",
-    "crispy_tailwind"
+    "crispy_tailwind",
+    "phonenumber_field"
 ]
 
 INTERNAL_IPS=[
