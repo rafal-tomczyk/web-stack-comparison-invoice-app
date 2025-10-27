@@ -1,0 +1,136 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %}Dodaj Fakturę{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">Faktury</h2>
+  <a href="{% url 'tmp_invoices' %}" class="btn btn-error btn-md shadow-md">
+    Wróć do listy faktur
+  </a>
+</div>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- Główne pola faktury -->
+    <div class="grid gap-4 mb-4">
+      <h3 class="text-2xl font-bold mb-2">Dane faktury</h3>
+
+      <div class="form-control">
+        {{ form.number.label_tag }}
+        {{ form.number }}
+        {{ form.number.errors }}
+      </div>
+
+      <div class="form-control">
+        {{ form.client.label_tag }}
+        {{ form.client }}
+        {{ form.client.errors }}
+      </div>
+
+      <div class="form-control">
+        {{ form.issue_date.label_tag }}
+        {{ form.issue_date }}
+        {{ form.issue_date.errors }}
+      </div>
+
+      <div class="form-control">
+        {{ form.due_date.label_tag }}
+        {{ form.due_date }}
+        {{ form.due_date.errors }}
+      </div>
+
+      <div class="form-control">
+        {{ form.payment_method.label_tag }}
+        {{ form.payment_method }}
+        {{ form.payment_method.errors }}
+      </div>
+    </div>
+
+    <!-- Pola pozycji faktury -->
+    <div>
+      <h3 class="text-2xl font-bold mb-4">Pozycje faktury</h3>
+      <table class="table table-zebra w-full">
+        <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Ilość</th>
+          <th>Cena Netto</th>
+          <th>Stawka VAT</th>
+          <th>Usuń</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for form in item_formset.forms %}
+        <tr>
+          <td>
+            {{ form.product.errors }}
+            {{ form.product }}
+          </td>
+          <td>
+            {{ form.quantity.errors }}
+            {{ form.quantity }}
+          </td>
+          <td>
+            {{ form.net_price.errors }}
+            {{ form.net_price }}
+          </td>
+          <td>
+            {{ form.tax_rate.errors }}
+            {{ form.tax_rate }}
+          </td>
+          <td>
+            {{ form.DELETE }}
+            Usuń
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Wygenerowanie ukrytych formularzy managementowych -->
+      {{ item_formset.management_form }}
+    </div>
+
+    <!-- Przycisk 'Dodaj nową pozycję' -->
+    <div class="mt-4">
+      <button type="button" id="add-item-btn" class="btn btn-secondary btn-md shadow-md">
+        Dodaj pozycję
+      </button>
+    </div>
+
+    <!-- Przycisk 'Zapisz fakturę' -->
+    <div class="mt-6">
+      <button type="submit" class="btn btn-primary btn-md shadow-md">
+        Zapisz fakturę
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+    // Skrypt do dynamicznego dodawania wierszy do tabeli
+    document.getElementById('add-item-btn').addEventListener('click', function() {
+        // Pobranie liczby formularzy i szablonu kolejnego elementu
+        const totalForms = document.querySelector('input[name="invoiceitem_set-TOTAL_FORMS"]');
+        const tbody = document.querySelector('table tbody');
+        const newRow = tbody.children[0].cloneNode(true);  // Klonowanie istniejącego wiersza
+
+        // Aktualizacja indeksów w atrybutach nowych elementów
+        Array.from(newRow.querySelectorAll('input, select')).forEach((input) => {
+            const name = input.getAttribute('name');
+            if (name) {
+                input.setAttribute('name', name.replace(/-\d+-/, `-${totalForms.value}-`));
+                input.id = input.getAttribute('id').replace(/-\d+-/, `-${totalForms.value}-`);
+                input.value = "";  // Wyczyść wartość pola
+            }
+        });
+
+        // Dodaj nowy wiersz i zwiększ licznik formularzy
+        tbody.appendChild(newRow);
+        totalForms.value = parseInt(totalForms.value) + 1;
+    });
+</script>
+{% endblock %}

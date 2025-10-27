@@ -5,7 +5,7 @@
     "fields": {
       "company": 1,
       "client": 1,
-      "number": "1/2025",
+      "number": "1/01/2025",
       "issue_date": "2025-01-10",
       "due_date": "2025-01-24",
       "payment_method": "cash",
@@ -22,7 +22,7 @@
     "fields": {
       "company": 1,
       "client": 19,
-      "number": "2/2025",
+      "number": "1/02/2025",
       "issue_date": "2025-02-15",
       "due_date": "2025-03-01",
       "payment_method": "transfer",
@@ -39,7 +39,7 @@
     "fields": {
       "company": 1,
       "client": 3,
-      "number": "3/2025",
+      "number": "1/03/2025",
       "issue_date": "2025-03-05",
       "due_date": "2025-03-19",
       "payment_method": "card",
@@ -56,7 +56,7 @@
     "fields": {
       "company": 1,
       "client": 7,
-      "number": "4/2025",
+      "number": "1/04/2025",
       "issue_date": "2025-04-12",
       "due_date": "2025-04-26",
       "payment_method": "cash",
@@ -73,7 +73,7 @@
     "fields": {
       "company": 1,
       "client": 8,
-      "number": "5/2025",
+      "number": "1/05/2025",
       "issue_date": "2025-05-08",
       "due_date": "2025-05-22",
       "payment_method": "transfer",
@@ -90,7 +90,7 @@
     "fields": {
       "company": 1,
       "client": 17,
-      "number": "6/2025",
+      "number": "1/06/2025",
       "issue_date": "2025-06-15",
       "due_date": "2025-06-29",
       "payment_method": "cash",
@@ -107,7 +107,7 @@
     "fields": {
       "company": 1,
       "client": 15,
-      "number": "7/2025",
+      "number": "1/07/2025",
       "issue_date": "2025-07-02",
       "due_date": "2025-07-16",
       "payment_method": "card",
@@ -124,7 +124,7 @@
     "fields": {
       "company": 1,
       "client": 11,
-      "number": "8/2025",
+      "number": "1/08/2025",
       "issue_date": "2025-08-10",
       "due_date": "2025-08-24",
       "payment_method": "transfer",
@@ -141,9 +141,9 @@
     "fields": {
       "company": 1,
       "client": 13,
-      "number": "9/2025",
-      "issue_date": "2025-09-14",
-      "due_date": "2025-09-28",
+      "number": "2/08/2025",
+      "issue_date": "2025-08-14",
+      "due_date": "2025-08-28",
       "payment_method": "cash",
       "paid": false,
       "note": "",
@@ -158,15 +158,355 @@
     "fields": {
       "company": 1,
       "client": 1,
-      "number": "10/2025",
-      "issue_date": "2025-10-05",
-      "due_date": "2025-10-19",
+      "number": "3/08/2025",
+      "issue_date": "2025-08-25",
+      "due_date": "2025-09-08",
       "payment_method": "card",
       "paid": true,
       "note": "",
       "total_net": "360.00",
       "total_tax": "43.20",
       "total_gross": "403.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 11,
+    "fields": {
+      "company": 1,
+      "client": 3,
+      "number": "1/09/2025",
+      "issue_date": "2025-09-02",
+      "due_date": "2025-09-16",
+      "payment_method": "cash",
+      "paid": true,
+      "note": "Opłacono terminowo",
+      "total_net": "200.00",
+      "total_tax": "24.00",
+      "total_gross": "224.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 12,
+    "fields": {
+      "company": 1,
+      "client": 7,
+      "number": "2/09/2025",
+      "issue_date": "2025-09-03",
+      "due_date": "2025-09-17",
+      "payment_method": "transfer",
+      "paid": false,
+      "note": "",
+      "total_net": "320.00",
+      "total_tax": "38.40",
+      "total_gross": "358.40"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 13,
+    "fields": {
+      "company": 1,
+      "client": 11,
+      "number": "3/09/2025",
+      "issue_date": "2025-09-05",
+      "due_date": "2025-09-19",
+      "payment_method": "card",
+      "paid": true,
+      "note": "Stały klient",
+      "total_net": "260.00",
+      "total_tax": "31.20",
+      "total_gross": "291.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 14,
+    "fields": {
+      "company": 1,
+      "client": 1,
+      "number": "4/09/2025",
+      "issue_date": "2025-09-07",
+      "due_date": "2025-09-21",
+      "payment_method": "cash",
+      "paid": false,
+      "note": "Czeka na płatność",
+      "total_net": "420.00",
+      "total_tax": "50.40",
+      "total_gross": "470.40"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 15,
+    "fields": {
+      "company": 1,
+      "client": 15,
+      "number": "5/09/2025",
+      "issue_date": "2025-09-10",
+      "due_date": "2025-09-24",
+      "payment_method": "transfer",
+      "paid": true,
+      "note": "",
+      "total_net": "350.00",
+      "total_tax": "42.00",
+      "total_gross": "392.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 16,
+    "fields": {
+      "company": 1,
+      "client": 17,
+      "number": "6/09/2025",
+      "issue_date": "2025-09-12",
+      "due_date": "2025-09-26",
+      "payment_method": "card",
+      "paid": false,
+      "note": "",
+      "total_net": "275.00",
+      "total_tax": "33.00",
+      "total_gross": "308.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 17,
+    "fields": {
+      "company": 1,
+      "client": 8,
+      "number": "7/09/2025",
+      "issue_date": "2025-09-14",
+      "due_date": "2025-09-28",
+      "payment_method": "cash",
+      "paid": true,
+      "note": "Szybka płatność",
+      "total_net": "500.00",
+      "total_tax": "60.00",
+      "total_gross": "560.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 18,
+    "fields": {
+      "company": 1,
+      "client": 19,
+      "number": "8/09/2025",
+      "issue_date": "2025-09-16",
+      "due_date": "2025-09-30",
+      "payment_method": "transfer",
+      "paid": false,
+      "note": "",
+      "total_net": "390.00",
+      "total_tax": "46.80",
+      "total_gross": "436.80"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 19,
+    "fields": {
+      "company": 1,
+      "client": 3,
+      "number": "9/09/2025",
+      "issue_date": "2025-09-18",
+      "due_date": "2025-10-02",
+      "payment_method": "card",
+      "paid": true,
+      "note": "",
+      "total_net": "310.00",
+      "total_tax": "37.20",
+      "total_gross": "347.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 20,
+    "fields": {
+      "company": 1,
+      "client": 11,
+      "number": "10/09/2025",
+      "issue_date": "2025-09-20",
+      "due_date": "2025-10-04",
+      "payment_method": "cash",
+      "paid": false,
+      "note": "Czeka na płatność",
+      "total_net": "275.00",
+      "total_tax": "33.00",
+      "total_gross": "308.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 21,
+    "fields": {
+      "company": 1,
+      "client": 1,
+      "number": "1/10/2025",
+      "issue_date": "2025-10-01",
+      "due_date": "2025-10-15",
+      "payment_method": "transfer",
+      "paid": true,
+      "note": "Opłacono przed terminem",
+      "total_net": "320.00",
+      "total_tax": "38.40",
+      "total_gross": "358.40"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 22,
+    "fields": {
+      "company": 1,
+      "client": 7,
+      "number": "2/10/2025",
+      "issue_date": "2025-10-03",
+      "due_date": "2025-10-17",
+      "payment_method": "cash",
+      "paid": false,
+      "note": "",
+      "total_net": "210.00",
+      "total_tax": "25.20",
+      "total_gross": "235.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 23,
+    "fields": {
+      "company": 1,
+      "client": 15,
+      "number": "3/10/2025",
+      "issue_date": "2025-10-05",
+      "due_date": "2025-10-19",
+      "payment_method": "card",
+      "paid": true,
+      "note": "",
+      "total_net": "350.00",
+      "total_tax": "42.00",
+      "total_gross": "392.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 24,
+    "fields": {
+      "company": 1,
+      "client": 17,
+      "number": "4/10/2025",
+      "issue_date": "2025-10-07",
+      "due_date": "2025-10-21",
+      "payment_method": "transfer",
+      "paid": false,
+      "note": "Czeka na płatność",
+      "total_net": "260.00",
+      "total_tax": "31.20",
+      "total_gross": "291.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 25,
+    "fields": {
+      "company": 1,
+      "client": 8,
+      "number": "5/10/2025",
+      "issue_date": "2025-10-09",
+      "due_date": "2025-10-23",
+      "payment_method": "cash",
+      "paid": true,
+      "note": "",
+      "total_net": "400.00",
+      "total_tax": "48.00",
+      "total_gross": "448.00"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 26,
+    "fields": {
+      "company": 1,
+      "client": 3,
+      "number": "6/10/2025",
+      "issue_date": "2025-10-11",
+      "due_date": "2025-10-25",
+      "payment_method": "card",
+      "paid": false,
+      "note": "",
+      "total_net": "280.00",
+      "total_tax": "33.60",
+      "total_gross": "313.60"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 27,
+    "fields": {
+      "company": 1,
+      "client": 11,
+      "number": "7/10/2025",
+      "issue_date": "2025-10-13",
+      "due_date": "2025-10-27",
+      "payment_method": "transfer",
+      "paid": true,
+      "note": "",
+      "total_net": "330.00",
+      "total_tax": "39.60",
+      "total_gross": "369.60"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 28,
+    "fields": {
+      "company": 1,
+      "client": 1,
+      "number": "8/10/2025",
+      "issue_date": "2025-10-15",
+      "due_date": "2025-10-29",
+      "payment_method": "cash",
+      "paid": true,
+      "note": "Szybka płatność",
+      "total_net": "310.00",
+      "total_tax": "37.20",
+      "total_gross": "347.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 29,
+    "fields": {
+      "company": 1,
+      "client": 15,
+      "number": "9/10/2025",
+      "issue_date": "2025-10-17",
+      "due_date": "2025-10-31",
+      "payment_method": "card",
+      "paid": false,
+      "note": "",
+      "total_net": "360.00",
+      "total_tax": "43.20",
+      "total_gross": "403.20"
+    }
+  },
+  {
+    "model": "backend.invoice",
+    "pk": 30,
+    "fields": {
+      "company": 1,
+      "client": 8,
+      "number": "10/10/2025",
+      "issue_date": "2025-10-19",
+      "due_date": "2025-11-02",
+      "payment_method": "transfer",
+      "paid": true,
+      "note": "Opłacono terminowo",
+      "total_net": "290.00",
+      "total_tax": "34.80",
+      "total_gross": "324.80"
     }
   }
 ]

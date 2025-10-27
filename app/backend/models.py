@@ -1,8 +1,10 @@
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
 import uuid
 
+from django.db.models import Max
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -104,9 +106,9 @@ class Product(models.Model):
 
 class Invoice(models.Model):
     PAYMENT_METHODS =[
-        ('cash', 'Cash'),
-        ('transfer', 'Transfer'),
-        ('card', 'Card'),
+        ('cash', 'Gotówka'),
+        ('transfer', 'Przelew Bankowy'),
+        ('card', 'Karta Płatnicza'),
     ]
 
     company = models.ForeignKey(
@@ -151,6 +153,32 @@ class Invoice(models.Model):
         self.total_tax = sum(item.tax_amount for item in items)
         self.total_gross = sum(item.gross_total for item in items)
         self.save(update_fields=['total_net', 'total_tax', 'total_gross'])
+
+    def generate_invoice_number(self):
+        """Generates the invoice number in the format: number/month/year."""
+        today = date.today()
+        current_month = today.month
+        current_year = today.year
+
+        last_invoice = Invoice.objects.filter(
+            company=self.company_id,
+            issue_date__month=current_month,
+            issue_date__year=current_year
+        ).aggregate(Max('number'))
+
+        last_number = 0
+        if last_invoice['number__max']:
+            last_number = int(last_invoice['number__max'].split('/')[0])
+
+        new_number = last_number + 1
+
+        return f"{new_number}/{current_month:02d}/{current_year}"
+
+    def save(self, *args, **kwargs):
+        """Generate an automatic invoice number if number is not set."""
+        if not self.number:
+            self.number = self.generate_invoice_number()
+        super().save(*args, **kwargs)
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(

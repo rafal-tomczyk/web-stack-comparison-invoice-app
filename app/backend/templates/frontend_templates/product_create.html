@@ -51,7 +51,11 @@
     <!-- Przycisk 'Dodaj produkt' -->
     <div class="mt-6">
       <button type="submit" class="btn btn-primary btn-md shadow-md">
-        Dodaj produkt
+        {% if view.object.pk %}
+          Zapisz zmiany
+        {% else %}
+          Dodaj produkt
+        {% endif %}
       </button>
     </div>
   </form>

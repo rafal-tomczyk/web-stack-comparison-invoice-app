@@ -1,9 +1,11 @@
 import json
+import logging
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F
+from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from django.urls import reverse
@@ -12,10 +14,12 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView, \
 from rest_framework.reverse import reverse_lazy
 
 from ..forms.templates_forms.forms import RegisterForm, LoginForm, ProductForm, \
-    ClientForm
+    ClientForm, InvoiceForm
 from django.db.models.functions import Round, TruncMonth
 
-from ..models import Client, Company, User, Invoice, Product
+from ..models import Client, Company, User, Invoice, Product, InvoiceItem
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -170,19 +174,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('tmp_clients')
 
     def form_valid(self, form):
-        active_company_id = self.request.session.get('active_company_id')
-        if not active_company_id:
-            form.add_error(None, "Nie wybrano aktywnej firmy.")
-            return self.form_invalid(form)
-
-        try:
-            company = Company.objects.get(id=active_company_id)
-        except Company.DoesNotExist:
-            form.add_error(None, "Aktywna firma nie istnieje.")
-            return self.form_invalid(form)
-
-        form.instance.company = company
-        return super().form_valid(form)
+        return handle_form_valid(self, form)
 
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
@@ -192,18 +184,100 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return Client.objects.filter(company__user=self.request.user)
 
-
 class InvoicesListView(LoginRequiredMixin, ListView):
     model = Invoice
-    template_name = "frontend_templates/invoices.html"
-    context_object_name = "invoices"
+    template_name = 'frontend_templates/invoices.html'
+    context_object_name = 'invoices'
     paginate_by = 10
 
     def get_queryset(self):
-        company_id: int = self.request.session.get('active_company_id')
-        if company_id:
-            return Invoice.objects.filter(company__user=self.request.user, company_id=company_id)
-        return Invoice.objects.none()
+        invoices = list(Invoice.objects.filter(company__user=self.request.user))
+        invoices.sort(key=lambda inv: (
+            int(inv.number.split('/')[2]),
+            int(inv.number.split('/')[1]),
+            int(inv.number.split('/')[0])
+        ), reverse=True)
+
+        return invoices
+
+
+class InvoiceDetailView(LoginRequiredMixin, DetailView):
+    model = Invoice
+    template_name = 'frontend_templates/invoice_detail.html'
+    context_object_name = 'invoice'
+
+InvoiceItemFormSet = inlineformset_factory(
+    Invoice, InvoiceItem,
+    fields=['product', 'quantity', 'net_price', 'tax_rate'],
+    extra=1, can_delete=True
+)
+
+class InvoiceCreateView(CreateView):
+    model = Invoice
+    form_class = InvoiceForm
+    template_name = 'frontend_templates/invoice_create.html'
+    success_url = reverse_lazy('tmp_invoices')
+
+    def get_active_company_id(self):
+        """Helper method to extract active company ID from session."""
+        logging.log(level=1, msg="Getting active company ID")
+        return self.request.session.get('active_company_id')
+
+    def check_active_company(self, form):
+        """Validates active company and adds errors if necessary."""
+        active_company_id = self.get_active_company_id()
+        if not active_company_id:
+            form.add_error(None, "Nie wybrano aktywnej firmy.")
+            return None
+        try:
+            return Company.objects.get(id=active_company_id)
+        except Company.DoesNotExist:
+            form.add_error(None, "Aktywna firma nie istnieje.")
+            return None
+
+    def get_form_kwargs(self):
+        """Adds the company to the form kwargs."""
+        kwargs = super().get_form_kwargs()
+        kwargs['company'] = self.get_active_company_id()
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """Extends context to add formset for InvoiceItem."""
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['item_formset'] = InvoiceItemFormSet(self.request.POST,
+                                                        instance=self.object)
+        else:
+            context['item_formset'] = InvoiceItemFormSet(instance=self.object)
+        return context
+
+
+    def form_valid(self, form):
+        """Validates the form and ensures active company existence."""
+        company = self.check_active_company(form)
+        if not company:
+            logger.warning("Trying to save without active company.")
+            form.add_error(None, 'Nie wybrano aktywnej firmy')
+            return self.form_invalid(form)
+
+        self.object = form.save(commit=False)
+        self.object.company = company
+        self.object.save()
+
+        logger.info("Invoice saved with number: %s", self.object.number)
+
+        item_formset = InvoiceItemFormSet(self.request.POST,
+                                          instance=self.object)
+        if item_formset.is_valid():
+            item_formset.save()
+            self.object.update_totals()
+
+        else:
+            return self.form_invalid(form)
+
+        logger.info("Invoice saved successfully with number: %s",
+                    self.object.number)
+        return super().form_valid(form)
 
 
 class ProductsListView(LoginRequiredMixin, ListView):
@@ -234,25 +308,12 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('tmp_products')
 
     def form_valid(self, form):
-        active_company_id = self.request.session.get('active_company_id')
-        if not active_company_id:
-            form.add_error(None, "Nie wybrano aktywnej firmy.")
-            return self.form_invalid(form)
-
-        try:
-            company = Company.objects.get(id=active_company_id)
-        except Company.DoesNotExist:
-            form.add_error(None, "Aktywna firma nie istnieje.")
-            return self.form_invalid(form)
-
-        form.instance.company = company
-        return super().form_valid(form)
-
+        return handle_form_valid(self, form)
 
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = ['name', 'description', 'unit_type', 'net_price', 'tax_rate']
-    template_name = "frontend_templates/product_form.html"
+    form_class = ProductForm
+    template_name = "frontend_templates/product_create.html"
 
     def get_success_url(self):
         return reverse("tmp_product_detail", kwargs={"pk": self.object.pk})
@@ -261,3 +322,16 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name = "frontend_templates/product_confirm_delete.html"
     success_url = reverse_lazy("tmp_products")
+
+def handle_form_valid(view, form):
+    active_company_id = view.request.session.get('active_company_id')
+    if not active_company_id:
+        form.add_error(None, "Nie wybrano aktywnej firmy.")
+        return view.form_invalid(form)
+    try:
+        company = Company.objects.get(id=active_company_id)
+    except Company.DoesNotExist:
+        form.add_error(None, "Aktywna firma nie istnieje.")
+        return view.form_invalid(form)
+    form.instance.company = company
+    return super(view.__class__, view).form_valid(form)

@@ -1,11 +1,12 @@
 {% extends "frontend_templates/base.html" %}
 {% block title %}Fakturowanie Pro{% endblock %}
 {% block content %}
-<div class="relative bg-cover shadow-xl border border-gray-300 w-full h-[24rem] rounded-l-lg"
+<!-- Top card -->
+<div class="relative bg-cover shadow-xl border border-gray-300 w-full h-[24rem] rounded-lg"
      style="background-image: url('https://images.unsplash.com/photo-1556155092-490a1ba16284?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=1440&amp;q=80'); background-position: 20% 95%">
 
-  <!-- Element glass po prawej stronie -->
-  <div class="absolute inset-y-0 right-0 w-1/2 bg-white/70 backdrop-blur-lg shadow-lg p-12  flex flex-col">
+  <!-- Glass element -->
+  <div class="absolute inset-y-0 right-0 w-1/2 bg-white/70 backdrop-blur-lg shadow-lg p-12  flex flex-col rounded-r-md">
     <h2 class="text-2xl font-bold mb-4 text-info">Wystawiaj faktury po swojemu!</h2>
     <p class="mb-6">Dobra księgowość to ta, którą się nie martwisz.</p>
     <h3 class="font-semibold mb-2">Działaj szybciej:</h3>
@@ -50,6 +51,7 @@
   </div>
 </div>
 
+<!-- Bottom cards -->
 <div class="flex gap-6 mt-8">
   <div class="card bg-gray-50 shadow-lg border border-gray-300 rounded-lg p-6 w-1/2">
     <hgroup class="card-header text-center mb-4">
@@ -89,42 +91,44 @@
     </form>
   </div>
 
-  <div class="card bg-gray-50 shadow-lg border rounded-lg p-6 w-1/2">
+  <div class="card bg-gray-50 shadow-lg border border-gray-300 rounded-lg p-6 w-1/2">
     <hgroup class="card-header text-center mb-4">
       <h2 class="text-xl font-bold text-gray-800 mb-2">
-        Dołącz do newslettera
+         Co mówią nasi klienci
       </h2>
       <h3 class="text-sm text-gray-600">
-        Zostań na bieżąco z promocjami
+        Zaufaj profesjonalistom
       </h3>
     </hgroup>
-    <form class="space-y-4">
-      <input
-        type="text"
-        id="firstname"
-        name="firstname"
-        placeholder="Imię"
-        aria-label="Imię"
-        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
-        required=""
-      />
-      <input
-        type="email"
-        id="email"
-        name="email"
-        placeholder="Twój e-mail"
-        aria-label="Twój e-mail"
-        class="input input-bordered w-full focus:ring-2 focus:ring-blue-500"
-        required=""
-      />
-      <button
-        type="submit"
-        onclick="event.preventDefault()"
-        class="btn btn-primary w-full"
-      >
-        Zapisz się
-      </button>
-    </form>
+    <ul class="space-y-4">
+      <li class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <img src="https://www.gravatar.com/avatar/?d=mp" alt="Avatar" class="w-12 h-12 rounded-full">
+        </div>
+        <div>
+          <h4 class="font-medium">Jan Kowalski</h4>
+          <p class="text-xs text-gray-600">
+            Dzięki tej aplikacji znacząco uprościłem cały proces fakturowania. Wszystko w jednym miejscu!
+          </p>
+        </div>
+      </li>
+      <li class="flex items-start gap-4">
+        <div class="flex-shrink-0">
+          <img src="https://www.gravatar.com/avatar/?d=mp" alt="Avatar" class="w-12 h-12 rounded-full">
+        </div>
+        <div>
+          <h4 class="font-medium">Anna Nowak</h4>
+          <p class="text-xs text-gray-600">
+            To jest dokładnie to, czego potrzebowałam! Intuicyjna obsługa i świetne narzędzia.
+          </p>
+        </div>
+      </li>
+    </ul>
+    <div class="text-center mt-6">
+      <a href="#" class="btn btn-secondary btn-sm shadow-md">
+        Zobacz więcej opinii
+      </a>
+    </div>
   </div>
 </div>
 

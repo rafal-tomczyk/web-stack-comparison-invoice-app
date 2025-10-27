@@ -1,11 +1,10 @@
 from django.urls import path, reverse_lazy
 from ..views import templates_views
 from django.contrib.auth.views import LogoutView
-from uuid import UUID
 
-from ..views.templates_views import ClientsListView, InvoicesListView, \
+from ..views.templates_views import ClientsListView, InvoicesListView, InvoiceDetailView, \
     ProductsListView, ProductsDetailView, ProductUpdateView, ProductDeleteView, \
-    choose_company, ProductCreateView, ClientCreateView, ClientDetailView
+    ProductCreateView, ClientCreateView, ClientDetailView, InvoiceCreateView
 
 urlpatterns = [
     #auth
@@ -19,7 +18,6 @@ urlpatterns = [
     path("home/", templates_views.home, name="tmp_home"),
 
     #dashboard
-    path("invoices/", InvoicesListView.as_view(), name="tmp_invoices"),
     path("choose-company/", templates_views.choose_company, name="tmp_choose_company"),
 
     #clients
@@ -35,5 +33,10 @@ urlpatterns = [
          name="tmp_product_edit"),
     path("products/<uuid:pk>/delete/", ProductDeleteView.as_view(),
          name="tmp_product_delete"),
+
+    #invoices
+    path("invoices/", InvoicesListView.as_view(), name="tmp_invoices"),
+    path("invoices/add/", InvoiceCreateView.as_view(), name="tmp_invoice_add"),
+    path("invoices/<uuid:pk>/", InvoiceDetailView.as_view(), name="tmp_invoice_detail")
 
 ]

@@ -1,74 +1,95 @@
 {% extends "frontend_templates/base.html" %}
-
+{% load custom_tags %}
 {% block title %} Faktury {% endblock %}
 
 {% block content %}
-<h2 class="text-3xl font-bold mb-4">Faktury</h2>
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold mb-4">Faktury</h2>
+  <a href="{% url 'tmp_invoice_add' %}" class="btn btn-primary btn-md shadow-md">
+    Dodaj fakturę
+  </a>
+</div>
 
 <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
   <div class="card-title text-center w-full pt-4 pl-6 pb-4 font-semibold text-lg">Lista faktur</div>
 
-  <!-- Nagłówki kolumn -->
-  <div class="grid grid-cols-8 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300 ">
-    <p class="text-left">Numer</p>
-    <p class="text-left">Klient</p>
-    <p class="text-left">Data wystawienia</p>
-    <p class="text-left">Termin płatności</p>
-    <p class="text-left">Metoda płatności</p>
-    <p class="text-center">Status</p>
-    <p class="text-right">Kwota netto</p>
-    <p class="text-right">Kwota brutto</p>
-  </div>
+  <div class="overflow-x-auto">
+    <table class="table-auto w-full text-left border-collapse border border-gray-300">
+      <!-- Nagłówki tabeli -->
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 font-bold">
+            <a href="?sort=number&order={% toggle_sort sort order 'number' %}">
+              Numer {% sort_arrow sort order 'number' %}
+            </a>
+          </th>
+          <th class="px-4 py-2 font-bold">Klient</th>
+          <th class="px-4 py-2 font-bold">
+            <a href="?sort=issue_date&order={% toggle_sort sort order 'issue_date' %}">
+              Data wystawienia {% sort_arrow sort order 'issue_date' %}
+            </a>
+          </th>
+          <th class="px-4 py-2 font-bold text-center">Status</th>
+          <th class="px-4 py-2 font-bold text-right">
+            <a href="?sort=total_net&order={% toggle_sort sort order 'total_net' %}">
+              Kwota netto {% sort_arrow sort order 'total_net' %}
+            </a>
+          </th>
+          <th class="px-4 py-2 font-bold text-right">Kwota brutto</th>
+        </tr>
+      </thead>
 
-  <!-- Lista faktur -->
-  <div class="card-body p-6">
-    {% for invoice in invoices %}
-    <div class="grid grid-cols-8 items-center py-2 border-b border-gray-200 last:border-b-0">
-      <!-- Numer -->
-      <div class="text-left text-sm font-semibold">
-        {{ invoice.number }}
-      </div>
-      <!-- Klient -->
-      <div class="text-left text-sm text-gray-700">
-        {{ invoice.client }}
-      </div>
-      <!-- Data wystawienia -->
-      <div class="text-left text-sm text-gray-700">
-        {{ invoice.issue_date }}
-      </div>
-      <!-- Termin płatności -->
-      <div class="text-left text-sm text-gray-700">
-        {{ invoice.due_date }}
-      </div>
-      <!-- Metoda płatności -->
-      <div class="text-left text-sm text-gray-700">
-        {{ invoice.get_payment_method_display }}
-      </div>
-      <!-- Status -->
-      <div class="text-center text-sm">
-        {% if invoice.paid %}
-        <span class="text-green-600 font-semibold">Opłacona</span>
-        {% else %}
-        <span class="text-red-600 font-semibold">Nieopłacona</span>
-        {% endif %}
-      </div>
-      <!-- Kwota netto -->
-      <div class="text-right text-sm text-gray-900 font-bold">
-        {{ invoice.total_net }} zł
-      </div>
-      <!-- Kwota brutto -->
-      <div class="text-right text-sm text-gray-900 font-bold">
-        {{ invoice.total_gross }} zł
-      </div>
-    </div>
-    {% empty %}
-    <!-- Gdy brak faktur -->
-    <div class="text-gray-500 text-center py-6">
-      Brak faktur do wyświetlenia
-    </div>
-    {% endfor %}
+      <!-- Wiersze tabeli -->
+      <tbody>
+        {% for invoice in invoices %}
+        <tr class="border-t border-gray-300">
+          <!-- Numer -->
+          <td class="px-4 py-2 text-sm font-semibold">
+            {{ invoice.number }}
+          </td>
+
+          <!-- Klient -->
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ invoice.client }}
+          </td>
+
+          <!-- Data wystawienia -->
+          <td class="px-4 py-2 text-sm text-gray-700">
+            {{ invoice.issue_date|date:'d.m.Y' }}
+          </td>
+
+          <!-- Status -->
+          <td class="px-4 py-2 text-sm text-center">
+            {% if invoice.paid %}
+            <span class="text-green-600 font-semibold">Opłacona</span>
+            {% else %}
+            <span class="text-red-600 font-semibold">Nieopłacona</span>
+            {% endif %}
+          </td>
+
+          <!-- Kwota netto -->
+          <td class="px-4 py-2 text-sm text-right text-gray-900 font-bold">
+            {{ invoice.total_net }} zł
+          </td>
+
+          <!-- Kwota brutto -->
+          <td class="px-4 py-2 text-sm text-right text-gray-900 font-bold">
+            {{ invoice.total_gross }} zł
+          </td>
+        </tr>
+        {% empty %}
+        <!-- Gdy brak faktur -->
+        <tr>
+          <td colspan="6" class="px-4 py-6 text-gray-500 text-center">
+            Brak faktur do wyświetlenia
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
+
 
 <!-- Pagination -->
 {% if is_paginated %}

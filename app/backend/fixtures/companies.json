@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "user": 2,
-      "name": "test_paper_company",
+      "name": "Test paper company",
       "nip": "6631245241",
       "regon": "987654321",
       "email": "test_paper_company@test.com",
@@ -17,7 +17,7 @@
     "pk": 2,
     "fields": {
       "user": 2,
-      "name": "test_water_company",
+      "name": "Test water company",
       "nip": "8567346129",
       "regon": "123456785",
       "email": "test_water_company@test.com",

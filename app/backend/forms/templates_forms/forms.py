@@ -1,6 +1,9 @@
+import logging
+from datetime import date, timedelta
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from ...models import User, Product, Client
+from ...models import User, Product, Client, Invoice
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
@@ -138,20 +141,49 @@ class ClientForm(forms.ModelForm):
             'phone_number': 'Numer telefonu',
         }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        self._validate_name_or_company(cleaned_data)
-        self._validate_number_and_email(cleaned_data)
+    def clean_clients_company_name(self):
+        first_name: str = self.cleaned_data.get("name", "").capitalize()
+        surname: str = self.cleaned_data.get("surname", "").capitalize()
+        company_name: str = self.cleaned_data.get("clients_company_name", "")
+        
+
+    def clean_name(self):
+        first_name: str = self.cleaned_data.get("name", "").capitalize()
+        if not first_name.isalpha():
+            raise forms.ValidationError("Imię może zawierać tylko litery.")
+        return first_name
+
+    def clean_surname(self) -> str:
+        surname: str = self.cleaned_data.get("surname", "").capitalize()
+        if not surname.isalpha():
+            raise forms.ValidationError("Nazwisko może zawierać tylko litery.")
+        return surname
+
+    def clean_nip(self):
+        """NIP has additional criteria that should be added later."""
+        nip_str: str = self.cleaned_data.get("nip", "").strip()
+        if not nip_str.isdigit():
+            raise forms.ValidationError("NIP może zawierać tylko cyfry.")
+        if len(nip_str) != 10:
+            raise forms.ValidationError("NIP musi składać się z dokładnie 10 cyfr.")
+
+        return nip_str
+
+    def clean_regon(self):
+        regon: str = self.cleaned_data.get("regon", "").strip()
 
 
-
-        return cleaned_data
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     self._validate_name_or_company(cleaned_data)
+    #     self._validate_number_and_email(cleaned_data)
+    #     return cleaned_data
 
     @staticmethod
     def _validate_name_or_company(cleaned_data):
         company_name = cleaned_data.get('clients_company_name')
-        name = cleaned_data.get('name')
-        surname = cleaned_data.get('surname')
+        name: str = cleaned_data.get('name')
+        surname: str = cleaned_data.get('surname')
 
         if not company_name and not (name and surname):
             raise forms.ValidationError(
@@ -162,10 +194,12 @@ class ClientForm(forms.ModelForm):
         email = cleaned_data.get('email')
         phone_number = cleaned_data.get('phone_number')
         print(phone_number)
-        if not email and not phone_number:
-            raise forms.ValidationError(
-                "Podaj email albo nr. telefonu"
-            )
+        if not email:
+            if not phone_number:
+                raise forms.ValidationError(
+                    "Podaj email albo nr. telefonu"
+                )
+
         self._validate_number(phone_number)
 
 
@@ -175,3 +209,55 @@ class ClientForm(forms.ModelForm):
             raise forms.ValidationError(
                 "Podaj numer o długości 9 cyfr"
             )
+
+class InvoiceForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = [
+            'number',
+            'company',
+            'client',
+            'number',
+            'issue_date',
+            'due_date',
+            'payment_method',
+            'paid',
+            'note',
+        ]
+        labels = {
+            'number': 'Numer Faktury',
+            'company': 'Firma',
+            'client': 'Klient',
+            'issue_date': 'Data wystawienia',
+            'due_date': 'Data ostatecznego terminu zapłaty',
+            'payment_method': 'Metoda Płatności',
+            'paid': 'Opłacona',
+            'note': 'Notatka',
+        }
+        widgets = {
+            'issue_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}),
+            'due_date': forms.DateInput(
+                attrs={'type': 'date', 'class': 'form-control'}),
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        current_company = kwargs.pop('company', None)
+        logging.log(level=1, msg=f"Current company: {current_company}")
+        super().__init__(*args, **kwargs)
+
+        if not self.instance.pk and current_company:
+            self.initial['number'] = self.instance.generate_invoice_number()
+
+        if current_company:
+            self.fields['company'].initial = current_company
+            self.fields['company'].widget = forms.HiddenInput()
+
+            self.fields['client'].queryset = Client.objects.filter(company=current_company)
+
+        else:
+            self.fields['client'].queryset = Client.objects.none()
+
+        self.fields['issue_date'].initial = date.today()
+        self.fields['due_date'].initial = date.today() + timedelta(days=14)
