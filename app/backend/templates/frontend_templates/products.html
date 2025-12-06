@@ -9,43 +9,96 @@
 </div>
 
 <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
-  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">Lista produktów</div>
+  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">
+    Lista produktów
+    <a
+      href="?sort=-id"
+      class="btn btn-sm bg-red-500 text-white hover:bg-red-600 ml-4">
+      Resetuj filtry
+    </a>
+  </div>
 
   <!-- Nagłówki kolumn -->
   <div class="grid grid-cols-5 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
-    <p class="text-left pl-4">Nazwa</p>
+    <p class="text-left pl-4">
+      <a href="?sort={% if request.GET.sort == 'name' %}-name{% else %}name{% endif %}" class="hover:underline">
+        Nazwa
+        {% if request.GET.sort == 'name' %}
+          <span class="text-blue-600">&#8593;</span> <!-- Strzałka w górę -->
+        {% elif request.GET.sort == '-name' %}
+          <span class="text-blue-600">&#8595;</span> <!-- Strzałka w dół -->
+        {% else %}
+          <span class="text-gray-400">&#8597;</span> <!-- Neutralna strzałka (domyślne) -->
+        {% endif %}
+      </a>
+    </p>
     <p class="text-left">Opis</p>
-    <p class="text-center">Jednostka</p>
-    <p class="text-right">Cena netto</p>
-    <p class="text-right">Stawka VAT</p>
+    <p class="text-center">
+      <a href="?sort={% if request.GET.sort == 'unit_type' %}-unit_type{% else %}unit_type{% endif %}">
+        Jednostka
+        {% if request.GET.sort == 'unit_type' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-unit_type' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-right">
+      <a href="?sort={% if request.GET.sort == 'net_price' %}-net_price{% else %}net_price{% endif %}" class="hover:underline">
+        Cena netto
+        {% if request.GET.sort == 'net_price' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-net_price' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-right">
+      <a href="?sort={% if request.GET.sort == 'tax_rate' %}-tax_rate{% else %}tax_rate{% endif %}" class="hover:underline">
+        Stawka VAT
+        {% if request.GET.sort == 'tax_rate' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-tax_rate' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
   </div>
 
   <!-- Lista produktów -->
   <div class="card-body pl-6 pr-6 gap-0">
     {% for product in products %}
-    <div class="grid grid-cols-5 items-center border-b border-gray-200 hover:bg-base-300 last:border-b-0 py-4">
-      <!-- Nazwa produktu -->
-      <div class="text-left text-sm font-semibold pl-4">
-        <a href="{% url 'tmp_product_detail' product.pk %}" class="hover:text-accent hover:underline">
-          {{ product.name }}
-        </a>
-      </div>
-      <!-- Opis produktu -->
-      <div class="text-left text-sm text-gray-700 line-clamp-3">
-        {{ product.description }}
-      </div>
-      <!-- Jednostka miary -->
-      <div class="text-center text-sm text-gray-700">
-        {{ product.get_unit_type_display }}
-      </div>
-      <!-- Cena netto -->
-      <div class="text-right text-sm text-gray-900 font-bold">
-        {{ product.net_price }} zł
-      </div>
-      <!-- Stawka VAT -->
-      <div class="text-right text-sm text-gray-700 pr-4">
-        {{ product.tax_rate }}%
-      </div>
+    <div class="border-b border-gray-200 hover:bg-base-300 last:border-b-0">
+      <a href="{% url 'tmp_product_detail' product.pk %}"
+         class="hover:underline grid grid-cols-5 items-center py-4">
+
+        <!-- Nazwa produktu -->
+        <div class="text-left text-sm font-semibold pl-4">
+            {{ product.name }}
+        </div>
+        <!-- Opis produktu -->
+        <div class="text-left text-sm text-gray-700 line-clamp-3">
+          {{ product.description }}
+        </div>
+        <!-- Jednostka miary -->
+        <div class="text-center text-sm text-gray-700">
+          {{ product.get_unit_type_display }}
+        </div>
+        <!-- Cena netto -->
+        <div class="text-right text-sm text-gray-900 font-bold">
+          {{ product.net_price }} zł
+        </div>
+        <!-- Stawka VAT -->
+        <div class="text-right text-sm text-gray-700 pr-4">
+          {{ product.tax_rate }}%
+        </div>
+      </a>
     </div>
     {% empty %}
     <!-- Gdy brak produktów -->

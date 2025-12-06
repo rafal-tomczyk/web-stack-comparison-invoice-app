@@ -1,4 +1,6 @@
 from datetime import date
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
@@ -8,7 +10,6 @@ from django.db.models import Max
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-# Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -55,6 +56,30 @@ class Company(models.Model):
         return self.name
 
 
+def validate_nip(nip):
+    if len(nip) != 10 or not nip.isdigit():
+        raise ValidationError("NIP musi składać się z 10 cyfr.")
+    weights = [6, 5, 7, 2, 3, 4, 5, 6, 7]
+    control_sum = sum([int(nip[i]) * weights[i] for i in range(9)])
+    if control_sum % 11 != int(nip[9]):
+        raise ValidationError("NIP jest nieprawidłowy.")
+
+def validate_regon(regon):
+    if len(regon) not in (9, 14) or not regon.isdigit():
+        raise ValidationError("REGON musi zawierać 9 lub 14 cyfr.")
+    weights_9 = [8, 9, 2, 3, 4, 5, 6, 7]
+    weights_14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 0, 5, 9]
+
+    if len(regon) == 9:
+        control_sum = sum([int(regon[i]) * weights_9[i] for i in range(8)])
+        if control_sum % 11 != int(regon[8]):
+            raise ValidationError("REGON jest nieprawidłowy.")
+    elif len(regon) == 14:
+        control_sum = sum([int(regon[i]) * weights_14[i] for i in range(13)])
+        if control_sum % 11 != int(regon[13]):
+            raise ValidationError("REGON jest nieprawidłowy.")
+
+
 class Client(models.Model):
     company = models.ForeignKey(
         "Company",
@@ -63,12 +88,13 @@ class Client(models.Model):
     )
     clients_company_name = models.CharField(
         max_length=255,
+        null=True,
         blank=True,
     )
-    name = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100, blank=True)
-    nip = models.CharField(max_length=20, blank=True)
-    regon = models.CharField(max_length=20, blank=True)
+    name = models.CharField(max_length=100, blank=True, null=True)
+    surname = models.CharField(max_length=100, blank=True, null=True)
+    nip = models.CharField(max_length=20, blank=True, null=True, validators=[validate_nip])
+    regon = models.CharField(max_length=20, blank=True, null=True, validators=[validate_regon])
     email = models.EmailField(blank=True, null=True)
     phone_number = PhoneNumberField(region="PL", blank=True, null=True)
 
@@ -96,6 +122,7 @@ class Product(models.Model):
     unit_type = models.CharField(max_length=10, choices=UNIT_CHOICES)
     net_price = models.DecimalField(max_digits=10, decimal_places=2)
     tax_rate = models.DecimalField(max_digits=4, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -168,7 +195,7 @@ class Invoice(models.Model):
 
         last_number = 0
         if last_invoice['number__max']:
-            last_number = int(last_invoice['number__max'].split('/')[0])
+            last_number = int(last_invoice['number__max'].split('/')[0]) + 1
 
         new_number = last_number + 1
 

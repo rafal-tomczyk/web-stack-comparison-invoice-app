@@ -4,20 +4,26 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Max, Case, When, Value, CharField
+from django.db.models.functions import Concat
 from django.forms import inlineformset_factory
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
+from django.contrib import messages
+from django.template.loader import get_template
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, \
     CreateView
 from rest_framework.reverse import reverse_lazy
+from weasyprint import HTML
 
 from ..forms.templates_forms.forms import RegisterForm, LoginForm, ProductForm, \
-    ClientForm, InvoiceForm
+    ClientForm, InvoiceForm, InvoiceItemFormSet
 from django.db.models.functions import Round, TruncMonth
 
 from ..models import Client, Company, User, Invoice, Product, InvoiceItem
+from django.http import JsonResponse, HttpResponse
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +62,7 @@ def register(request):
         {"form": form}
     )
 
-
+@login_required
 def get_top_products(company, limit=5):
     return (
         Product.objects.filter(company=company)
@@ -154,19 +160,33 @@ def choose_company(request):
         {"companies": user_companies}
     )
 
-
+@login_required
 class ClientsListView(LoginRequiredMixin, ListView):
     model = Client
     template_name = "frontend_templates/clients.html"
     context_object_name = "clients"
     paginate_by = 10
 
+
     def get_queryset(self):
         company_id: int = self.request.session.get('active_company_id')
-        if company_id:
-            return Client.objects.filter(company__user=self.request.user, company_id=company_id)
-        return Client.objects.none()
+        if not company_id:
+            return Client.objects.none()
 
+        queryset = Client.objects.filter(company__user=self.request.user, company_id=company_id)
+        queryset = queryset.annotate(
+            full_name_or_company=Case(
+                When(clients_company_name__isnull=False,
+                     then='clients_company_name'),
+                default=Concat('name', Value(' '), 'surname',
+                               output_field=CharField()),
+                output_field=CharField(),
+            )
+        )
+        sort_param = self.request.GET.get('sort', '-id')
+        return queryset.order_by(sort_param)
+
+@login_required
 class ClientCreateView(LoginRequiredMixin, CreateView):
     model = Client
     template_name = "frontend_templates/client_create.html"
@@ -176,6 +196,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         return handle_form_valid(self, form)
 
+@login_required
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client
     template_name = "frontend_templates/client_detail.html"
@@ -184,6 +205,7 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return Client.objects.filter(company__user=self.request.user)
 
+@login_required
 class InvoicesListView(LoginRequiredMixin, ListView):
     model = Invoice
     template_name = 'frontend_templates/invoices.html'
@@ -191,95 +213,83 @@ class InvoicesListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        invoices = list(Invoice.objects.filter(company__user=self.request.user))
-        invoices.sort(key=lambda inv: (
-            int(inv.number.split('/')[2]),
-            int(inv.number.split('/')[1]),
-            int(inv.number.split('/')[0])
-        ), reverse=True)
+        company_id: int = self.request.session.get('active_company_id')
+        if not company_id:
+            return Client.objects.none()
 
-        return invoices
+        queryset = self.model.objects.filter(company__user=self.request.user, company_id=company_id)
+        sort_param = self.request.GET.get('sort', '-issue_date')
 
+        if sort_param.lstrip('-') == 'number':
+            reverse = sort_param.startswith('-')
+            queryset = sorted(
+                queryset,
+                key=lambda inv: (
+                    int(inv.number.split('/')[2]),
+                    int(inv.number.split('/')[1]),
+                    int(inv.number.split('/')[0])
+                ),
+                reverse=reverse
+            )
 
+        else:
+            queryset = queryset.order_by(sort_param)
+
+        return queryset
+
+@login_required
 class InvoiceDetailView(LoginRequiredMixin, DetailView):
     model = Invoice
     template_name = 'frontend_templates/invoice_detail.html'
     context_object_name = 'invoice'
 
-InvoiceItemFormSet = inlineformset_factory(
-    Invoice, InvoiceItem,
-    fields=['product', 'quantity', 'net_price', 'tax_rate'],
-    extra=1, can_delete=True
-)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['items'] = self.object.items.all()
+        return context
 
+@login_required
 class InvoiceCreateView(CreateView):
     model = Invoice
     form_class = InvoiceForm
     template_name = 'frontend_templates/invoice_create.html'
     success_url = reverse_lazy('tmp_invoices')
 
-    def get_active_company_id(self):
-        """Helper method to extract active company ID from session."""
-        logging.log(level=1, msg="Getting active company ID")
-        return self.request.session.get('active_company_id')
-
-    def check_active_company(self, form):
-        """Validates active company and adds errors if necessary."""
-        active_company_id = self.get_active_company_id()
-        if not active_company_id:
-            form.add_error(None, "Nie wybrano aktywnej firmy.")
-            return None
-        try:
-            return Company.objects.get(id=active_company_id)
-        except Company.DoesNotExist:
-            form.add_error(None, "Aktywna firma nie istnieje.")
-            return None
-
-    def get_form_kwargs(self):
-        """Adds the company to the form kwargs."""
-        kwargs = super().get_form_kwargs()
-        kwargs['company'] = self.get_active_company_id()
-        return kwargs
-
     def get_context_data(self, **kwargs):
-        """Extends context to add formset for InvoiceItem."""
         context = super().get_context_data(**kwargs)
+        company_id = self.request.session.get('active_company_id')
+
         if self.request.POST:
-            context['item_formset'] = InvoiceItemFormSet(self.request.POST,
-                                                        instance=self.object)
+            context['item_formset'] = InvoiceItemFormSet(self.request.POST)
         else:
-            context['item_formset'] = InvoiceItemFormSet(instance=self.object)
+            context['item_formset'] = InvoiceItemFormSet()
+
+        for form in context['item_formset'].forms:
+            form.fields['product'].queryset = Product.objects.filter(company_id=company_id)
+
         return context
 
-
     def form_valid(self, form):
-        """Validates the form and ensures active company existence."""
-        company = self.check_active_company(form)
-        if not company:
-            logger.warning("Trying to save without active company.")
-            form.add_error(None, 'Nie wybrano aktywnej firmy')
-            return self.form_invalid(form)
+        company_id = self.request.session.get('active_company_id')
+        form.instance.company = Company.objects.get(id=company_id)
 
-        self.object = form.save(commit=False)
-        self.object.company = company
-        self.object.save()
+        context = self.get_context_data()
+        item_formset = context['item_formset']
 
-        logger.info("Invoice saved with number: %s", self.object.number)
 
-        item_formset = InvoiceItemFormSet(self.request.POST,
-                                          instance=self.object)
         if item_formset.is_valid():
+            invoice = form.save()
+
+            item_formset.instance = invoice
             item_formset.save()
-            self.object.update_totals()
 
-        else:
-            return self.form_invalid(form)
+            invoice.update_totals()
 
-        logger.info("Invoice saved successfully with number: %s",
-                    self.object.number)
-        return super().form_valid(form)
+            return redirect(self.success_url)
+        return self.form_invalid(form)
 
 
+@login_required
 class ProductsListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = "frontend_templates/products.html"
@@ -288,11 +298,14 @@ class ProductsListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         company_id: int = self.request.session.get('active_company_id')
-        if company_id:
-            return Product.objects.filter(company_id=company_id, company__user=self.request.user)
-        return Product.objects.none()
+        if not company_id:
+            return Product.objects.none()
+        
+        queryset = Product.objects.filter(company_id=company_id, company__user=self.request.user)
+        sort_param = self.request.GET.get('sort', '-created_at')
+        return queryset.order_by(sort_param)
 
-
+@login_required
 class ProductsDetailView(DetailView):
     model = Product
     template_name = "frontend_templates/product_detail.html"
@@ -301,6 +314,7 @@ class ProductsDetailView(DetailView):
     def get_queryset(self):
         return Product.objects.filter(company__user=self.request.user)
 
+@login_required
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
@@ -310,6 +324,7 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         return handle_form_valid(self, form)
 
+@login_required
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
@@ -318,11 +333,13 @@ class ProductUpdateView(UpdateView):
     def get_success_url(self):
         return reverse("tmp_product_detail", kwargs={"pk": self.object.pk})
 
+@login_required
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = "frontend_templates/product_confirm_delete.html"
     success_url = reverse_lazy("tmp_products")
 
+@login_required
 def handle_form_valid(view, form):
     active_company_id = view.request.session.get('active_company_id')
     if not active_company_id:
@@ -335,3 +352,56 @@ def handle_form_valid(view, form):
         return view.form_invalid(form)
     form.instance.company = company
     return super(view.__class__, view).form_valid(form)
+
+
+@login_required
+def product_data(request, pk):
+    product = Product.objects.get(pk=pk)
+    return JsonResponse({
+        'net_price': str(product.net_price),
+        'tax_rate': str(product.tax_rate)
+    })
+
+
+@login_required
+def invoice_pdf(request, pk):
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    if invoice.company.user != request.user:
+        return HttpResponse('Brak uprawnień do tej faktury', status=403)
+
+    context = {
+        'invoice': invoice,
+    }
+
+    # Renderuj szablon HTML
+    template = get_template('frontend_templates/invoice_pdf.html')
+    html_string = template.render(context)
+
+    # Generuj PDF
+    pdf_file = HTML(string=html_string).write_pdf()
+
+    # Przygotuj odpowiedź HTTP
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment;filename="faktura_{invoice.number}.pdf"'
+
+    return response
+
+
+@login_required
+def toggle_invoice_paid(request, pk):
+    if request.method != "POST":
+        return redirect('tmp_invoice_detail', pk=pk)
+
+    invoice = get_object_or_404(Invoice, pk=pk)
+
+    if invoice.company.user != request.user:
+        messages.error(request, 'Nie masz uprawnień do zmiany statusu tej faktury.')
+
+    invoice.paid = not invoice.paid
+    invoice.save()
+
+    status = "opłacona" if invoice.paid else "nieopłacona"
+    messages.success(request, f'Faktura {invoice.number} została oznaczona jako {status}.')
+
+    return redirect('tmp_invoice_detail', pk=pk)

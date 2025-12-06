@@ -4,7 +4,9 @@ from django.contrib.auth.views import LogoutView
 
 from ..views.templates_views import ClientsListView, InvoicesListView, InvoiceDetailView, \
     ProductsListView, ProductsDetailView, ProductUpdateView, ProductDeleteView, \
-    ProductCreateView, ClientCreateView, ClientDetailView, InvoiceCreateView
+    ProductCreateView, ClientCreateView, ClientDetailView, InvoiceCreateView, invoice_pdf
+
+
 
 urlpatterns = [
     #auth
@@ -33,10 +35,12 @@ urlpatterns = [
          name="tmp_product_edit"),
     path("products/<uuid:pk>/delete/", ProductDeleteView.as_view(),
          name="tmp_product_delete"),
+    path('products/<uuid:pk>/data/', templates_views.product_data, name='product_data'),
 
     #invoices
     path("invoices/", InvoicesListView.as_view(), name="tmp_invoices"),
     path("invoices/add/", InvoiceCreateView.as_view(), name="tmp_invoice_add"),
-    path("invoices/<uuid:pk>/", InvoiceDetailView.as_view(), name="tmp_invoice_detail")
-
+    path("invoices/<int:pk>/", InvoiceDetailView.as_view(), name="tmp_invoice_detail"),
+    path("invoices/<int:pk>/pdf/", invoice_pdf, name='invoice_pdf'),
+    path("invoices/<int:pk>/toggle-paid/", templates_views.toggle_invoice_paid, name="tmp_toggle_invoice_paid")
 ]

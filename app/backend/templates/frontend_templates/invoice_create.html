@@ -11,126 +11,138 @@
 </div>
 
 <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
-  <form method="post">
+  <h2 class="text-2xl font-bold mb-4">Dodaj nową fakturę</h2>
+  <form method="POST" class="space-y-4">
     {% csrf_token %}
+    {{ form.as_table }}
 
-    <!-- Główne pola faktury -->
-    <div class="grid gap-4 mb-4">
-      <h3 class="text-2xl font-bold mb-2">Dane faktury</h3>
-
-      <div class="form-control">
-        {{ form.number.label_tag }}
-        {{ form.number }}
-        {{ form.number.errors }}
-      </div>
-
-      <div class="form-control">
-        {{ form.client.label_tag }}
-        {{ form.client }}
-        {{ form.client.errors }}
-      </div>
-
-      <div class="form-control">
-        {{ form.issue_date.label_tag }}
-        {{ form.issue_date }}
-        {{ form.issue_date.errors }}
-      </div>
-
-      <div class="form-control">
-        {{ form.due_date.label_tag }}
-        {{ form.due_date }}
-        {{ form.due_date.errors }}
-      </div>
-
-      <div class="form-control">
-        {{ form.payment_method.label_tag }}
-        {{ form.payment_method }}
-        {{ form.payment_method.errors }}
-      </div>
-    </div>
-
-    <!-- Pola pozycji faktury -->
-    <div>
-      <h3 class="text-2xl font-bold mb-4">Pozycje faktury</h3>
-      <table class="table table-zebra w-full">
-        <thead>
+    {{ item_formset.management_form }}
+    <table class="table w-full">
+      <thead>
         <tr>
           <th>Produkt</th>
           <th>Ilość</th>
-          <th>Cena Netto</th>
-          <th>Stawka VAT</th>
+          <th>Cena netto</th>
+          <th>VAT</th>
           <th>Usuń</th>
         </tr>
-        </thead>
-        <tbody>
-        {% for form in item_formset.forms %}
-        <tr>
+      </thead>
+      <tbody id="items-table">
+        {% for form in item_formset %}
+        <tr class="item-form">
+          <td>{{ form.product }}</td>
+          <td>{{ form.quantity }}</td>
+          <td>{{ form.net_price }}</td>
+          <td>{{ form.tax_rate }}</td>
           <td>
-            {{ form.product.errors }}
-            {{ form.product }}
-          </td>
-          <td>
-            {{ form.quantity.errors }}
-            {{ form.quantity }}
-          </td>
-          <td>
-            {{ form.net_price.errors }}
-            {{ form.net_price }}
-          </td>
-          <td>
-            {{ form.tax_rate.errors }}
-            {{ form.tax_rate }}
-          </td>
-          <td>
-            {{ form.DELETE }}
-            Usuń
+            {% if form.instance.pk %}
+              {{ form.DELETE }}
+            {% else %}
+              <button type="button" class="btn btn-sm btn-error delete-row">
+                Usuń
+              </button>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
-        </tbody>
-      </table>
-
-      <!-- Wygenerowanie ukrytych formularzy managementowych -->
-      {{ item_formset.management_form }}
-    </div>
-
-    <!-- Przycisk 'Dodaj nową pozycję' -->
-    <div class="mt-4">
-      <button type="button" id="add-item-btn" class="btn btn-secondary btn-md shadow-md">
-        Dodaj pozycję
-      </button>
-    </div>
-
-    <!-- Przycisk 'Zapisz fakturę' -->
-    <div class="mt-6">
-      <button type="submit" class="btn btn-primary btn-md shadow-md">
-        Zapisz fakturę
-      </button>
-    </div>
+      </tbody>
+    </table>
+    <button type="button"
+      id="add-row"
+      class="btn btn-outline btn-primary mt-4">
+      Dodaj pozycję
+    </button>
+    <button type="submit" class="btn btn-primary">Zapisz fakturę</button>
   </form>
 </div>
 
 <script>
-    // Skrypt do dynamicznego dodawania wierszy do tabeli
-    document.getElementById('add-item-btn').addEventListener('click', function() {
-        // Pobranie liczby formularzy i szablonu kolejnego elementu
-        const totalForms = document.querySelector('input[name="invoiceitem_set-TOTAL_FORMS"]');
-        const tbody = document.querySelector('table tbody');
-        const newRow = tbody.children[0].cloneNode(true);  // Klonowanie istniejącego wiersza
+document.addEventListener("DOMContentLoaded", function () {
+    const addRowBtn = document.getElementById("add-row");
+    const itemsTable = document.getElementById("items-table");
 
-        // Aktualizacja indeksów w atrybutach nowych elementów
-        Array.from(newRow.querySelectorAll('input, select')).forEach((input) => {
-            const name = input.getAttribute('name');
-            if (name) {
-                input.setAttribute('name', name.replace(/-\d+-/, `-${totalForms.value}-`));
-                input.id = input.getAttribute('id').replace(/-\d+-/, `-${totalForms.value}-`);
-                input.value = "";  // Wyczyść wartość pola
+    // Management form values
+    const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
+
+    addRowBtn.addEventListener("click", function () {
+        const currentForms = parseInt(totalFormsInput.value);
+        const newFormIndex = currentForms;
+
+        // Pobierz pierwszy formularz jako wzór
+        const emptyForm = document.querySelector(".item-form").cloneNode(true);
+
+        // Wyczyść pola
+        emptyForm.querySelectorAll("input, select").forEach((field) => {
+            // podmień index (form-0 → form-1 itd.)
+            const name = field.getAttribute("name").replace(
+                /-(\d+)-/,
+                `-${newFormIndex}-`
+            );
+            const id = field.getAttribute("id").replace(
+                /_(\d+)_/,
+                `_${newFormIndex}_`
+            );
+            field.setAttribute("name", name);
+            field.setAttribute("id", id);
+
+            // wyczyść wartości
+            if (field.tagName === "SELECT") {
+                field.selectedIndex = 0;
+            } else {
+                field.value = "";
             }
         });
 
-        // Dodaj nowy wiersz i zwiększ licznik formularzy
-        tbody.appendChild(newRow);
-        totalForms.value = parseInt(totalForms.value) + 1;
+        // Dodaj przycisk usuń
+        emptyForm.querySelector(".delete-row").addEventListener("click", function () {
+            this.closest("tr").remove();
+        });
+
+        // Dodaj nowy formularz do tabeli
+        itemsTable.appendChild(emptyForm);
+
+        // Zwiększ TOTAL_FORMS
+        totalFormsInput.value = newFormIndex + 1;
     });
+
+    // Obsługa usuwania dla istniejących przycisków
+    document.querySelectorAll(".delete-row").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            this.closest("tr").remove();
+        });
+    });
+});
+
+function attachProductChangeListeners() {
+    document.querySelectorAll('select[name$="-product"]').forEach(select => {
+        select.addEventListener('change', function() {
+            const productId = this.value;
+            const row = this.closest('tr');
+
+            if (!productId) return;
+
+            const url = `/templates/products/${productId}/data`;
+
+            fetch(url, { method: 'GET' })
+                .then(res => res.json())
+                .then(data => {
+                    const netInput = row.querySelector('input[name$="-net_price"]');
+                    const taxInput = row.querySelector('select[name$="-tax_rate"]');
+
+                    if (netInput) netInput.value = data.net_price;
+                    if (taxInput) taxInput.value = data.tax_rate;
+                });
+        });
+    });
+}
+
+// Wywołaj przy ładowaniu strony
+attachProductChangeListeners();
+
+// Przy dynamicznym dodaniu nowego wiersza też trzeba przypiąć listener
+document.getElementById('add-row').addEventListener('click', function() {
+    setTimeout(attachProductChangeListeners, 50); // drobne opóźnienie, żeby elementy zdążyły się dodać
+});
 </script>
+
 {% endblock %}

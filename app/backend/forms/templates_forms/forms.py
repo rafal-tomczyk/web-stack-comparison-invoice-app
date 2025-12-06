@@ -1,11 +1,17 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
+from dateutil.utils import today
 from django import forms
+from django.core import validators
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from ...models import User, Product, Client, Invoice
+from django.core.exceptions import ValidationError
+from django.forms.models import inlineformset_factory
+
+from ...models import User, Product, Client, Invoice, Company, InvoiceItem
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
+
 
 
 class RegisterForm(UserCreationForm):
@@ -40,9 +46,36 @@ class LoginForm(AuthenticationForm):
 
 
 class ProductForm(forms.ModelForm):
+    VAT_CHOICES = [
+        (23, "23%"),
+        (8, "8%"),
+        (5, "5%"),
+        (0, "0%"),
+        ("custom", "Inna (wpisz ponizej")
+    ]
+
+    tax_rate_choice = forms.ChoiceField(
+        choices=VAT_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'select select-bordered w-full',
+        }),
+        label="Stawka VAT (%)"
+    )
+    custom_tax_rate = forms.DecimalField(
+        max_value=100,
+        min_value=0,
+        required=False,
+        widget=forms.NumberInput(attrs={
+            'class': 'input input-bordered w-full mt-2',
+            'placeholder': 'Wpisz niestandardową stawkę VAT (%)',
+            'step': '0.01'
+        }),
+        label="Niesterowana stawka"
+    )
+
     class Meta:
         model = Product
-        fields = ['name', 'description', 'unit_type', 'net_price', 'tax_rate']
+        fields = ['name', 'description', 'unit_type', 'net_price']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
@@ -60,34 +93,47 @@ class ProductForm(forms.ModelForm):
                 'class': 'input input-bordered w-full',
                 'placeholder': 'Cena netto'
             }),
-            'tax_rate': forms.NumberInput(attrs={
-                'class': 'input input-bordered w-full',
-                'placeholder': 'Stawka VAT (%)'
-            }),
         }
         labels = {
             'name': 'Nazwa produktu',
             'description': 'Opis produktu',
             'unit_type': 'Typ jednostki',
             'net_price': 'Cena netto',
-            'tax_rate': 'Stawka VAT (%)',
         }
 
-    def clean_tax_rate(self):
-        tax_rate = self.cleaned_data['tax_rate']
-        if tax_rate < 0 or tax_rate > 100:
-            raise forms.ValidationError(
-                "Stawka VAT musi być liczbą między 0 a 100."
-            )
-        return tax_rate
+    def clean(self):
+        cleaned_data = super().clean()
+        tax_rate_choice = cleaned_data.get("tax_rate_choice")
+        custom_tax_rate = cleaned_data.get("custom_tax_rate")
 
-    def clean_net_price(self):
-        net_price = self.cleaned_data['net_price']
-        if net_price <= 0:
-            raise forms.ValidationError(
-                "Cena musi być liczbą większą od 0."
-            )
-        return net_price
+        # Walidacja opcji niestandardowej
+        if tax_rate_choice == 'custom':
+            if custom_tax_rate is None:
+                raise forms.ValidationError(
+                    "Wybierz wartość VAT lub wpisz stawkę ręcznie.")
+            if custom_tax_rate < 0 or custom_tax_rate > 100:
+                raise forms.ValidationError(
+                    "Stawka VAT musi być między 0 a 100.")
+            cleaned_data['tax_rate'] = custom_tax_rate
+        else:
+            cleaned_data['tax_rate'] = int(tax_rate_choice)
+
+        return cleaned_data
+
+    def save(self, commit = True):
+        instance = super().save(commit=False)
+        tax_rate_choice = self.cleaned_data.get("tax_rate_choice")
+        custom_tax_rate = self.cleaned_data.get("custom_tax_rate")
+
+        if tax_rate_choice == 'custom' and custom_tax_rate is not None:
+            instance.tax_rate = custom_tax_rate
+        else:
+            instance.tax_rate = int(tax_rate_choice)
+
+        if commit:
+            instance.save()
+        return instance
+
 
 class ClientForm(forms.ModelForm):
     phone_number = PhoneNumberField(
@@ -107,27 +153,27 @@ class ClientForm(forms.ModelForm):
         fields = ['clients_company_name', 'name', 'surname', 'nip', 'regon', 'email', 'phone_number']
         widgets = {
             'clients_company_name': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
-                'placeholder': 'Nazwa firmy klienta'
+                'class': 'input input-bordered w-full mt-2',
+                'placeholder': 'Nazwa firmy klienta',
             }),
             'name': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
+                'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'Imię'
             }),
             'surname': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
+                'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'Nazwisko'
             }),
             'nip': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
+                'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'NIP'
             }),
             'regon': forms.TextInput(attrs={
-                'class': 'input input-bordered w-full',
+                'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'REGON'
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'input input-bordered w-full',
+                'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'Adres e-mail'
             }),
         }
@@ -141,123 +187,148 @@ class ClientForm(forms.ModelForm):
             'phone_number': 'Numer telefonu',
         }
 
-    def clean_clients_company_name(self):
-        first_name: str = self.cleaned_data.get("name", "").capitalize()
-        surname: str = self.cleaned_data.get("surname", "").capitalize()
-        company_name: str = self.cleaned_data.get("clients_company_name", "")
-        
-
     def clean_name(self):
-        first_name: str = self.cleaned_data.get("name", "").capitalize()
-        if not first_name.isalpha():
+        first_name: str | None = self.cleaned_data.get("name")
+        if first_name and not first_name.isalpha():
             raise forms.ValidationError("Imię może zawierać tylko litery.")
-        return first_name
+
+        if first_name:
+            return first_name.capitalize()
+        else:
+            return first_name
 
     def clean_surname(self) -> str:
-        surname: str = self.cleaned_data.get("surname", "").capitalize()
-        if not surname.isalpha():
+        surname: str = self.cleaned_data.get("surname", "")
+        if surname and not surname.isalpha():
             raise forms.ValidationError("Nazwisko może zawierać tylko litery.")
-        return surname
 
-    def clean_nip(self):
-        """NIP has additional criteria that should be added later."""
-        nip_str: str = self.cleaned_data.get("nip", "").strip()
-        if not nip_str.isdigit():
-            raise forms.ValidationError("NIP może zawierać tylko cyfry.")
-        if len(nip_str) != 10:
-            raise forms.ValidationError("NIP musi składać się z dokładnie 10 cyfr.")
-
-        return nip_str
-
-    def clean_regon(self):
-        regon: str = self.cleaned_data.get("regon", "").strip()
+        if surname:
+            return surname.capitalize()
+        else:
+            return surname
 
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     self._validate_name_or_company(cleaned_data)
-    #     self._validate_number_and_email(cleaned_data)
-    #     return cleaned_data
+    def clean(self):
+        cleaned_data = super().clean()
 
-    @staticmethod
-    def _validate_name_or_company(cleaned_data):
-        company_name = cleaned_data.get('clients_company_name')
-        name: str = cleaned_data.get('name')
-        surname: str = cleaned_data.get('surname')
-
-        if not company_name and not (name and surname):
-            raise forms.ValidationError(
-                "Podaj nazwę firmy lub imię i nazwisko klienta"
-            )
-
-    def _validate_number_and_email(self, cleaned_data):
+        client_company_name = cleaned_data.get("client_company_name")
+        name = cleaned_data.get('name')
+        surname = cleaned_data.get('surname')
+        nip = cleaned_data.get('nip')
+        regon = cleaned_data.get('regon')
         email = cleaned_data.get('email')
-        phone_number = cleaned_data.get('phone_number')
-        print(phone_number)
-        if not email:
-            if not phone_number:
-                raise forms.ValidationError(
-                    "Podaj email albo nr. telefonu"
-                )
+        phone = cleaned_data.get('phone_number')
 
-        self._validate_number(phone_number)
+        if client_company_name:
+            if not nip:
+                self.add_error('nip', 'NIP jest wymagany dla firmy.')
+            if not regon:
+                self.add_error('regon', 'REGON jest wymagany dla firmy.')
+        else:
+            if not name:
+                self.add_error('name', 'Osoba prywatna musi posiadać imię.')
+            if not surname:
+                self.add_error('surname', 'Osoba prywatna musi posiadać nazwisko.')
+            if nip:
+                self.add_error('nip', 'Osoba prywatna nie moze posiadać numeru NIP.')
+            if regon:
+                self.add_error('regon', 'Osoba prywatna nie moze posiadać numeru REGON.')
+
+        if not email and not phone:
+            raise ValidationError('Musisz podać przynajmniej jeden sposób kontaktu.')
+
+        return cleaned_data
 
 
-    @staticmethod
-    def _validate_number(number):
-        if len(number) != 12:
-            raise forms.ValidationError(
-                "Podaj numer o długości 9 cyfr"
-            )
 
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = [
             'number',
-            'company',
             'client',
-            'number',
             'issue_date',
             'due_date',
             'payment_method',
-            'paid',
             'note',
+            'paid',
         ]
         labels = {
             'number': 'Numer Faktury',
-            'company': 'Firma',
             'client': 'Klient',
             'issue_date': 'Data wystawienia',
             'due_date': 'Data ostatecznego terminu zapłaty',
             'payment_method': 'Metoda Płatności',
-            'paid': 'Opłacona',
             'note': 'Notatka',
+            'paid': 'Opłacona',
         }
         widgets = {
+            'number': forms.TextInput(
+                attrs={'class': 'input input-bordered w-full',
+                       'placeholder': 'Numer faktury'}),
+            'client': forms.Select(
+                attrs={'class': 'select select-bordered w-full'}),
             'issue_date': forms.DateInput(
-                attrs={'type': 'date', 'class': 'form-control'}),
+                attrs={'class': 'input input-bordered w-full',
+                       'type': 'date'}),
             'due_date': forms.DateInput(
-                attrs={'type': 'date', 'class': 'form-control'}),
+                attrs={'class': 'input input-bordered w-full',
+                       'type': 'date'}),
+            'payment_method': forms.Select(
+                attrs={'class': 'select select-bordered w-full'}),
+            'note': forms.Textarea(
+                attrs={'class': 'textarea textarea-bordered w-full',
+                       'rows': 3}),
+            'paid': forms.CheckboxInput(
+                attrs={'class': 'checkbox checkbox-primary '}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        today = datetime.today()
+        current_month_invoices = Invoice.objects.filter(
+            issue_date__year=today.year,
+            issue_date__month=today.month,
+        ).order_by('-number')
+
+        if current_month_invoices.exists():
+            last_invoice = current_month_invoices.first()
+            last_number = int(last_invoice.number.split('/')[0])
+            new_number = last_number + 1
+        else:
+            new_number = 1
+
+        generated_number = f"{new_number}/{today.month}/{today.year}"
+        self.fields['number'].initial = generated_number
+
+        issue_date = self.data.get('issue_date')
+        if issue_date:
+            issue_date = datetime.strptime(issue_date, "%Y-%m-%d").date()
+        else:
+            issue_date = datetime.today().date()
+
+        self.fields['issue_date'].initial = issue_date
+        self.fields['due_date'].initial = issue_date + timedelta(days=14)
+
+
+class InvoiceItemForm(forms.ModelForm):
+    class Meta:
+        model = InvoiceItem
+        fields = ['product', 'quantity', 'net_price', 'tax_rate']
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-select'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-input'}),
+            'net_price': forms.NumberInput(attrs={'class': 'form-input'}),
+            'tax_rate': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
-    def __init__(self, *args, **kwargs):
-        current_company = kwargs.pop('company', None)
-        logging.log(level=1, msg=f"Current company: {current_company}")
-        super().__init__(*args, **kwargs)
-
-        if not self.instance.pk and current_company:
-            self.initial['number'] = self.instance.generate_invoice_number()
-
-        if current_company:
-            self.fields['company'].initial = current_company
-            self.fields['company'].widget = forms.HiddenInput()
-
-            self.fields['client'].queryset = Client.objects.filter(company=current_company)
-
-        else:
-            self.fields['client'].queryset = Client.objects.none()
-
-        self.fields['issue_date'].initial = date.today()
-        self.fields['due_date'].initial = date.today() + timedelta(days=14)
+InvoiceItemFormSet = inlineformset_factory(
+    Invoice,
+    InvoiceItem,
+    form=InvoiceItemForm,
+    extra=1,
+    can_delete=True,
+    validate_min=True
+)

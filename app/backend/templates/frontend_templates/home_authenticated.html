@@ -58,7 +58,7 @@
     <div class="top-right card w-1/2 flex">
       <!-- Plot -->
       <div class="card w-full h-2/3 bg-base-100 flex flex-col justify-center items-center shadow-lg border border-base-300">
-        <div class="card-title text-center pt-4 text-lg font-semibold">Wykres przychodów</div>
+        <div class="card-title text-center pt-4 text-lg font-semibold">Przychody miesięczne</div>
         <div class="card-body w-full px-6">
           <canvas id="monthlyRevenueChart" width="400" height="200"></canvas>
         </div>
@@ -97,16 +97,18 @@
 
     <div class="card-body p-6">
       {% for product in top_products %}
-      <div class="flex justify-between items-center border-b border-gray-200 py-2 last:border-b-0">
-        <!-- Nazwa produktu -->
-        <div class="text-left">
-          <h5 class="text-l text-gray-800">{{ product.name }}</h5>
+      <div class="items-center border-b border-gray-200 py-2 last:border-b-0">
+        <a href="{% url 'tmp_product_detail' product.pk %}"
+           class="hover:underline w-full flex justify-between ">
+          <div class="text-left">
+            <h5 class="text-l text-gray-800">{{ product.name }}</h5>
+          </div>
+          <!-- Total revenue -->
+          <div class="text-right">
+            <p class="text-sm text-gray-700">{{ product.total_revenue|default:"0" }} zł</p>
+          </div>
+        </a>
         </div>
-        <!-- Total revenue -->
-        <div class="text-right">
-          <p class="text-sm text-gray-700">{{ product.total_revenue|default:"0" }} zł</p>
-        </div>
-      </div>
       {% empty %}
       <!-- When no products -->
       <div class="text-gray-500 text-center py-6">

@@ -4,92 +4,142 @@
 
 {% block content %}
 <div class="flex items-center justify-between mb-4">
-  <h2 class="text-3xl font-bold mb-4">Faktury</h2>
+  <h2 class="text-3xl font-bold">Faktury</h2>
   <a href="{% url 'tmp_invoice_add' %}" class="btn btn-primary btn-md shadow-md">
     Dodaj fakturę
   </a>
 </div>
 
 <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
-  <div class="card-title text-center w-full pt-4 pl-6 pb-4 font-semibold text-lg">Lista faktur</div>
+  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">
+    Lista faktur
+    <a href="?sort=-id" class="btn btn-sm bg-red-500 text-white hover:bg-red-600 ml-4">
+      Resetuj filtry
+    </a>
+  </div>
 
-  <div class="overflow-x-auto">
-    <table class="table-auto w-full text-left border-collapse border border-gray-300">
-      <!-- Nagłówki tabeli -->
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 font-bold">
-            <a href="?sort=number&order={% toggle_sort sort order 'number' %}">
-              Numer {% sort_arrow sort order 'number' %}
-            </a>
-          </th>
-          <th class="px-4 py-2 font-bold">Klient</th>
-          <th class="px-4 py-2 font-bold">
-            <a href="?sort=issue_date&order={% toggle_sort sort order 'issue_date' %}">
-              Data wystawienia {% sort_arrow sort order 'issue_date' %}
-            </a>
-          </th>
-          <th class="px-4 py-2 font-bold text-center">Status</th>
-          <th class="px-4 py-2 font-bold text-right">
-            <a href="?sort=total_net&order={% toggle_sort sort order 'total_net' %}">
-              Kwota netto {% sort_arrow sort order 'total_net' %}
-            </a>
-          </th>
-          <th class="px-4 py-2 font-bold text-right">Kwota brutto</th>
-        </tr>
-      </thead>
+  <!-- Nagłówki kolumn -->
+  <div class="grid grid-cols-6 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+    <p class="text-left pl-4">
+      <a href="?sort={% if request.GET.sort == 'number' %}-number{% else %}number{% endif %}" class="hover:underline">
+        Numer
+        {% if request.GET.sort == 'number' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-number' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-left">
+      <a href="?sort={% if request.GET.sort == 'client__name' %}-client__name{% else %}client__name{% endif %}"
+         class="hover:underline">
+        Klient
+        {% if request.GET.sort == 'client__name' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-client__name' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-left">
+      <a href="?sort={% if request.GET.sort == 'issue_date' %}-issue_date{% else %}issue_date{% endif %}" class="hover:underline">
+        Data wystawienia
+        {% if request.GET.sort == 'issue_date' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-issue_date' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-center">
+      <a href="?sort={% if request.GET.sort == 'paid' %}-paid{% else %}paid{% endif %}"
+         class="hover:underline">
+        Status
+        {% if request.GET.sort == 'paid' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-paid' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-right">
+      <a href="?sort={% if request.GET.sort == 'total_net' %}-total_net{% else %}total_net{% endif %}" class="hover:underline">
+        Kwota netto
+        {% if request.GET.sort == 'total_net' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-total_net' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+    <p class="text-right pr-4">
+      <a href="?sort={% if request.GET.sort == 'total_gross' %}-total_gross{% else %}total_gross{% endif %}" class="hover:underline">
+        Kwota brutto
+        {% if request.GET.sort == 'total_gross' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-total_gross' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
+  </div>
 
-      <!-- Wiersze tabeli -->
-      <tbody>
-        {% for invoice in invoices %}
-        <tr class="border-t border-gray-300">
-          <!-- Numer -->
-          <td class="px-4 py-2 text-sm font-semibold">
-            {{ invoice.number }}
-          </td>
+  <!-- Lista faktur -->
+  <div class="card-body p-6 gap-0">
+    {% for invoice in invoices %}
+    <a href="{% url 'tmp_invoice_detail' invoice.pk %}" class="hover:underline">
+    <div class="grid grid-cols-6 items-center border-b border-gray-200 hover:bg-base-300 last:border-b-0 py-4">
+      <!-- Numer -->
+      <div class="text-left text-sm font-semibold pl-4">
+        {{ invoice.number }}
+      </div>
+      <!-- Klient -->
+      <div class="text-left text-sm text-gray-700">
+        {{ invoice.client }}
+      </div>
+      <!-- Data wystawienia -->
+      <div class="text-left text-sm text-gray-700">
+        {{ invoice.issue_date|date:'d.m.Y' }}
+      </div>
+      <!-- Status -->
+      <div class="text-center text-sm">
+        {% if invoice.paid %}
+        <span class="text-green-600 font-semibold">Opłacona</span>
+        {% else %}
+        <span class="text-red-600 font-semibold">Nieopłacona</span>
+        {% endif %}
+      </div>
+      <!-- Kwota netto -->
+      <div class="text-right text-sm text-gray-900 font-bold">
+        {{ invoice.total_net }} zł
+      </div>
+      <!-- Kwota brutto -->
+      <div class="text-right text-sm text-gray-900 font-bold pr-4">
+        {{ invoice.total_gross }} zł
+      </div>
 
-          <!-- Klient -->
-          <td class="px-4 py-2 text-sm text-gray-700">
-            {{ invoice.client }}
-          </td>
-
-          <!-- Data wystawienia -->
-          <td class="px-4 py-2 text-sm text-gray-700">
-            {{ invoice.issue_date|date:'d.m.Y' }}
-          </td>
-
-          <!-- Status -->
-          <td class="px-4 py-2 text-sm text-center">
-            {% if invoice.paid %}
-            <span class="text-green-600 font-semibold">Opłacona</span>
-            {% else %}
-            <span class="text-red-600 font-semibold">Nieopłacona</span>
-            {% endif %}
-          </td>
-
-          <!-- Kwota netto -->
-          <td class="px-4 py-2 text-sm text-right text-gray-900 font-bold">
-            {{ invoice.total_net }} zł
-          </td>
-
-          <!-- Kwota brutto -->
-          <td class="px-4 py-2 text-sm text-right text-gray-900 font-bold">
-            {{ invoice.total_gross }} zł
-          </td>
-        </tr>
-        {% empty %}
-        <!-- Gdy brak faktur -->
-        <tr>
-          <td colspan="6" class="px-4 py-6 text-gray-500 text-center">
-            Brak faktur do wyświetlenia
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    </div>
+    </a>
+    {% empty %}
+    <!-- Gdy brak faktur -->
+    <div class="text-gray-500 text-center py-6">
+      Brak faktur do wyświetlenia.
+    </div>
+    {% endfor %}
   </div>
 </div>
-
 
 <!-- Pagination -->
 {% if is_paginated %}
@@ -97,7 +147,7 @@
   <div class="btn-group">
     <!-- Button prev -->
     {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">← Poprzednia</a>
+      <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.previous_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">← Poprzednia</a>
     {% else %}
       <button class="btn btn-sm btn-disabled">← Poprzednia</button>
     {% endif %}
@@ -105,15 +155,15 @@
     <!-- Pagination -->
     {% for page_number in page_obj.paginator.page_range %}
       {% if page_number == page_obj.number %}
-        <button class="btn btn-sm bg-primary text-white cursor-default">{{ page_number }}</button>
+        <button class="btn btn-primary btn-md shadow-md hover:bg-primary">{{ page_number }}</button>
       {% else %}
-        <a href="?page={{ page_number }}" class="btn btn-sm bg-base-300 text-gray-800 hover:bg-primary hover:text-white">{{ page_number }}</a>
+        <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_number }}" class="btn btn-neutral btn-sm shadow-md hover:bg-accent hover:border-accent">{{ page_number }}</a>
       {% endif %}
     {% endfor %}
 
     <!-- Button next -->
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">Następna →</a>
+      <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.next_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">Następna →</a>
     {% else %}
       <button class="btn btn-sm btn-disabled">Następna →</button>
     {% endif %}

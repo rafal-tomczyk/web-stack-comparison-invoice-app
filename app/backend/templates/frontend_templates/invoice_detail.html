@@ -1,12 +1,90 @@
 {% extends "frontend_templates/base.html" %}
 
-{% block title %} Szczegóły faktury {% endblock %}
+{% block title %}Szczegóły Faktury{% endblock %}
+
+
 {% block content %}
-<h1 class="text-4xl font-bold mb-4">
-  Szczegóły faktury
-</h1>
+<div class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-3xl font-bold">Szczegóły Faktury</h2>
 
-<div class="flex flex-col lg:flex-row lg:gap-8">
+    <div class="flex space-x-3">
+      <!-- Przycisk do zmiany statusu faktury -->
+      <form method="POST" action="{% url 'tmp_toggle_invoice_paid' pk=invoice.id %}">
+        {% csrf_token %}
+        <button type="submit" class="{% if invoice.paid %}bg-yellow-600 hover:bg-yellow-700{% else %}bg-green-600 hover:bg-green-700{% endif %} text-white font-bold py-2 px-4 rounded inline-flex items-center">
+          {% if invoice.paid %}
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Oznacz jako nieopłacona
+          {% else %}
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+          Oznacz jako opłacona
+          {% endif %}
+        </button>
+      </form>
 
+      <!-- Przycisk do pobierania PDF -->
+      <a href="{% url 'invoice_pdf' pk=invoice.id %}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+        </svg>
+        Pobierz fakturę PDF
+      </a>
+    </div>
+  </div>
+
+
+  <!-- Dane faktury -->
+  <div class="mb-6">
+    <p><strong>Numer:</strong> {{ invoice.number }}</p>
+    <p><strong>Data wystawienia:</strong> {{ invoice.issue_date }}</p>
+    <p><strong>Data płatności:</strong> {{ invoice.due_date }}</p>
+    <p><strong>Metoda płatności:</strong> {{ invoice.payment_method }}</p>
+    <p><strong>Status:</strong> {% if invoice.paid %}Opłacona{% else %}Nieopłacona{% endif %}</p>
+    <p><strong>Uwagi:</strong> {{ invoice.note }}</p>
+  </div>
+
+  <!-- Lista pozycji faktury -->
+  <hr class="mb-4">
+  <h3 class="text-2xl font-semibold mb-3">Pozycje Faktury</h3>
+  {% if items %}
+  <table class="table-auto w-full mb-6">
+    <thead>
+    <tr class="bg-gray-200">
+      <th class="px-4 py-2">Produkt</th>
+      <th class="px-4 py-2">Ilość</th>
+      <th class="px-4 py-2">Cena netto</th>
+      <th class="px-4 py-2">Suma netto</th>
+      <th class="px-4 py-2">Podatek</th>
+      <th class="px-4 py-2">Suma brutto</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr class="border-b">
+      <td class="px-4 py-2">{{ item.product }}</td>
+      <td class="px-4 py-2">{{ item.quantity }}</td>
+      <td class="px-4 py-2">{{ item.net_price }}</td>
+      <td class="px-4 py-2">{{ item.net_total }}</td>
+      <td class="px-4 py-2">{{ item.tax_amount }}</td>
+      <td class="px-4 py-2">{{ item.gross_total }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Nie dodano jeszcze pozycji do tej faktury.</p>
+  {% endif %}
+
+  <!-- Podsumowanie faktury -->
+  <div class="mt-6">
+    <p><strong>Razem netto:</strong> {{ invoice.total_net }}</p>
+    <p><strong>Razem podatek:</strong> {{ invoice.total_tax }}</p>
+    <p><strong>Razem brutto:</strong> {{ invoice.total_gross }}</p>
+  </div>
 </div>
 {% endblock %}

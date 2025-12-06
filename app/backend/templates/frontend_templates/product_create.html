@@ -17,35 +17,8 @@
     <!-- Formularz -->
     <div class="grid gap-4">
       <!-- Renderowanie pól formularza -->
-      <div class="form-control">
-        {{ form.name.label_tag }}
-        {{ form.name }}
-        {{ form.name.errors }}
-      </div>
-      
-      <div class="form-control">
-        {{ form.description.label_tag }}
-        {{ form.description }}
-        {{ form.description.errors }}
-      </div>
-      
-      <div class="form-control">
-        {{ form.unit_type.label_tag }}
-        {{ form.unit_type }}
-        {{ form.unit_type.errors }}
-      </div>
-      
-      <div class="form-control">
-        {{ form.net_price.label_tag }}
-        {{ form.net_price }}
-        {{ form.net_price.errors }}
-      </div>
-      
-      <div class="form-control">
-        {{ form.tax_rate.label_tag }}
-        {{ form.tax_rate }}
-        {{ form.tax_rate.errors }}
-      </div>
+      {{ form.as_table }}
+      <button type="submit" class="btn btn-primary">Dodaj produkt</button>
     </div>
     
     <!-- Przycisk 'Dodaj produkt' -->

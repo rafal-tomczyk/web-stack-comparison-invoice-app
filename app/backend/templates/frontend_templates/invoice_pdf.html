@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Faktura {{ invoice.number }}</title>
+  <style>
+      @page {
+          size: A4;
+          margin: 1cm;
+          background-color: white;
+      }
+      body {
+          font-family: Arial, sans-serif;
+          font-size: 12px;
+          line-height: 1.4;
+      }
+      .header {
+          margin-bottom: 30px;
+      }
+      .company-info, .client-info {
+          width: 45%;
+          margin-bottom: 20px;
+      }
+      .company-info {
+          float: left;
+      }
+      .client-info {
+          float: right;
+      }
+      .invoice-details {
+          clear: both;
+          margin-bottom: 20px;
+      }
+      .invoice-items {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+      }
+      .invoice-items th, .invoice-items td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: left;
+      }
+      .invoice-items th {
+          background-color: #f2f2f2;
+      }
+      .totals {
+          width: 40%;
+          float: right;
+      }
+      .totals table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+      .totals th, .totals td {
+          padding: 8px;
+          text-align: right;
+      }
+      .footer {
+          clear: both;
+          margin-top: 50px;
+          text-align: center;
+          font-size: 10px;
+          color: #666;
+      }
+      .clearfix {
+          clear: both;
+      }
+  </style>
+</head>
+<body>
+<div class="header">
+  <h1>Faktura {{ invoice.number }}</h1>
+</div>
+
+<div class="company-info">
+  <h3>Sprzedawca:</h3>
+  <p><strong>{{ invoice.company.name }}</strong></p>
+  <p>NIP: {{ invoice.company.nip }}</p>
+  <p>E-mail: {{ invoice.company.email }}</p>
+</div>
+
+<div class="client-info">
+  <h3>Nabywca:</h3>
+  <p><strong>{{ invoice.client.clients_company_name }}</strong></p>
+  <p>{{ invoice.client.name }} {{ invoice.client.surname }}</p>
+  <p>NIP: {{ invoice.client.nip }}</p>
+  <p>E-mail: {{ invoice.client.email }}</p>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="invoice-details">
+  <p><strong>Data wystawienia:</strong> {{ invoice.issue_date|date:"d.m.Y" }}</p>
+  <p><strong>Termin płatności:</strong> {{ invoice.due_date|date:"d.m.Y" }}</p>
+  <p><strong>Metoda płatności:</strong> {{ invoice.get_payment_method_display }}</p>
+  <p><strong>Status płatności:</strong> {% if invoice.paid %}Opłacona{% else %}Nieopłacona{% endif %}</p>
+</div>
+
+<table class="invoice-items">
+  <thead>
+  <tr>
+    <th>Lp.</th>
+    <th>Produkt</th>
+    <th>Ilość</th>
+    <th>Jedn.</th>
+    <th>Cena netto</th>
+    <th>Stawka VAT</th>
+    <th>Wartość netto</th>
+    <th>Kwota VAT</th>
+    <th>Wartość brutto</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for item in invoice.items.all %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ item.product.name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.product.get_unit_type_display }}</td>
+    <td>{{ item.net_price|floatformat:2 }} zł</td>
+    <td>{{ item.tax_rate }}%</td>
+    <td>{{ item.net_total|floatformat:2 }} zł</td>
+    <td>{{ item.tax_amount|floatformat:2 }} zł</td>
+    <td>{{ item.gross_total|floatformat:2 }} zł</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<div class="totals">
+  <table>
+    <tr>
+      <td><strong>Razem netto:</strong></td>
+      <td>{{ invoice.total_net|floatformat:2 }} zł</td>
+    </tr>
+    <tr>
+      <td><strong>Razem VAT:</strong></td>
+      <td>{{ invoice.total_tax|floatformat:2 }} zł</td>
+    </tr>
+    <tr>
+      <td><strong>Razem brutto:</strong></td>
+      <td>{{ invoice.total_gross|floatformat:2 }} zł</td>
+    </tr>
+  </table>
+</div>
+
+<div class="clearfix"></div>
+
+{% if invoice.note %}
+<div class="note">
+  <h3>Uwagi:</h3>
+  <p>{{ invoice.note }}</p>
+</div>
+{% endif %}
+
+<div class="footer">
+  <p>Dokument wygenerowany elektronicznie. Nie wymaga podpisu.</p>
+</div>
+</body>
+</html>

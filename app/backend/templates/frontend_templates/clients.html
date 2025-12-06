@@ -11,14 +11,44 @@
 </div>
 
 <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
-  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">Lista klientów</div>
+  <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">
+    Lista klientów
+    <a
+      href="?sort=-id"
+      class="btn btn-sm bg-red-500 text-white hover:bg-red-600 ml-4">
+      Resetuj filtry
+    </a>
+  </div>
 
   <!-- Nagłówki kolumn -->
   <div class="grid grid-cols-5 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
-    <p class="text-left pl-4">Nazwa klienta</p>
+    <p class="text-left pl-4">
+      <a href="?sort={% if request.GET.sort == 'full_name_or_company' %}-full_name_or_company{% else %}full_name_or_company{% endif %}"
+        class="hover:underline">
+        Nazwa klienta
+        {% if request.GET.sort == 'full_name_or_company' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-full_name_or_company' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
     <p class="text-left">NIP</p>
     <p class="text-left">REGON</p>
-    <p class="text-left">Email</p>
+    <p class="text-left">
+      <a href="?sort={% if request.GET.sort == 'email' %}-email{% else %}email{% endif %}" class="hover:underline">
+        Email
+        {% if request.GET.sort == 'email' %}
+          <span class="text-blue-600">&#8593;</span>
+        {% elif request.GET.sort == '-email' %}
+          <span class="text-blue-600">&#8595;</span>
+        {% else %}
+          <span class="text-gray-400">&#8597;</span>
+        {% endif %}
+      </a>
+    </p>
     <p class="text-left">Telefon</p>
   </div>
 
@@ -67,7 +97,7 @@
   <div class="btn-group">
     <!-- Button prev -->
     {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">← Poprzednia</a>
+      <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.previous_page_number }}" class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus">← Poprzednia</a>
     {% else %}
       <button class="btn btn-sm btn-disabled">← Poprzednia</button>
     {% endif %}
@@ -77,13 +107,13 @@
       {% if page_number == page_obj.number %}
         <button class="btn btn-primary btn-md shadow-md hover:bg-primary">{{ page_number }}</button>
       {% else %}
-        <a href="?page={{ page_number }}" class="btn btn-neutral btn-sm shadow-md hover:bg-accent hover:border-accent">{{ page_number }}</a>
+        <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_number }}" class="btn btn-neutral btn-sm shadow-md hover:bg-accent hover:border-accent">{{ page_number }}</a>
       {% endif %}
     {% endfor %}
 
     <!-- Button next -->
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="btn btn-neutral btn-sm text-white hover:bg-accent hover:border-accent">Następna →</a>
+      <a href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.next_page_number }}" class="btn btn-neutral btn-sm text-white hover:bg-accent hover:border-accent">Następna →</a>
     {% else %}
       <button class="btn btn-sm btn-disabled">Następna →</button>
     {% endif %}
