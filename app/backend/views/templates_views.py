@@ -6,13 +6,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, Max, Case, When, Value, CharField
 from django.db.models.functions import Concat
-from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
 from django.template.loader import get_template
 from django.urls import reverse
-from django.utils import timezone
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView, \
     CreateView
 from rest_framework.reverse import reverse_lazy
@@ -26,6 +24,10 @@ from ..models import Client, Company, User, Invoice, Product, InvoiceItem
 from django.http import JsonResponse, HttpResponse
 
 logger = logging.getLogger(__name__)
+
+class BaseSecuredView(LoginRequiredMixin):
+    login_url = 'tmp_login'
+    redirect_field_name = None
 
 
 def index(request):
@@ -46,7 +48,6 @@ def login_view(request):
         "frontend_templates/login.html",
         {"form": form})
 
-
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -62,7 +63,6 @@ def register(request):
         {"form": form}
     )
 
-@login_required
 def get_top_products(company, limit=5):
     return (
         Product.objects.filter(company=company)
@@ -160,8 +160,7 @@ def choose_company(request):
         {"companies": user_companies}
     )
 
-@login_required
-class ClientsListView(LoginRequiredMixin, ListView):
+class ClientsListView(BaseSecuredView, ListView):
     model = Client
     template_name = "frontend_templates/clients.html"
     context_object_name = "clients"
@@ -186,8 +185,7 @@ class ClientsListView(LoginRequiredMixin, ListView):
         sort_param = self.request.GET.get('sort', '-id')
         return queryset.order_by(sort_param)
 
-@login_required
-class ClientCreateView(LoginRequiredMixin, CreateView):
+class ClientCreateView(BaseSecuredView, CreateView):
     model = Client
     template_name = "frontend_templates/client_create.html"
     form_class = ClientForm
@@ -196,8 +194,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         return handle_form_valid(self, form)
 
-@login_required
-class ClientDetailView(LoginRequiredMixin, DetailView):
+class ClientDetailView(BaseSecuredView, DetailView):
     model = Client
     template_name = "frontend_templates/client_detail.html"
     context_object_name = "client"
@@ -205,8 +202,7 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         return Client.objects.filter(company__user=self.request.user)
 
-@login_required
-class InvoicesListView(LoginRequiredMixin, ListView):
+class InvoicesListView(BaseSecuredView, ListView):
     model = Invoice
     template_name = 'frontend_templates/invoices.html'
     context_object_name = 'invoices'
@@ -237,8 +233,7 @@ class InvoicesListView(LoginRequiredMixin, ListView):
 
         return queryset
 
-@login_required
-class InvoiceDetailView(LoginRequiredMixin, DetailView):
+class InvoiceDetailView(BaseSecuredView, DetailView):
     model = Invoice
     template_name = 'frontend_templates/invoice_detail.html'
     context_object_name = 'invoice'
@@ -248,8 +243,7 @@ class InvoiceDetailView(LoginRequiredMixin, DetailView):
         context['items'] = self.object.items.all()
         return context
 
-@login_required
-class InvoiceCreateView(CreateView):
+class InvoiceCreateView(BaseSecuredView, CreateView):
     model = Invoice
     form_class = InvoiceForm
     template_name = 'frontend_templates/invoice_create.html'
@@ -289,8 +283,7 @@ class InvoiceCreateView(CreateView):
         return self.form_invalid(form)
 
 
-@login_required
-class ProductsListView(LoginRequiredMixin, ListView):
+class ProductsListView(BaseSecuredView, ListView):
     model = Product
     template_name = "frontend_templates/products.html"
     context_object_name = "products"
@@ -305,8 +298,7 @@ class ProductsListView(LoginRequiredMixin, ListView):
         sort_param = self.request.GET.get('sort', '-created_at')
         return queryset.order_by(sort_param)
 
-@login_required
-class ProductsDetailView(DetailView):
+class ProductsDetailView(BaseSecuredView, DetailView):
     model = Product
     template_name = "frontend_templates/product_detail.html"
     context_object_name = "product"
@@ -314,8 +306,7 @@ class ProductsDetailView(DetailView):
     def get_queryset(self):
         return Product.objects.filter(company__user=self.request.user)
 
-@login_required
-class ProductCreateView(CreateView):
+class ProductCreateView(BaseSecuredView, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'frontend_templates/product_create.html'
@@ -324,8 +315,7 @@ class ProductCreateView(CreateView):
     def form_valid(self, form):
         return handle_form_valid(self, form)
 
-@login_required
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(BaseSecuredView, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "frontend_templates/product_create.html"
@@ -333,8 +323,7 @@ class ProductUpdateView(UpdateView):
     def get_success_url(self):
         return reverse("tmp_product_detail", kwargs={"pk": self.object.pk})
 
-@login_required
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(BaseSecuredView, DeleteView):
     model = Product
     template_name = "frontend_templates/product_confirm_delete.html"
     success_url = reverse_lazy("tmp_products")

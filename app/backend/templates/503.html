@@ -1,0 +1,16 @@
+  {% extends "frontend_templates/base.html" %}
+  
+  {% block title %}Przerwa techniczna (503){% endblock %}
+  
+  {% block content %}
+  <div class="container mx-auto max-w-md py-12">
+    <h1 class="text-4xl font-bold mb-6 text-center">Przerwa techniczna</h1>
+    
+    <div class="bg-white p-6 shadow-md rounded-[var(--radius-box)] border border-gray-300">
+      <div class="text-center mb-6">
+        <p class="text-lg mb-4">Przepraszamy, strona jest obecnie w trakcie konserwacji.</p>
+        <p class="text-gray-600">Prosimy spróbować ponownie za kilka minut.</p>
+      </div>
+    </div>
+  </div>
+  {% endblock %}

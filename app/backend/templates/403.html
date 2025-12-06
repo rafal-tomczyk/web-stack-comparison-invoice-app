@@ -1,0 +1,22 @@
+  {% extends "frontend_templates/base.html" %}
+  
+  {% block title %}Brak dostępu (403){% endblock %}
+  
+  {% block content %}
+  <div class="container mx-auto max-w-md py-12">
+    <h1 class="text-4xl font-bold mb-6 text-center">Brak dostępu</h1>
+    
+    <div class="bg-white p-6 shadow-md rounded-[var(--radius-box)] border border-gray-300">
+      <div class="text-center mb-6">
+        <p class="text-lg mb-4">Nie masz uprawnień do wyświetlenia tej strony.</p>
+        <p class="text-gray-600">Jeśli uważasz, że to błąd, skontaktuj się z administratorem.</p>
+      </div>
+      
+      <div class="text-center">
+        <a href="{% url 'tmp_home' %}" class="btn btn-primary btn-md shadow-md">
+          Wróć do strony głównej
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
