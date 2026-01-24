@@ -1,0 +1,70 @@
+{% extends "htmx_templates/base_htmx.html" %}
+
+{% block title %} Strona Główna (HTMX) {% endblock %}
+
+{% block content %}
+
+<!-- Górny row -->
+<div class="top">
+  <h3 class="text-3xl font-bold mb-4">{{ active_company.name }}</h3>
+
+  <div class="boxes flex gap-8">
+
+   <!-- Left top Ostatnie Faktury -->
+   <div class="top-left card w-1/2 h-full flex-grow flex"
+    hx-get="{% url 'htmx_home_latest_invoices' %}"
+    hx-trigger="load"
+    hx-swap="innerHTML"
+   >
+
+   </div>
+
+   <!-- Right top Wykres i Przychody-->
+   <div class="top-right card w-1/2 flex"
+    hx-get="{% url 'htmx_home_chart' %}"
+    hx-trigger="load"
+    hx-swap="innerHTML">
+
+     <div class="flex justify-center items-center h-full w-full">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+     </div>
+   </div>
+  </div>
+</div>
+
+<!-- Dolny row -->
+<div class="bottom mt-8 flex gap-8 mt-8">
+
+  <!-- Card 1 Top 5 Produktów-->
+  <div class="card w-1/3 bg-base-100 shadow-lg border border-base-300 align-center justify-center">
+    <div class="card-title text-center w-full pt-4 pl-6"><p>Top 5 produktów</p></div>
+    <div class="card-body p-6"
+     hx-get="{% url 'htmx_home_top_products' %}"
+     hx-trigger="load"
+     hx-swap="innerHTML"
+    >
+    </div>
+  </div>
+
+  <!-- Card 2 Top 5 Klientów-->
+  <div class="card w-1/3 bg-base-100 shadow-lg border border-base-300">
+    <div class="card-title w-full pt-4 pl-6">Top 5 klientów</div>
+    <div class="card-body p-6"
+      hx-get="{% url 'htmx_home_top_clients' %}"
+      hx-trigger="load"
+      hx-swap="innerHTML"
+    >
+    </div>
+  </div>
+
+  <!-- Card 3 Kalendarz-->
+  <div class="card w-1/3 bg-base-100 border border-base-300 shadow-lg rounded-box flex items-center justify-center"
+    hx-get="{% url 'htmx_home_calendar' %}"
+    hx-trigger="load"
+    hx-swap="innerHTML"
+  >
+  </div>
+</div>
+
+
+{% endblock %}

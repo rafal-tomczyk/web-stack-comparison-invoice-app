@@ -1,0 +1,23 @@
+{% extends "frontend_templates/base.html" %}
+
+{% block title %}Dodaj Firmę{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">Firmy</h2>
+  <a href="{% url 'tmp_choose_company' %}" class="btn btn-error btn-md shadow-md">
+    Wróć do wyboru firmy
+  </a>
+</div>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
+  <h2 class="text-2xl font-bold mb-4">Dodaj nową firmę</h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <div class="mt-6">
+      <button type="submit" class="btn btn-primary btn-md shadow-md">Dodaj firmę</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

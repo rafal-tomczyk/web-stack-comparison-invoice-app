@@ -1,0 +1,23 @@
+{% extends "htmx_templates/base_htmx.html" %}
+{% load static %}
+{% block title %}Dodaj klienta (HTMX){% endblock %}
+
+{% block content %}
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">Klienci</h2>
+  <a href="{% url 'htmx_clients' %}" class="btn btn-error btn-md shadow-md">
+    Wróć do listy klientów
+  </a>
+</div>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
+  <h2 class="text-2xl font-bold mb-4">Dodaj nowego klienta</h2>
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit" class="btn btn-primary">Zapisz klienta</button>
+  </form>
+</div>
+{% endblock %}

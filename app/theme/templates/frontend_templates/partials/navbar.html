@@ -1,0 +1,35 @@
+{% load static %}
+
+<nav class="navbar bg-base-100 shadow-sm">
+  <div class="navbar-start pl-8">
+    <a class="" href="{% url 'tmp_index' %}"><img src="{% static 'icons/logo_text.svg' %}" alt="Logo" class="h-8 "></a>
+  </div>
+
+  <div class="navbar-end space-x-4 pr-8">
+    {% if user.is_authenticated %}
+      <a class="hover:text-accent" href="{% url 'tmp_home' %}">Strona Główna</a>
+
+      {# Toggle visible only on Templates home to switch between Templates and HTMX #}
+      {% if request.resolver_match and request.resolver_match.url_name == 'tmp_home' %}
+        <div class="join ml-2">
+          <span class="btn btn-sm join-item btn-primary pointer-events-none">Templates</span>
+          <a href="{% url 'htmx_home' %}" class="btn btn-sm join-item btn-outline">HTMX</a>
+        </div>
+      {% endif %}
+
+      <a class="hover:text-accent" href="{% url 'tmp_products' %}">Produkty</a>
+      <a class="hover:text-accent" href="{% url 'tmp_invoices' %}">Faktury</a>
+      <a class="hover:text-accent" href="{% url 'tmp_clients' %}">Klienci</a>
+      <a class="hover:text-accent" href="{% url 'tmp_choose_company' %}">Firmy</a>
+      <form method="post" action="{% url 'tmp_logout' %}">
+        {% csrf_token %}
+        <button class="btn btn-secondary" type="submit"><p>Wyloguj się</p></button>
+      </form>
+    {% else %}
+      <div>
+        <a class="btn btn-primary" href="{% url 'tmp_login' %}"><p>Zaloguj się</p></a>
+        <a class="btn btn-accent" href="{% url 'tmp_register' %}">Zarejestruj się</a>
+      </div>
+    {% endif %}
+  </div>
+</nav>

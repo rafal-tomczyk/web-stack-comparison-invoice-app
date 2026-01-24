@@ -1,0 +1,25 @@
+{% extends "htmx_templates/base_htmx.html" %}
+{% load static %}
+{% block title %}Szczegóły klienta (HTMX){% endblock %}
+
+{% block content %}
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
+<div class="card bg-base-100 shadow-lg border border-base-300 rounded-box p-6">
+  <h2 class="text-2xl font-bold mb-4">Szczegóły klienta</h2>
+
+  <ul class="text-lg space-y-2">
+    <li><strong>Firma klienta:</strong> {{ client.clients_company_name }}</li>
+    <li><strong>Imię:</strong> {{ client.name }}</li>
+    <li><strong>Nazwisko:</strong> {{ client.surname }}</li>
+    <li><strong>NIP:</strong> {{ client.nip }}</li>
+    <li><strong>REGON:</strong> {{ client.regon }}</li>
+    <li><strong>E-mail:</strong> {{ client.email }}</li>
+    <li><strong>Numer telefonu:</strong> {{ client.phone_number }}</li>
+  </ul>
+
+  <div class="mt-6">
+    <a href="{% url 'htmx_clients' %}" class="btn btn-secondary">Powrót do listy klientów</a>
+  </div>
+</div>
+{% endblock %}
