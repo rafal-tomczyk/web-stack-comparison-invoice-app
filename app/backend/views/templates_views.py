@@ -17,8 +17,9 @@ from rest_framework.reverse import reverse_lazy
 from weasyprint import HTML
 
 from ..forms.templates_forms.forms import RegisterForm, LoginForm, ProductForm, \
-    ClientForm, InvoiceForm, InvoiceItemFormSet
+    ClientForm, InvoiceForm, InvoiceItemFormSet, CompanyForm
 from django.db.models.functions import Round, TruncMonth
+from django.db.models import Q
 
 from ..models import Client, Company, User, Invoice, Product, InvoiceItem
 from django.http import JsonResponse, HttpResponse
@@ -74,58 +75,27 @@ def get_top_products(company, limit=5):
         .order_by("-total_revenue")[:limit]
     )
 
+
+
 @login_required()
 def home(request):
     active_company = None
     invoices, top_products, top_clients = [], [], []
     monthly_revenue: float = 0
     yearly_revenue: float = 0
-    monthly_revenues: list[float] = [0] * 12
     monthly_revenues_json = {}
+
     company_id = request.session.get('active_company_id')
     if company_id:
         try:
-            active_company = Company.objects.get(id=int(company_id), user=request.user)
-            # Last invoices
-            invoices = Invoice.objects.filter(company=company_id).order_by(
-                "-issue_date")[:10]
+            active_company = Company.objects.get(id=company_id, user=request.user)
+            invoices = active_company.get_latest_invoices()
+            top_products = active_company.get_top_products()
+            top_clients = active_company.get_top_clients()
 
-            # Top products
-            top_products = get_top_products(active_company)
-
-            # Top Clients
-            top_clients = (
-                Client.objects.filter(company=active_company)
-                .annotate(total_spent=Sum("invoices__total_gross"))
-                .filter(total_spent__isnull=False)
-                .order_by("-total_spent")[:5]
-            )
-
-            # Monthly revenue
-            now = datetime.now()
-            revenues = Invoice.objects.filter(
-                company=active_company,
-                issue_date__year=now.year
-            ).annotate(
-                month=TruncMonth('issue_date')
-            ).values('month').annotate(
-                total_revenue=Sum('total_gross')
-            ).order_by('month')
-
-            for revenue in revenues:
-                month_index = revenue['month'].month - 1
-                monthly_revenues[month_index] = revenue['total_revenue'] or 0
-                monthly_revenues_json = json.dumps(monthly_revenues,
-                                                   default=str)
-
-            monthly_revenue = monthly_revenues[now.month - 1]
-
-            # Yearly revenue
-            yearly_revenue = Invoice.objects.filter(
-                company=active_company,
-                issue_date__year=now.year
-            ).aggregate(total_revenue=Sum('total_gross'))['total_revenue'] or 0
-
+            monthly_revenues_json = active_company.get_monthly_revenues_json()
+            monthly_revenue = active_company.get_current_monthly_revenue()
+            yearly_revenue = active_company.get_yearly_revenue()
 
         except Company.DoesNotExist:
             active_company = None
@@ -160,6 +130,31 @@ def choose_company(request):
         {"companies": user_companies}
     )
 
+
+def handle_form_valid(view, form):
+    active_company_id = view.request.session.get('active_company_id')
+    if not active_company_id:
+        form.add_error(None, "Nie wybrano aktywnej firmy.")
+        return view.form_invalid(form)
+    try:
+        company = Company.objects.get(id=active_company_id)
+    except Company.DoesNotExist:
+        form.add_error(None, "Aktywna firma nie istnieje.")
+        return view.form_invalid(form)
+
+    form.instance.company = company
+    return super(view.__class__, view).form_valid(form)
+
+class CompanyCreateView(BaseSecuredView, CreateView):
+    model = Company
+    template_name = "frontend_templates/company_create.html"
+    form_class = CompanyForm
+    success_url = reverse_lazy('tmp_choose_company')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 class ClientsListView(BaseSecuredView, ListView):
     model = Client
     template_name = "frontend_templates/clients.html"
@@ -173,10 +168,20 @@ class ClientsListView(BaseSecuredView, ListView):
             return Client.objects.none()
 
         queryset = Client.objects.filter(company__user=self.request.user, company_id=company_id)
+
+        search_query = self.request.GET.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) |
+                Q(surname__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(nip__icontains=search_query)
+            )
+
         queryset = queryset.annotate(
             full_name_or_company=Case(
-                When(clients_company_name__isnull=False,
-                     then='clients_company_name'),
+                When(client_company_name__isnull=False,
+                     then='client_company_name'),
                 default=Concat('name', Value(' '), 'surname',
                                output_field=CharField()),
                 output_field=CharField(),
@@ -211,9 +216,15 @@ class InvoicesListView(BaseSecuredView, ListView):
     def get_queryset(self):
         company_id: int = self.request.session.get('active_company_id')
         if not company_id:
-            return Client.objects.none()
+            return Invoice.objects.none()
 
         queryset = self.model.objects.filter(company__user=self.request.user, company_id=company_id)
+        search_query = self.request.GET.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(number__icontains=search_query) |
+                Q(client__name__icontains=search_query)
+            )
         sort_param = self.request.GET.get('sort', '-issue_date')
 
         if sort_param.lstrip('-') == 'number':
@@ -249,14 +260,29 @@ class InvoiceCreateView(BaseSecuredView, CreateView):
     template_name = 'frontend_templates/invoice_create.html'
     success_url = reverse_lazy('tmp_invoices')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        company_id = self.request.session.get('active_company_id')
+        if company_id:
+            form.fields['client'].queryset = Client.objects.filter(
+                company_id=company_id,
+                company__user=self.request.user
+            )
+        else:
+            form.fields['client'].queryset = Client.objects.none()
+        return form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         company_id = self.request.session.get('active_company_id')
 
+        # Use an unsaved Invoice instance to properly initialize the inline formset
+        temp_invoice = Invoice()
+
         if self.request.POST:
-            context['item_formset'] = InvoiceItemFormSet(self.request.POST)
+            context['item_formset'] = InvoiceItemFormSet(self.request.POST, instance=temp_invoice, prefix='items')
         else:
-            context['item_formset'] = InvoiceItemFormSet()
+            context['item_formset'] = InvoiceItemFormSet(instance=temp_invoice, prefix='items')
 
         for form in context['item_formset'].forms:
             form.fields['product'].queryset = Product.objects.filter(company_id=company_id)
@@ -278,6 +304,10 @@ class InvoiceCreateView(BaseSecuredView, CreateView):
             item_formset.save()
 
             invoice.update_totals()
+            if self.request.headers.get("HX-Request") == "true":
+                response = HttpResponse()
+                response["HX-Redirect"] = reverse("htmx_home") + "?view=invoices"
+                return response
 
             return redirect(self.success_url)
         return self.form_invalid(form)
@@ -294,7 +324,17 @@ class ProductsListView(BaseSecuredView, ListView):
         if not company_id:
             return Product.objects.none()
         
-        queryset = Product.objects.filter(company_id=company_id, company__user=self.request.user)
+        queryset = Product.objects.filter(
+            company_id=company_id,
+            company__user=self.request.user
+        )
+
+        search_query = self.request.GET.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
         sort_param = self.request.GET.get('sort', '-created_at')
         return queryset.order_by(sort_param)
 
@@ -328,19 +368,7 @@ class ProductDeleteView(BaseSecuredView, DeleteView):
     template_name = "frontend_templates/product_confirm_delete.html"
     success_url = reverse_lazy("tmp_products")
 
-@login_required
-def handle_form_valid(view, form):
-    active_company_id = view.request.session.get('active_company_id')
-    if not active_company_id:
-        form.add_error(None, "Nie wybrano aktywnej firmy.")
-        return view.form_invalid(form)
-    try:
-        company = Company.objects.get(id=active_company_id)
-    except Company.DoesNotExist:
-        form.add_error(None, "Aktywna firma nie istnieje.")
-        return view.form_invalid(form)
-    form.instance.company = company
-    return super(view.__class__, view).form_valid(form)
+
 
 
 @login_required
@@ -363,14 +391,11 @@ def invoice_pdf(request, pk):
         'invoice': invoice,
     }
 
-    # Renderuj szablon HTML
     template = get_template('frontend_templates/invoice_pdf.html')
     html_string = template.render(context)
 
-    # Generuj PDF
     pdf_file = HTML(string=html_string).write_pdf()
 
-    # Przygotuj odpowiedź HTTP
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment;filename="faktura_{invoice.number}.pdf"'
 

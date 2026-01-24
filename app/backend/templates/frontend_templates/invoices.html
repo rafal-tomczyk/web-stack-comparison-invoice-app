@@ -5,6 +5,20 @@
 {% block content %}
 <div class="flex items-center justify-between mb-4">
   <h2 class="text-3xl font-bold">Faktury</h2>
+  <form method="get" class="flex-grow mx-4 max-w-xs">
+    {% if request.GET.sort %}
+      <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+    {% endif %}
+
+    <div class="join w-full">
+      <input type="text"
+             name="search"
+             class="input input-bordered join-item w-full"
+             placeholder="Szukaj faktury..."
+             value="{{ request.GET.search|default:'' }}">
+      <button type="submit" class="btn btn-primary join-item">Szukaj</button>
+    </div>
+  </form>
   <a href="{% url 'tmp_invoice_add' %}" class="btn btn-primary btn-md shadow-md">
     Dodaj fakturę
   </a>

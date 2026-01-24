@@ -1,0 +1,14 @@
+{% for client in top_clients %}
+  <div class="flex justify-between items-center border-b border-gray-200 py-2 last:border-b-0">
+    <div class="text-left">
+      <h5 class="text-l text-gray-800">{{ client }}</h5>
+    </div>
+    <div class="text-right">
+      <p class="text-sm text-gray-700">{{ client.total_spent|default:"0" }} zł</p>
+    </div>
+  </div>
+{% empty %}
+  <div class="text-gray-500 text-center py-6">
+    Brak klientów
+  </div>
+{% endfor %}

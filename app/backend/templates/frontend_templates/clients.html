@@ -5,6 +5,20 @@
 {% block content %}
 <div class="flex items-center justify-between mb-4">
   <h2 class="text-3xl font-bold">Klienci</h2>
+  <form method="get" class="flex-grow mx-4 max-w-xs">
+    {% if request.GET.sort %}
+      <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+    {% endif %}
+
+    <div class="join w-full">
+      <input type="text"
+             name="search"
+             class="input input-bordered join-item w-full"
+             placeholder="Szukaj i wciśnij Enter..."
+             value="{{ request.GET.search|default:'' }}">
+      <button type="submit" class="btn btn-primary join-item">Szukaj</button>
+    </div>
+  </form>
   <a href="{% url 'tmp_client_add' %}" class="btn btn-primary btn-md shadow-md">
     Dodaj klienta
   </a>
@@ -58,8 +72,8 @@
     <div class="grid grid-cols-5 items-center border-b border-gray-200 hover:bg-base-300 last:border-b-0 py-4">
       <!-- Nazwa firmy / Imię i nazwisko -->
       <div class="text-left text-sm font-semibold pl-4">
-        {% if client.clients_company_name %}
-        {{ client.clients_company_name }}
+        {% if client.client_company_name %}
+        {{ client.client_company_name }}
         {% else %}
         {{ client.name }} {{ client.surname }}
         {% endif %}

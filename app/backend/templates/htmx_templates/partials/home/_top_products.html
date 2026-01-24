@@ -1,0 +1,17 @@
+{% for product in top_products %}
+    <div class="items-center border-b border-gray-200 py-2 last:border-b-0">
+      <a href="{% url 'htmx_product_detail' product.pk %}"
+         class="hover:underline w-full flex justify-between ">
+        <div class="text-left">
+          <h5 class="text-l text-gray-800">{{ product.name }}</h5>
+        </div>
+        <div class="text-right">
+          <p class="text-sm text-gray-700">{{ product.total_revenue|default:"0" }} zł</p>
+        </div>
+      </a>
+    </div>
+{% empty %}
+  <div class="text-gray-500 text-center py-6">
+    Brak produktów
+  </div>
+{% endfor %}

@@ -4,7 +4,7 @@ from django.contrib.auth.views import LogoutView
 
 from ..views.templates_views import ClientsListView, InvoicesListView, InvoiceDetailView, \
     ProductsListView, ProductsDetailView, ProductUpdateView, ProductDeleteView, \
-    ProductCreateView, ClientCreateView, ClientDetailView, InvoiceCreateView, invoice_pdf
+    ProductCreateView, ClientCreateView, ClientDetailView, InvoiceCreateView, invoice_pdf, CompanyCreateView
 
 
 
@@ -21,11 +21,12 @@ urlpatterns = [
 
     #dashboard
     path("choose-company/", templates_views.choose_company, name="tmp_choose_company"),
+    path("companies/add/", CompanyCreateView.as_view(), name="tmp_company_add"),
 
     #clients
     path("clients/", ClientsListView.as_view(), name="tmp_clients"),
     path("clients/add/", ClientCreateView.as_view(), name="tmp_client_add"),
-    path("clients/<int:pk>/", ClientDetailView.as_view(), name="tmp_client_detail"),
+    path("clients/<uuid:pk>/", ClientDetailView.as_view(), name="tmp_client_detail"),
 
     #products
     path("products/", ProductsListView.as_view(), name="tmp_products"),
@@ -40,7 +41,7 @@ urlpatterns = [
     #invoices
     path("invoices/", InvoicesListView.as_view(), name="tmp_invoices"),
     path("invoices/add/", InvoiceCreateView.as_view(), name="tmp_invoice_add"),
-    path("invoices/<int:pk>/", InvoiceDetailView.as_view(), name="tmp_invoice_detail"),
-    path("invoices/<int:pk>/pdf/", invoice_pdf, name='invoice_pdf'),
-    path("invoices/<int:pk>/toggle-paid/", templates_views.toggle_invoice_paid, name="tmp_toggle_invoice_paid")
+    path("invoices/<uuid:pk>/", InvoiceDetailView.as_view(), name="tmp_invoice_detail"),
+    path("invoices/<uuid:pk>/pdf/", invoice_pdf, name='invoice_pdf'),
+    path("invoices/<uuid:pk>/toggle-paid/", templates_views.toggle_invoice_paid, name="tmp_toggle_invoice_paid")
 ]

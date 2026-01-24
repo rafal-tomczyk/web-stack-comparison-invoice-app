@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
+from django.conf.global_settings import SESSION_ENGINE
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -27,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
@@ -46,7 +48,8 @@ INSTALLED_APPS = [
     "theme",
     "crispy_forms",
     "crispy_tailwind",
-    "phonenumber_field"
+    "phonenumber_field",
+    "django_extensions"
 ]
 
 INTERNAL_IPS=[
@@ -73,7 +76,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     #
-    "django_browser_reload.middleware.BrowserReloadMiddleware"
+    # "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "backend.middleware.CompanyRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "invoice_project.urls"
@@ -109,7 +113,6 @@ DATABASES = {
         'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

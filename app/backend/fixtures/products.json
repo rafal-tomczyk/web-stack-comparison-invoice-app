@@ -3,205 +3,221 @@
     "model": "backend.product",
     "pk": "a3b1e4c6-2f7a-4d3b-9a2d-123456789abc",
     "fields": {
-      "company": 1,
-      "name": "Duży papier szpula",
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
+      "name": "Du\u017cy papier szpula",
       "description": "Papier w rozmiarze A3.",
       "unit_type": "pcs",
       "net_price": "100.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "5c9e2d4f-8b9a-4e8c-9114-def012345678",
     "fields": {
-      "company": 1,
-      "name": "Mały papier gładki",
-      "description": "Mały papier A5 idealny do druku zdjęć.",
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
+      "name": "Ma\u0142y papier g\u0142adki",
+      "description": "Ma\u0142y papier A5 idealny do druku zdj\u0119\u0107.",
       "unit_type": "pcs",
       "net_price": "50.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
-    {
+  {
     "model": "backend.product",
     "pk": "c267e8f7-fd8f-4ee8-9aeb-f0f1f60a9a7e",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Papier ozdobny",
-      "description": "Papier w różnych kolorach do tworzenia zaproszeń.",
+      "description": "Papier w r\u00f3\u017cnych kolorach do tworzenia zaprosze\u0144.",
       "unit_type": "pcs",
       "net_price": "120.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "782a1b7a-2bcd-4c0b-8897-5c07a77bbd2e",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Papier fotograficzny",
-      "description": "Błyszczący papier do wydruku zdjęć.",
+      "description": "B\u0142yszcz\u0105cy papier do wydruku zdj\u0119\u0107.",
       "unit_type": "pcs",
       "net_price": "150.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "49d9217e-773a-4f0c-9a77-5badeb25b37f",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Teczki kartonowe",
-      "description": "Zestaw teczek do archiwizacji dokumentów.",
+      "description": "Zestaw teczek do archiwizacji dokument\u00f3w.",
       "unit_type": "pcs",
       "net_price": "30.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
-    {
+  {
     "model": "backend.product",
     "pk": "7e1d13b2-6f0a-4129-9123-3e65ab4321f1",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Papier kredowy A4",
-      "description": "Gładki papier do druku broszur.",
+      "description": "G\u0142adki papier do druku broszur.",
       "unit_type": "pcs",
       "net_price": "80.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "ed5e2e59-0b7d-4067-b04c-969f0f156d4a",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Papier samoprzylepny",
       "description": "Papier do drukowania naklejek.",
       "unit_type": "pcs",
       "net_price": "90.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "c873b1de-1537-43a1-85e2-0cb43c9520a8",
     "fields": {
-      "company": 1,
+      "company": "4ad5ae12-9707-5491-9462-ce6923406f1b",
       "name": "Papier ekologiczny",
-      "description": "Recyklingowy papier do użytku biurowego.",
+      "description": "Recyklingowy papier do u\u017cytku biurowego.",
       "unit_type": "pcs",
       "net_price": "70.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "d45bfae3-347b-46c2-93bc-a9876543210f",
     "fields": {
-      "company": 2,
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
       "name": "Lanie wody",
-      "description": "Polega na laniu wody przez określony czas.",
+      "description": "Polega na laniu wody przez okre\u015blony czas.",
       "unit_type": "h",
       "net_price": "20.00",
-      "tax_rate": "6.00"
+      "tax_rate": "6",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "f71c098b-4d56-4a83-b08e-2b4e5e4f4f2d",
     "fields": {
-      "company": 2,
-      "name": "Wylewanie za kołnież",
-      "description": "Polega na wylewaniu wody z określonego miejsca",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Wylewanie za ko\u0142nie\u017c",
+      "description": "Polega na wylewaniu wody z okre\u015blonego miejsca",
       "unit_type": "h",
       "net_price": "60.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
-
   {
     "model": "backend.product",
     "pk": "4f9b0a5e-7f53-4b88-9a41-26c8d2e1a34c",
     "fields": {
-      "company": 2,
-      "name": "Zakręcanie kurków",
-      "description": "Usługa zakręcania zaworów wodnych.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Zakr\u0119canie kurk\u00f3w",
+      "description": "Us\u0142uga zakr\u0119cania zawor\u00f3w wodnych.",
       "unit_type": "h",
       "net_price": "45.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "bb4f56c0-e983-4c49-9b6a-198ef09f67d5",
     "fields": {
-      "company": 2,
-      "name": "Udrażnianie rur",
-      "description": "Przepychanie i udrażnianie instalacji wodnej.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Udra\u017cnianie rur",
+      "description": "Przepychanie i udra\u017cnianie instalacji wodnej.",
       "unit_type": "h",
       "net_price": "90.00",
-      "tax_rate": "12.00"
+      "tax_rate": "12",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "ae88d0a5-1730-4ee4-85b9-12e78bc22356",
     "fields": {
-      "company": 2,
-      "name": "Naprawa przecieków",
-      "description": "Usuwanie wycieków z instalacji wodnej.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Naprawa przeciek\u00f3w",
+      "description": "Usuwanie wyciek\u00f3w z instalacji wodnej.",
       "unit_type": "h",
       "net_price": "100.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "20f17eab-7593-4fa1-8a9b-2a331a4f3c72",
     "fields": {
-      "company": 2,
-      "name": "Czyszczenie filtrów",
-      "description": "Konserwacja i czyszczenie filtrów wodnych.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Czyszczenie filtr\u00f3w",
+      "description": "Konserwacja i czyszczenie filtr\u00f3w wodnych.",
       "unit_type": "h",
       "net_price": "50.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "bb01b7e8-3ee1-4f5a-a289-0912a7be50b6",
     "fields": {
-      "company": 2,
-      "name": "Instalacja liczników",
-      "description": "Montaż liczników do pomiaru zużycia wody.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Instalacja licznik\u00f3w",
+      "description": "Monta\u017c licznik\u00f3w do pomiaru zu\u017cycia wody.",
       "unit_type": "h",
       "net_price": "120.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "d6ef271d-b7a3-4c6c-bc87-c8d62e4763c9",
     "fields": {
-      "company": 2,
-      "name": "Przegląd instalacji",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Przegl\u0105d instalacji",
       "description": "Kontrola stanu instalacji wodno-kanalizacyjnej.",
       "unit_type": "h",
       "net_price": "80.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   },
   {
     "model": "backend.product",
     "pk": "c3e4f0d4-0b1e-4eb1-8293-b2389b5117f1",
     "fields": {
-      "company": 2,
-      "name": "Montaż zaworów",
-      "description": "Profesjonalny montaż zaworów wodnych.",
+      "company": "b48d51c5-00be-5962-95c7-a1ec9f0ba19c",
+      "name": "Monta\u017c zawor\u00f3w",
+      "description": "Profesjonalny monta\u017c zawor\u00f3w wodnych.",
       "unit_type": "h",
       "net_price": "60.00",
-      "tax_rate": "8.00"
+      "tax_rate": "8",
+      "created_at": "2025-01-01T00:00:00Z"
     }
   }
 ]

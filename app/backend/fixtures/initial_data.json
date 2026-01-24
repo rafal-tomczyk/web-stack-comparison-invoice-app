@@ -1,89 +1,86 @@
 [
-
-
-
-
-{
-  "model": "backend.address",
-  "pk": 1,
-  "fields": {
-    "user": 2,
-    "address_type": "user",
-    "region": "Śląskie",
-    "zip_code": "42-690",
-    "city": "Hanusek",
-    "street": "Chrobrego",
-    "number": "103",
-    "apartment": null
+  {
+    "model": "backend.address",
+    "pk": "592b74ad-4799-54b1-b9c6-fc91fff1f2ee",
+    "fields": {
+      "user": 2,
+      "address_type": "user",
+      "region": "Śląskie",
+      "zip_code": "42-690",
+      "city": "Hanusek",
+      "street": "Chrobrego",
+      "number": "103",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": "48cd30c1-d905-54f7-8afe-68762b88cf31",
+    "fields": {
+      "user": 2,
+      "address_type": "company",
+      "region": "Śląskie",
+      "zip_code": "42-690",
+      "city": "Hanusek",
+      "street": "Chrobrego",
+      "number": "103",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": "c2b8d87d-8aac-501b-abba-6f3bfc421f38",
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Śląskie",
+      "zip_code": "40-074",
+      "city": "Katowice",
+      "street": "Raciborska",
+      "number": "22",
+      "apartment": "14b"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": "3a2268f2-bdf5-5237-91e1-3ab0d98da35f",
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Mazowieckie",
+      "zip_code": "00-123",
+      "city": "Warszawa",
+      "street": "Nowowiejska",
+      "number": "20",
+      "apartment": "5a"
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": "7069df68-2c60-59cb-82cd-bdf2bfc50acc",
+    "fields": {
+      "user": 2,
+      "address_type": "company",
+      "region": "Pomorskie",
+      "zip_code": "80-001",
+      "city": "Gdańsk",
+      "street": "Szeroka",
+      "number": "55",
+      "apartment": null
+    }
+  },
+  {
+    "model": "backend.address",
+    "pk": "442c8eee-67ff-5e78-a5d3-556bf17a2f33",
+    "fields": {
+      "user": 2,
+      "address_type": "client",
+      "region": "Wielkopolskie",
+      "zip_code": "61-001",
+      "city": "Poznań",
+      "street": "Jeżycka",
+      "number": "12",
+      "apartment": "3b"
+    }
   }
-},
-{
-  "model": "backend.address",
-  "pk": 2,
-  "fields": {
-    "user": 2,
-    "address_type": "company",
-    "region": "Śląskie",
-    "zip_code": "42-690",
-    "city": "Hanusek",
-    "street": "Chrobrego",
-    "number": "103",
-    "apartment": null
-  }
-},
-{
-  "model": "backend.address",
-  "pk": 3,
-  "fields": {
-    "user": 2,
-    "address_type": "client",
-    "region": "Śląskie",
-    "zip_code": "40-074",
-    "city": "Katowice",
-    "street": "Raciborska",
-    "number": "22",
-    "apartment": "14b"
-  }
-},{
-  "model": "backend.address",
-  "pk": 4,
-  "fields": {
-    "user": 2,
-    "address_type": "client",
-    "region": "Mazowieckie",
-    "zip_code": "00-123",
-    "city": "Warszawa",
-    "street": "Nowowiejska",
-    "number": "20",
-    "apartment": "5a"
-  }
-},
-{
-  "model": "backend.address",
-  "pk": 5,
-  "fields": {
-    "user": 2,
-    "address_type": "company",
-    "region": "Pomorskie",
-    "zip_code": "80-001",
-    "city": "Gdańsk",
-    "street": "Szeroka",
-    "number": "55",
-    "apartment": null
-  }
-},
-{
-  "model": "backend.address",
-  "pk": 6,
-  "fields": {
-    "user": 2,
-    "address_type": "client",
-    "region": "Wielkopolskie",
-    "zip_code": "61-001",
-    "city": "Poznań",
-    "street": "Jeżycka",
-    "number": "12",
-    "apartment": "3b"
-  }
-}
 ]

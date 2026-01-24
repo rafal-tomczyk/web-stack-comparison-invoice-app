@@ -1,0 +1,38 @@
+<div class="grid grid-cols-5 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+  <p class="text-left pl-4">
+    <a
+      href="?sort={% if request.GET.sort == 'full_name_or_company' %}-full_name_or_company{% else %}full_name_or_company{% endif %}"
+      class="hover:underline"
+    >
+      Nazwa klienta
+      {% if request.GET.sort == 'full_name_or_company' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-full_name_or_company' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-left">NIP</p>
+  <p class="text-left">REGON</p>
+
+  <p class="text-left">
+    <a
+      href="?sort={% if request.GET.sort == 'email' %}-email{% else %}email{% endif %}"
+      class="hover:underline"
+    >
+      Email
+      {% if request.GET.sort == 'email' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-email' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-left">Telefon</p>
+</div>

@@ -39,7 +39,7 @@ if '$RESET_DB' == 'true' or not Company.objects.exists():
         'backend/fixtures/addresses.json'
     ]
     for fixture in fixtures:
-        call_command('loaddata', fixture)
+        call_command('loaddata', fixture, verbosity=2)
 "
 
 echo "Starting server..."

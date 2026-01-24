@@ -17,6 +17,13 @@
     {{ form.as_table }}
 
     {{ item_formset.management_form }}
+
+    {% if item_formset.non_form_errors %}
+      <div class="alert alert-error my-2">
+        {{ item_formset.non_form_errors }}
+      </div>
+    {% endif %}
+
     <table class="table w-full">
       <thead>
         <tr>
@@ -34,15 +41,22 @@
           <td>{{ form.quantity }}</td>
           <td>{{ form.net_price }}</td>
           <td>{{ form.tax_rate }}</td>
-          <td>
-            {% if form.instance.pk %}
-              {{ form.DELETE }}
-            {% else %}
+           <td>
+              <!-- Ukrywamy checkbox DELETE za pomocą klasy CSS 'hidden' -->
+              <div class="hidden">
+                {{ form.DELETE }}
+              </div>
+
+              <!-- Jeśli formularz nie ma pola DELETE w 'hidden' (np. przy nowych wierszach),
+                   JS sam obsłuży logikę przez pole ukryte -->
+              {% if not form.instance.pk %}
+                <input type="hidden" name="{{ form.prefix }}-DELETE" id="id_{{ form.prefix }}-DELETE" />
+              {% endif %}
+
               <button type="button" class="btn btn-sm btn-error delete-row">
                 Usuń
               </button>
-            {% endif %}
-          </td>
+            </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -56,93 +70,105 @@
   </form>
 </div>
 
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const addRowBtn = document.getElementById("add-row");
-    const itemsTable = document.getElementById("items-table");
+  document.addEventListener("DOMContentLoaded", function () {
+      const addRowBtn = document.getElementById("add-row");
+      const itemsTable = document.getElementById("items-table");
+      const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
 
-    // Management form values
-    const totalFormsInput = document.getElementById("id_items-TOTAL_FORMS");
+      addRowBtn.addEventListener("click", function () {
+          const currentForms = parseInt(totalFormsInput.value);
+          const newFormIndex = currentForms;
 
-    addRowBtn.addEventListener("click", function () {
-        const currentForms = parseInt(totalFormsInput.value);
-        const newFormIndex = currentForms;
+          // Pobierz pierwszy formularz jako wzór
+          const rows = document.querySelectorAll(".item-form");
+          if (rows.length === 0) return;
 
-        // Pobierz pierwszy formularz jako wzór
-        const emptyForm = document.querySelector(".item-form").cloneNode(true);
+          const emptyForm = rows[0].cloneNode(true);
+          emptyForm.style.display = "";
 
-        // Wyczyść pola
-        emptyForm.querySelectorAll("input, select").forEach((field) => {
-            // podmień index (form-0 → form-1 itd.)
-            const name = field.getAttribute("name").replace(
-                /-(\d+)-/,
-                `-${newFormIndex}-`
-            );
-            const id = field.getAttribute("id").replace(
-                /_(\d+)_/,
-                `_${newFormIndex}_`
-            );
-            field.setAttribute("name", name);
-            field.setAttribute("id", id);
+          emptyForm.querySelectorAll("input, select, textarea").forEach((field) => {
+              const name = field.getAttribute("name");
+              const id = field.getAttribute("id");
 
-            // wyczyść wartości
-            if (field.tagName === "SELECT") {
-                field.selectedIndex = 0;
-            } else {
-                field.value = "";
-            }
-        });
+              if (name) {
+                  field.setAttribute("name", name.replace(/items-(\d+)-/, `items-${newFormIndex}-`));
+              }
+              if (id) {
+                  field.setAttribute("id", id.replace(/items-(\d+)-/, `items-${newFormIndex}-`));
+              }
 
-        // Dodaj przycisk usuń
-        emptyForm.querySelector(".delete-row").addEventListener("click", function () {
-            this.closest("tr").remove();
-        });
+              if (field.tagName === "SELECT" && field.hasAttribute('data-listener-attached')) {
+                  field.removeAttribute('data-listener-attached');
+              }
 
-        // Dodaj nowy formularz do tabeli
-        itemsTable.appendChild(emptyForm);
+              if (field.tagName === "SELECT") {
+                  field.selectedIndex = 0;
+              } else if (field.type === "checkbox") {
+                  field.checked = false;
+              } else {
+                  // Jeśli to pole ilości, ustaw 1, inaczej pusty string
+                  field.value = name && name.includes("quantity") ? "1" : "";
+              }
+          });
 
-        // Zwiększ TOTAL_FORMS
-        totalFormsInput.value = newFormIndex + 1;
-    });
+          const deleteBtn = emptyForm.querySelector(".delete-row");
+          if (deleteBtn) {
+              deleteBtn.addEventListener("click", function () {
+                  const row = this.closest("tr");
+                  const delCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+                  const delHidden = row.querySelector('input[type="hidden"][name$="-DELETE"]');
+                  if (delCheckbox) delCheckbox.checked = true;
+                  if (delHidden) delHidden.value = "on";
+                  row.style.display = "none";
+              });
+          }
 
-    // Obsługa usuwania dla istniejących przycisków
-    document.querySelectorAll(".delete-row").forEach((btn) => {
-        btn.addEventListener("click", function () {
-            this.closest("tr").remove();
-        });
-    });
-});
+          itemsTable.appendChild(emptyForm);
+          totalFormsInput.value = newFormIndex + 1;
 
-function attachProductChangeListeners() {
-    document.querySelectorAll('select[name$="-product"]').forEach(select => {
-        select.addEventListener('change', function() {
-            const productId = this.value;
-            const row = this.closest('tr');
+          attachProductChangeListeners();
+      });
 
-            if (!productId) return;
+      document.querySelectorAll(".delete-row").forEach((btn) => {
+          btn.addEventListener("click", function () {
+              const row = this.closest("tr");
+              const delCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+              const delHidden = row.querySelector('input[type="hidden"][name$="-DELETE"]');
+              if (delCheckbox) delCheckbox.checked = true;
+              if (delHidden) delHidden.value = "on";
+              row.style.display = "none";
+          });
+      });
+  });
 
-            const url = `/templates/products/${productId}/data`;
+  function attachProductChangeListeners() {
+      document.querySelectorAll('select[name^="items-"][name$="-product"]:not([data-listener-attached])').forEach(select => {
+          select.setAttribute('data-listener-attached', 'true');
 
-            fetch(url, { method: 'GET' })
-                .then(res => res.json())
-                .then(data => {
-                    const netInput = row.querySelector('input[name$="-net_price"]');
-                    const taxInput = row.querySelector('select[name$="-tax_rate"]');
+          select.addEventListener('change', function() {
+              const productId = this.value;
+              const row = this.closest('tr');
+              if (!productId) return;
 
-                    if (netInput) netInput.value = data.net_price;
-                    if (taxInput) taxInput.value = data.tax_rate;
-                });
-        });
-    });
-}
+              const url = `/templates/products/${productId}/data`;
+              fetch(url, { method: 'GET' })
+                  .then(res => res.json())
+                  .then(data => {
+                      const netInput = row.querySelector('input[name$="-net_price"]');
+                      const taxInput = row.querySelector('input[name$="-tax_rate"]');
+                      if (netInput) netInput.value = data.net_price;
+                      if (taxInput) taxInput.value = data.tax_rate;
+                  })
+                  .catch(err => {
+                      console.error('Błąd pobierania danych produktu:', err);
+                  });
+          });
+      });
+  }
 
-// Wywołaj przy ładowaniu strony
-attachProductChangeListeners();
-
-// Przy dynamicznym dodaniu nowego wiersza też trzeba przypiąć listener
-document.getElementById('add-row').addEventListener('click', function() {
-    setTimeout(attachProductChangeListeners, 50); // drobne opóźnienie, żeby elementy zdążyły się dodać
-});
+  document.addEventListener("DOMContentLoaded", attachProductChangeListeners);
 </script>
 
 {% endblock %}

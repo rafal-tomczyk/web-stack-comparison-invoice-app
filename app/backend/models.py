@@ -1,4 +1,5 @@
-from datetime import date
+import json
+from datetime import date, datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,9 +7,44 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.conf import settings
 import uuid
 
-from django.db.models import Max
+from django.db.models import Max, Sum, F, Count
+from django.db.models.functions import TruncMonth, Round
 from phonenumber_field.modelfields import PhoneNumberField
 
+
+def validate_nip(nip):
+    if len(nip) != 10 or not nip.isdigit():
+        raise ValidationError("NIP musi składać się z 10 cyfr.")
+    weights = [6, 5, 7, 2, 3, 4, 5, 6, 7]
+    control_sum = sum([int(nip[i]) * weights[i] for i in range(9)])
+    if control_sum % 11 != int(nip[9]):
+        raise ValidationError("NIP jest nieprawidłowy.")
+
+def validate_regon(regon):
+    if len(regon) not in (9, 14) or not regon.isdigit():
+        raise ValidationError("REGON musi zawierać 9 lub 14 cyfr.")
+    weights_9 = [8, 9, 2, 3, 4, 5, 6, 7]
+    weights_14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 0, 5, 9]
+
+    if len(regon) == 9:
+        control_sum = sum([int(regon[i]) * weights_9[i] for i in range(8)])
+        if control_sum % 11 != int(regon[8]):
+            raise ValidationError("REGON jest nieprawidłowy.")
+    elif len(regon) == 14:
+        control_sum = sum([int(regon[i]) * weights_14[i] for i in range(13)])
+        if control_sum % 11 != int(regon[13]):
+            raise ValidationError("REGON jest nieprawidłowy.")
+
+
+class UUIDModel(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    class Meta:
+        abstract = True
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -39,54 +75,95 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Company(models.Model):
+
+class Company(UUIDModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='companies'
+        related_name='companies',
+        blank=False,
+        null=False
     )
-    name = models.CharField(max_length=225)
-    nip = models.CharField(max_length=10)
-    regon = models.CharField(max_length=14, blank=True)
-    email = models.EmailField()
+    name = models.CharField(max_length=225, blank=False)
+    nip = models.CharField(
+        max_length=10,
+        blank=False,
+        unique=True,
+        validators=[validate_nip]
+    )
+    regon = models.CharField(max_length=14, blank=True, validators=[validate_regon])
+    email = models.EmailField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_latest_invoices(self, limit=10):
+        return self.invoices.order_by("-issue_date")[:limit]
+
+    def get_top_clients(self, limit=5):
+        return (
+            self.clients
+            .annotate(total_spent=Sum("invoices__total_gross"))
+            .filter(total_spent__isnull=False)
+            .order_by("-total_spent")[:limit]
+    )
+
+    def get_monthly_revenues(self, year=None):
+        if year is None:
+            year = datetime.now().year
+
+        monthly_revenues = [0] * 12
+
+        revenues = self.invoices.filter(
+            issue_date__year=year
+        ).annotate(
+            month=TruncMonth('issue_date')
+        ).values('month').annotate(
+            total_revenue=Sum('total_gross')
+        ).order_by('month')
+
+        for revenue in revenues:
+            month_index = revenue['month'].month - 1
+            monthly_revenues[month_index] = revenue['total_revenue'] or 0
+
+        return monthly_revenues
+
+    def get_monthly_revenues_json(self, year=None):
+        return json.dumps(self.get_monthly_revenues(year), default=str)
+
+    def get_current_monthly_revenue(self):
+        now = datetime.now()
+        monthly_revenues = self.get_monthly_revenues(now.year)
+        return monthly_revenues[now.month - 1]
+
+    def get_yearly_revenue(self, year=None):
+        if year is None:
+            year = datetime.now().year
+
+        return self.invoices.filter(
+            issue_date__year=year
+        ).aggregate(total_revenue=Sum('total_gross'))['total_revenue'] or 0
+
+    def get_top_products(self, limit=5):
+        return (Product.objects.filter(
+            invoiceitem__invoice__company=self
+        ).annotate(
+            total_sold=Sum('invoiceitem__quantity'),
+            total_revenue=Round(Sum(
+                F('invoiceitem__net_price') * F('invoiceitem__quantity')
+            ), 2)
+        ).order_by('-total_sold')[:limit])
 
     def __str__(self):
         return self.name
 
 
-def validate_nip(nip):
-    if len(nip) != 10 or not nip.isdigit():
-        raise ValidationError("NIP musi składać się z 10 cyfr.")
-    weights = [6, 5, 7, 2, 3, 4, 5, 6, 7]
-    control_sum = sum([int(nip[i]) * weights[i] for i in range(9)])
-    if control_sum % 11 != int(nip[9]):
-        raise ValidationError("NIP jest nieprawidłowy.")
-
-def validate_regon(regon):
-    if len(regon) not in (9, 14) or not regon.isdigit():
-        raise ValidationError("REGON musi zawierać 9 lub 14 cyfr.")
-    weights_9 = [8, 9, 2, 3, 4, 5, 6, 7]
-    weights_14 = [2, 4, 8, 5, 0, 9, 7, 3, 6, 1, 0, 5, 9]
-
-    if len(regon) == 9:
-        control_sum = sum([int(regon[i]) * weights_9[i] for i in range(8)])
-        if control_sum % 11 != int(regon[8]):
-            raise ValidationError("REGON jest nieprawidłowy.")
-    elif len(regon) == 14:
-        control_sum = sum([int(regon[i]) * weights_14[i] for i in range(13)])
-        if control_sum % 11 != int(regon[13]):
-            raise ValidationError("REGON jest nieprawidłowy.")
-
-
-class Client(models.Model):
+class Client(UUIDModel):
     company = models.ForeignKey(
         "Company",
         on_delete=models.PROTECT,
         related_name="clients"
     )
-    clients_company_name = models.CharField(
+    client_company_name = models.CharField(
         max_length=255,
         null=True,
         blank=True,
@@ -99,39 +176,53 @@ class Client(models.Model):
     phone_number = PhoneNumberField(region="PL", blank=True, null=True)
 
     def __str__(self):
-        if self.clients_company_name:
-            return self.clients_company_name
+        if self.client_company_name:
+            return self.client_company_name
         return f"{self.name} {self.surname or ''}".strip()
 
 
-class Product(models.Model):
+
+class Product(UUIDModel):
     UNIT_CHOICES = [
         ('pcs', 'Sztuki'),
         ('h', 'Godziny'),
         ('kg', 'Kilogramy'),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    TAX_RATE_CHOICES = [
+        (0, '0%'),
+        (5, '5%'),
+        (8, '8%'),
+        (23, '23%'),
+        (0, 'zw.')
+    ]
+
     company = models.ForeignKey(
         "Company",
         on_delete=models.PROTECT,
         related_name="products"
     )
     name = models.CharField(max_length=225)
-    description = models.TextField()
-    unit_type = models.CharField(max_length=10, choices=UNIT_CHOICES)
+    description = models.TextField(blank=True)
+    unit_type = models.CharField(
+        max_length=10,
+        choices=UNIT_CHOICES,
+        default='pcs'
+    )
     net_price = models.DecimalField(max_digits=10, decimal_places=2)
-    tax_rate = models.DecimalField(max_digits=4, decimal_places=2)
+    tax_rate = models.IntegerField(
+        choices=TAX_RATE_CHOICES,
+        default=23
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
 
-    def calc_brutto(self):
+    def calculate_brutto(self):
         return self.net_price * (1 + self.tax_rate / 100)
 
-
-class Invoice(models.Model):
+class Invoice(UUIDModel):
     PAYMENT_METHODS =[
         ('cash', 'Gotówka'),
         ('transfer', 'Przelew Bankowy'),
@@ -207,7 +298,7 @@ class Invoice(models.Model):
             self.number = self.generate_invoice_number()
         super().save(*args, **kwargs)
 
-class InvoiceItem(models.Model):
+class InvoiceItem(UUIDModel):
     invoice = models.ForeignKey(
         "Invoice",
         on_delete=models.CASCADE,
@@ -251,7 +342,7 @@ class InvoiceItem(models.Model):
         self.invoice.update_totals()
 
 
-class Address(models.Model):
+class Address(UUIDModel):
     USER_ADDRESS_TYPES = [
         ('user', 'User'),
         ('company', 'Company'),

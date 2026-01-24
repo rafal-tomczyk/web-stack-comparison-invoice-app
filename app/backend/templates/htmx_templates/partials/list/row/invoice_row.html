@@ -1,0 +1,22 @@
+{% for invoice in objects %}
+<a href="{% url 'tmp_invoice_detail' invoice.pk %}">
+  <div class="grid grid-cols-6 items-center border-b border-gray-200 hover:bg-base-300 py-4">
+    <div class="pl-4 font-semibold">{{ invoice.number }}</div>
+    <div>{{ invoice.client }}</div>
+    <div>{{ invoice.issue_date|date:'d.m.Y' }}</div>
+    <div class="text-center">
+      {% if invoice.paid %}
+        <span class="text-green-600">Opłacona</span>
+      {% else %}
+        <span class="text-red-600">Nieopłacona</span>
+      {% endif %}
+    </div>
+    <div class="text-right font-bold">{{ invoice.total_net }} zł</div>
+    <div class="text-right font-bold pr-4">{{ invoice.total_gross }} zł</div>
+  </div>
+</a>
+{% empty %}
+<div class="text-gray-500 text-center py-6">
+  Brak faktur do wyświetlenia.
+</div>
+{% endfor %}

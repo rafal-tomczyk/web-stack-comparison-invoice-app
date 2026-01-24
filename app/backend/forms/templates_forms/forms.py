@@ -46,36 +46,9 @@ class LoginForm(AuthenticationForm):
 
 
 class ProductForm(forms.ModelForm):
-    VAT_CHOICES = [
-        (23, "23%"),
-        (8, "8%"),
-        (5, "5%"),
-        (0, "0%"),
-        ("custom", "Inna (wpisz ponizej")
-    ]
-
-    tax_rate_choice = forms.ChoiceField(
-        choices=VAT_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'select select-bordered w-full',
-        }),
-        label="Stawka VAT (%)"
-    )
-    custom_tax_rate = forms.DecimalField(
-        max_value=100,
-        min_value=0,
-        required=False,
-        widget=forms.NumberInput(attrs={
-            'class': 'input input-bordered w-full mt-2',
-            'placeholder': 'Wpisz niestandardową stawkę VAT (%)',
-            'step': '0.01'
-        }),
-        label="Niesterowana stawka"
-    )
-
     class Meta:
         model = Product
-        fields = ['name', 'description', 'unit_type', 'net_price']
+        fields = ['name', 'description', 'unit_type', 'net_price', 'tax_rate']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
@@ -93,46 +66,17 @@ class ProductForm(forms.ModelForm):
                 'class': 'input input-bordered w-full',
                 'placeholder': 'Cena netto'
             }),
+            'tax_rate': forms.Select(attrs={
+                'class': 'select select-bordered w-full'
+            }),
         }
         labels = {
             'name': 'Nazwa produktu',
             'description': 'Opis produktu',
             'unit_type': 'Typ jednostki',
             'net_price': 'Cena netto',
+            'tax_rate': 'Stawka VAT'
         }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        tax_rate_choice = cleaned_data.get("tax_rate_choice")
-        custom_tax_rate = cleaned_data.get("custom_tax_rate")
-
-        # Walidacja opcji niestandardowej
-        if tax_rate_choice == 'custom':
-            if custom_tax_rate is None:
-                raise forms.ValidationError(
-                    "Wybierz wartość VAT lub wpisz stawkę ręcznie.")
-            if custom_tax_rate < 0 or custom_tax_rate > 100:
-                raise forms.ValidationError(
-                    "Stawka VAT musi być między 0 a 100.")
-            cleaned_data['tax_rate'] = custom_tax_rate
-        else:
-            cleaned_data['tax_rate'] = int(tax_rate_choice)
-
-        return cleaned_data
-
-    def save(self, commit = True):
-        instance = super().save(commit=False)
-        tax_rate_choice = self.cleaned_data.get("tax_rate_choice")
-        custom_tax_rate = self.cleaned_data.get("custom_tax_rate")
-
-        if tax_rate_choice == 'custom' and custom_tax_rate is not None:
-            instance.tax_rate = custom_tax_rate
-        else:
-            instance.tax_rate = int(tax_rate_choice)
-
-        if commit:
-            instance.save()
-        return instance
 
 
 class ClientForm(forms.ModelForm):
@@ -150,9 +94,9 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
 
-        fields = ['clients_company_name', 'name', 'surname', 'nip', 'regon', 'email', 'phone_number']
+        fields = ['client_company_name', 'name', 'surname', 'nip', 'regon', 'email', 'phone_number']
         widgets = {
-            'clients_company_name': forms.TextInput(attrs={
+            'client_company_name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full mt-2',
                 'placeholder': 'Nazwa firmy klienta',
             }),
@@ -178,7 +122,7 @@ class ClientForm(forms.ModelForm):
             }),
         }
         labels = {
-            'clients_company_name': 'Nazwa firmy klienta',
+            'client_company_name': 'Nazwa firmy klienta',
             'name': 'Imię',
             'surname': 'Nazwisko',
             'nip': 'NIP',
@@ -313,14 +257,21 @@ class InvoiceForm(forms.ModelForm):
 
 
 class InvoiceItemForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set default quantity to 1 for new/unbound forms; bound forms keep submitted value
+        if not self.is_bound and (not getattr(self.instance, 'pk', None)):
+            self.fields['quantity'].initial = 1
+
+
     class Meta:
         model = InvoiceItem
         fields = ['product', 'quantity', 'net_price', 'tax_rate']
         widgets = {
             'product': forms.Select(attrs={'class': 'form-select'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-input'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-input', 'min': '1', 'value': '1'}),
             'net_price': forms.NumberInput(attrs={'class': 'form-input'}),
-            'tax_rate': forms.Select(attrs={'class': 'form-select'}),
+            'tax_rate': forms.NumberInput(attrs={'class': 'form-input', 'step': '0.01', 'min': '0', 'max': '100'}),
         }
 
 
@@ -328,7 +279,42 @@ InvoiceItemFormSet = inlineformset_factory(
     Invoice,
     InvoiceItem,
     form=InvoiceItemForm,
-    extra=1,
+    extra=0,
     can_delete=True,
-    validate_min=True
+    validate_min=True,
+    min_num=1
 )
+
+class CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields =[
+            'name',
+            'nip',
+            'regon',
+            'email'
+        ]
+        labels = {
+            'name': 'Nazwa Firmy',
+            'nip': 'NIP',
+            'regon': 'REGON',
+            'email': 'Email'
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full mt-2',
+                'placeholder': 'Nazwa firmy',
+            }),
+            'nip': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full mt-2',
+                'placeholder': 'NIP'
+            }),
+            'regon': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full mt-2',
+                'placeholder': 'REGON'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'input input-bordered w-full mt-2',
+                'placeholder': 'Adres e-mail'
+            }),
+        }

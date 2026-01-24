@@ -1,0 +1,97 @@
+<div class="grid grid-cols-6 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+  <p class="text-left pl-4">
+    <a
+      href="?sort={% if request.GET.sort == 'number' %}-number{% else %}number{% endif %}"
+      class="hover:underline"
+    >
+      Numer
+      {% if request.GET.sort == 'number' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-number' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-left">
+    <a
+      href="?sort={% if request.GET.sort == 'client__name' %}-client__name{% else %}client__name{% endif %}"
+      class="hover:underline"
+    >
+      Klient
+      {% if request.GET.sort == 'client__name' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-client__name' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-left">
+    <a
+      href="?sort={% if request.GET.sort == 'issue_date' %}-issue_date{% else %}issue_date{% endif %}"
+      class="hover:underline"
+    >
+      Data wystawienia
+      {% if request.GET.sort == 'issue_date' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-issue_date' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-center">
+    <a
+      href="?sort={% if request.GET.sort == 'paid' %}-paid{% else %}paid{% endif %}"
+      class="hover:underline"
+    >
+      Status
+      {% if request.GET.sort == 'paid' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-paid' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-right">
+    <a
+      href="?sort={% if request.GET.sort == 'total_net' %}-total_net{% else %}total_net{% endif %}"
+      class="hover:underline"
+    >
+      Kwota netto
+      {% if request.GET.sort == 'total_net' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-total_net' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+
+  <p class="text-right pr-4">
+    <a
+      href="?sort={% if request.GET.sort == 'total_gross' %}-total_gross{% else %}total_gross{% endif %}"
+      class="hover:underline"
+    >
+      Kwota brutto
+      {% if request.GET.sort == 'total_gross' %}
+        <span class="text-blue-600">&#8593;</span>
+      {% elif request.GET.sort == '-total_gross' %}
+        <span class="text-blue-600">&#8595;</span>
+      {% else %}
+        <span class="text-gray-400">&#8597;</span>
+      {% endif %}
+    </a>
+  </p>
+</div>

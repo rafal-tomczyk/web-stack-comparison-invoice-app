@@ -1,0 +1,75 @@
+<tr data-prefix="{{ form.prefix }}">
+  <td>
+    <select
+      name="{{ form.product.html_name }}"
+      id="{{ form.product.id_for_label }}"
+      class="select select-bordered w-full"
+      hx-get="{% url 'htmx_invoice_item_autofill' %}"
+      hx-trigger="change"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+      hx-vals="js:{
+        product_id: event.target.value,
+        prefix: '{{ form.prefix }}'
+      }">
+      <option value="">-- Wybierz produkt --</option>
+      {% for choice in form.product.field.queryset %}
+        <option value="{{ choice.pk }}" {% if form.product.value == choice.pk %}selected{% endif %}>
+          {{ choice.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <input
+      type="number"
+      name="{{ form.quantity.html_name }}"
+      id="{{ form.quantity.id_for_label }}"
+      value="{% firstof form.quantity.value 1 %}"
+      min="1"
+      class="input input-bordered w-full" />
+  </td>
+  <td>
+    <input
+      type="number"
+      name="{{ form.net_price.html_name }}"
+      id="{{ form.net_price.id_for_label }}"
+      value="{{ form.net_price.value|default:'' }}"
+      step="0.01"
+      class="input input-bordered w-full" />
+  </td>
+  <td>
+    <input
+      type="number"
+      name="{{ form.tax_rate.html_name }}"
+      id="{{ form.tax_rate.id_for_label }}"
+      value="{{ form.tax_rate.value|default:'' }}"
+      step="0.01"
+      min="0"
+      max="100"
+      class="input input-bordered w-full" />
+  </td>
+  <td>
+    {% if form.DELETE %}
+      <input
+        type="hidden"
+        name="{{ form.DELETE.html_name }}"
+        id="{{ form.DELETE.id_for_label }}"
+        value="" />
+    {% endif %}
+
+    <button
+      type="button"
+      class="btn btn-sm btn-error"
+      hx-on:click="
+        // Znajdź ukryte pole DELETE i oznacz wiersz jako usunięty
+        let deleteField = this.closest('tr').querySelector('input[name$=\"-DELETE\"]');
+        if (deleteField) {
+          deleteField.value = 'on';
+        }
+        this.closest('tr').style.display = 'none';
+      ">
+      Usuń
+    </button>
+  </td>
+</tr>

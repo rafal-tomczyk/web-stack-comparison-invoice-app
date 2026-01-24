@@ -4,54 +4,52 @@
 
 {% block content %}
 
-
-<!-- Górny row -->
+{% if not request.GET.view %}
 <div class="top">
-  {% if active_company %}
   <h3 class="text-3xl font-bold mb-4">{{ active_company.name }}</h3>
 
   <div class="boxes flex gap-8">
 
 
-    <!-- Left top -->
-    <div class="top-left card w-1/2 h-full flex-grow">
-
-      <!-- Ostatnie faktury -->
-      <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
-      <div class="card-title text-center w-full pt-4 pl-6 pb-4 font-semibold text-lg">Ostatnie faktury</div>
-      <div class="grid grid-cols-3 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
-        <p class="text-left">Klient</p>
-        <p class="text-center">Numer</p>
-        <p class="text-right">Wartość</p>
-      </div>
-
-      <!-- Wiersze z fakturami -->
-        <div class="card-body p-6">
-          {% for invoice in invoices %}
-          <div class="grid grid-cols-3 items-center py-2 border-b border-gray-200 last:border-b-0">
-            <!-- Client -->
-            <div class="text-left text-sm text-gray-700">
-              {{ invoice.client }}
-            </div>
-
-            <!-- Invoice num -->
-            <div class="text-center text-l text-gray-800">
-              {{ invoice.number }}
-            </div>
-
-            <!-- Gross -->
-            <div class="text-right text-sm font-bold text-gray-900">
-              {{ invoice.total_gross }} zł
-            </div>
-          </div>
-          {% empty %}
-          <div class="text-gray-500 text-center py-6">
-            Brak faktur
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+ <!-- Left top -->
+<div class="top-left card w-1/2 h-full flex-grow flex">
+  <!-- Ostatnie faktury -->
+  <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box w-full flex flex-col">
+    <div class="card-title text-center w-full pt-4 pl-6 pb-4 font-semibold text-lg">Ostatnie faktury</div>
+    <div class="grid grid-cols-3 px-6 pt-4 font-bold text-gray-800 border-t border-gray-300">
+      <p class="text-left">Klient</p>
+      <p class="text-center">Numer</p>
+      <p class="text-right">Wartość</p>
     </div>
+
+    <!-- Wiersze z fakturami -->
+    <div class="card-body p-6 flex-grow flex flex-col">
+      {% if invoices %}
+        {% for invoice in invoices %}
+        <div class="grid grid-cols-3 items-center py-2 border-b border-gray-200 last:border-b-0">
+          <div class="text-left text-sm text-gray-700">
+            {{ invoice.client }}
+          </div>
+
+          <div class="text-center text-l text-gray-800">
+            {{ invoice.number }}
+          </div>
+
+          <div class="text-right text-sm font-bold text-gray-900">
+            {{ invoice.total_gross }} zł
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="flex items-center justify-center flex-grow">
+          <p class="text-gray-500 text-center text-lg">
+            Brak faktur
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
 
 
     <!-- Right top -->
@@ -151,52 +149,49 @@
     </calendar-date>
   </div>
 </div>
+{% endif %}
+
+<div id="spa-view"
+     hx-get="/htmx/list/{{ request.GET.view }}"
+     hx-trigger="load">
+</div>
 
 <script type="module" src="https://unpkg.com/cally"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Dane dla wykresu (przekaż zmienną `monthly_revenues` z Django jako listę)
     const monthlyRevenues = {{ monthly_revenues|safe }};
 
-    // Konfiguracja wykresu
     const config = {
         type: 'bar',
         data: {
-            // Nazwy miesięcy na osi X (po polsku)
             labels: [
                 'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
                 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'
             ],
             datasets: [{
-                label: "", // Pusta etykieta zestawu danych
-                data: monthlyRevenues, // Dane przychodów (dynamiczne)
-                backgroundColor: 'oklch(0.819 0.111 230.462)', // Kolor słupków
+                label: "",
+                data: monthlyRevenues,
+                backgroundColor: 'oklch(0.819 0.111 230.462)',
             }]
         },
         options: {
-            responsive: true, // Skalowanie wykresu do rozmiaru ekranu
+            responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true // Zaczynamy skalę Y od zera
+                    beginAtZero: true
                 }
             },
             plugins: {
                 legend: {
-                    display: false, // Wyłączenie legendy
+                    display: false,
                 }
             }
         }
     };
 
-    // Utworzenie wykresu w elemencie canvas
     const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
     const monthlyRevenueChart = new Chart(ctx, config);
 
 </script>
-
-
-{% else %}
-  <p class="text-lg text-gray-600">Nie wybrano firmy.</p>
-{% endif %}
 
 {% endblock %}

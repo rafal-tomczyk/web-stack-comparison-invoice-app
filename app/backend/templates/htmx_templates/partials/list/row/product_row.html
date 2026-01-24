@@ -1,0 +1,33 @@
+{% for product in objects %}
+  <div class="border-b border-gray-200 hover:bg-base-300 last:border-b-0">
+    <a href="{% url 'tmp_product_detail' product.pk %}"
+       class="hover:underline grid grid-cols-5 items-center py-4">
+
+      <!-- Nazwa produktu -->
+      <div class="text-left text-sm font-semibold pl-4">
+          {{ product.name }}
+      </div>
+      <!-- Opis produktu -->
+      <div class="text-left text-sm text-gray-700 line-clamp-3">
+        {{ product.description }}
+      </div>
+      <!-- Jednostka miary -->
+      <div class="text-center text-sm text-gray-700">
+        {{ product.get_unit_type_display }}
+      </div>
+      <!-- Cena netto -->
+      <div class="text-right text-sm text-gray-900 font-bold">
+        {{ product.net_price }} zł
+      </div>
+      <!-- Stawka VAT -->
+      <div class="text-right text-sm text-gray-700 pr-4">
+        {{ product.tax_rate }}%
+      </div>
+    </a>
+  </div>
+  {% empty %}
+  <!-- Gdy brak produktów -->
+  <div class="text-gray-500 text-center py-6">
+    Brak produktów do wyświetlenia
+  </div>
+  {% endfor %}

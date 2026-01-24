@@ -1,0 +1,32 @@
+{% for client in objects %}
+  <div class="grid grid-cols-5 items-center border-b border-gray-200 hover:bg-base-300 last:border-b-0 py-4">
+    <div class="text-left text-sm font-semibold pl-4">
+      {% if client.client_company_name %}
+      {{ client.client_company_name }}
+      {% else %}
+      {{ client.name }} {{ client.surname }}
+      {% endif %}
+    </div>
+
+    <div class="text-left text-sm text-gray-700">
+      {{ client.nip }}
+    </div>
+
+    <div class="text-left text-sm text-gray-700">
+      {{ client.regon }}
+    </div>
+
+    <div class="text-left text-sm text-gray-700">
+      {{ client.email }}
+    </div>
+
+    <div class="text-left text-sm text-gray-700">
+      {{ client.phone_number }}
+    </div>
+  </div>
+
+{% empty %}
+  <div class="text-gray-500 text-center py-6">
+    Brak klientów do wyświetlenia.
+  </div>
+{% endfor %}

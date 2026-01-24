@@ -1,0 +1,106 @@
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-3xl font-bold">{{ title }}</h2>
+
+  <div class="flex-grow mx-4 max-w-xs">
+    <input type="text"
+           name="search"
+           class="input input-bordered w-full"
+           placeholder="Szukaj..."
+           value="{{ request.GET.search|default:'' }}"
+           hx-get="?page=1"
+           hx-trigger="keyup changed delay:500ms, search"
+           hx-target="#search-results"
+           hx-select="#search-results"
+           hx-include="[name='search_field'], [name='sort']"
+           hx-push-url="true">
+  </div>
+  {% if add_url|slice:":5" == "/htmx" %}
+    <a
+      href="{{ add_url }}"
+      hx-get="{{ add_url }}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
+      class="btn btn-primary btn-md shadow-md"
+    >
+      Dodaj
+    </a>
+  {% else %}
+    <a href="{{ add_url }}" class="btn btn-primary btn-md shadow-md">
+      Dodaj
+    </a>
+  {% endif %}
+</div>
+
+<div id="search-results">
+  <div class="card bg-base-100 shadow-lg border border-base-300 rounded-box">
+    <div class="card-title text-center w-full pt-4 pl-10 pb-4 font-semibold text-lg">
+      {{ list_title }}
+      <a href="?sort=-id" class="btn btn-sm bg-red-500 text-white hover:bg-red-600 ml-4">
+        Resetuj filtry
+      </a>
+    </div>
+
+    {% include header_template %}
+
+    <div class="card-body p-6 gap-0">
+      {% include row_template %}
+    </div>
+  </div>
+
+  <div class="flex justify-center mt-6">
+    <div class="btn-group">
+      <!-- Button prev -->
+      {% if page_obj.has_previous %}
+        <a
+          href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          hx-get="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          hx-target="#spa-content"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus"
+        >
+          ← Poprzednia
+        </a>
+      {% else %}
+        <button class="btn btn-sm btn-disabled">← Poprzednia</button>
+      {% endif %}
+
+      <!-- Pagination -->
+      {% for page_number in page_obj.paginator.page_range %}
+        {% if page_number == page_obj.number %}
+          <button class="btn btn-primary btn-md shadow-md hover:bg-primary">{{ page_number }}</button>
+        {% else %}
+          <a
+            href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+            hx-get="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+            hx-target="#spa-content"
+            hx-swap="innerHTML"
+            hx-push-url="true"
+            class="btn btn-neutral btn-sm shadow-md hover:bg-accent hover:border-accent"
+          >
+            {{ page_number }}
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Button next -->
+      {% if page_obj.has_next %}
+        <a
+          href="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          hx-get="?sort={{ request.GET.sort|default:'-id' }}&page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+          hx-target="#spa-content"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+          class="btn btn-sm bg-neutral text-white hover:bg-neutral-focus"
+        >
+          Następna →
+        </a>
+      {% else %}
+        <button class="btn btn-sm btn-disabled">Następna →</button>
+      {% endif %}
+    </div>
+  </div>
+  {% endblock %}
+</div>
