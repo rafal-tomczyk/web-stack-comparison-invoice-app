@@ -485,49 +485,38 @@ def htmx_invoice_add(request):
         form = InvoiceForm(request.POST)
         item_formset = InvoiceItemFormSet(request.POST, prefix="items")
 
-        # Ustaw queryset dla klientów
         form.fields['client'].queryset = Client.objects.filter(
             company_id=company_id, company__user=request.user
         )
 
-        # Ustaw queryset produktów dla wszystkich formularzy w formsecie
         for f in item_formset.forms:
             f.fields["product"].queryset = Product.objects.filter(
                 company_id=company_id)
 
         if form.is_valid() and item_formset.is_valid():
-            # Zapisz fakturę
             invoice = form.save(commit=False)
             invoice.company = company
             invoice.save()
 
-            # Zapisz pozycje faktury
             item_formset.instance = invoice
             item_formset.save()
 
-            # Przelicz totale
             invoice.update_totals()
 
-            # Po zapisaniu przekieruj do listy faktur przez HTMX
             if is_hx(request):
-                # Pobierz URL listy faktur
                 list_url = reverse("htmx_list", kwargs={"kind": "invoices"})
 
-                # Dodaj nagłówek, który zmieni URL w pasku przeglądarki
                 response = HttpResponse(status=200)
                 response['HX-Push-Url'] = list_url
 
-                # Wywołaj widok listy generycznej ręcznie
                 return htmx_generic_list(request, kind="invoices")
 
             return redirect("htmx_list", kind="invoices")
         else:
-            # Jeśli są błędy walidacji, pokaż formularz z błędami
-            print("Form errors:", form.errors)  # Debug
-            print("Formset errors:", item_formset.errors)  # Debug
-            print("Non-form errors:", item_formset.non_form_errors)  # Debug
+            print("Form errors:", form.errors)
+            print("Formset errors:", item_formset.errors)
+            print("Non-form errors:", item_formset.non_form_errors)
     else:
-        # GET - pokaż pusty formularz
         form = InvoiceForm()
         form.fields['client'].queryset = Client.objects.filter(
             company_id=company_id, company__user=request.user
@@ -535,7 +524,6 @@ def htmx_invoice_add(request):
 
         item_formset = InvoiceItemFormSet(prefix="items")
 
-    # Ustaw queryset produktów dla wszystkich formularzy w formsecie
     for f in item_formset.forms:
         f.fields["product"].queryset = Product.objects.filter(
             company_id=company_id)
@@ -559,7 +547,6 @@ def htmx_home_chart(request):
     if company_id:
         try:
             active_company = Company.objects.get(id=company_id, user=request.user)
-            # Tu są te ciężkie zapytania SQL:
             monthly_revenues_json = active_company.get_monthly_revenues_json()
             monthly_revenue = active_company.get_current_monthly_revenue()
             yearly_revenue = active_company.get_yearly_revenue()
@@ -578,44 +565,34 @@ def htmx_home_chart(request):
 
 
 def htmx_invoice_add_item(request):
-    """Dodaje nowy wiersz pozycji faktury"""
     company_id = request.session.get("active_company_id")
     if not company_id:
         return HttpResponse(status=400)
 
-    # Pobierz aktualny index z parametrów URL
     current_forms = request.GET.get('total_forms', '0')
     new_index = int(current_forms)
 
-    # Utwórz pusty formset i pobierz empty_form
     formset = InvoiceItemFormSet(prefix="items")
     form = formset.empty_form
 
-    # Zastąp __prefix__ prawdziwym indeksem
     form.prefix = f"items-{new_index}"
 
-    # Ustaw queryset produktów
     form.fields["product"].queryset = Product.objects.filter(
         company_id=company_id, company__user=request.user
     )
 
-    # Ustaw domyślną ilość
     form.fields['quantity'].initial = 1
 
     return render(
         request,
         "htmx_templates/partials/create/invoice_item_row_htmx.html",
-        # ZMIANA: używamy _htmx wersji
         {
             "form": form,
             "new_index": new_index,
         }
     )
 
-
-# ... existing code ...
 def htmx_invoice_item_autofill(request):
-    """Automatyczne wypełnianie pól po wyborze produktu"""
     product_id = request.GET.get("product_id")
     prefix = request.GET.get("prefix")
 
@@ -627,7 +604,6 @@ def htmx_invoice_item_autofill(request):
     except Product.DoesNotExist:
         return HttpResponse(status=404)
 
-    # Utwórz formularz z wypełnionymi danymi
     form = InvoiceItemForm(
         initial={
             "product": product.id,
@@ -638,7 +614,6 @@ def htmx_invoice_item_autofill(request):
         prefix=prefix,
     )
 
-    # Ustaw queryset
     company_id = request.session.get("active_company_id")
     form.fields["product"].queryset = Product.objects.filter(
         company_id=company_id)
@@ -646,9 +621,7 @@ def htmx_invoice_item_autofill(request):
     return render(
         request,
         "htmx_templates/partials/create/invoice_item_row_htmx.html",
-        # ZMIANA: używamy _htmx wersji
         {
             "form": form,
         }
     )
-# ... existing code ...
