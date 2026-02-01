@@ -182,12 +182,13 @@ class ClientsListView(BaseSecuredView, ListView):
             full_name_or_company=Case(
                 When(client_company_name__isnull=False,
                      then='client_company_name'),
-                default=Concat('name', Value(' '), 'surname',
+                default=Concat('name',
+                               Value(' '), 'surname',
                                output_field=CharField()),
                 output_field=CharField(),
             )
         )
-        sort_param = self.request.GET.get('sort', '-id')
+        sort_param = self.request.GET.get('sort', 'id')
         return queryset.order_by(sort_param)
 
 class ClientCreateView(BaseSecuredView, CreateView):
@@ -225,7 +226,7 @@ class InvoicesListView(BaseSecuredView, ListView):
                 Q(number__icontains=search_query) |
                 Q(client__name__icontains=search_query)
             )
-        sort_param = self.request.GET.get('sort', '-issue_date')
+        sort_param = self.request.GET.get('sort', '-number')
 
         if sort_param.lstrip('-') == 'number':
             reverse = sort_param.startswith('-')

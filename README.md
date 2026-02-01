@@ -1,6 +1,7 @@
 # Web Stack Comparison – Invoicing Application
 
-This repository contains a comparison of three approaches to building a simple invoicing web application. The project was created as part of a master's thesis analyzing performance, developer experience, and user satisfaction across different technology stacks.
+This repository contains a comparison of two approaches to building a simple invoicing web application. The project was created as part of a master's thesis analyzing performance, developer experience, and user satisfaction across different technology stacks.
+Focusing on Django as the full-stack framework and adding HTMX for frontend interactivity, the project contrasts traditional server-side rendering with modern client-side rendering techniques.
 
 
 ---
@@ -12,16 +13,20 @@ This repository contains a comparison of three approaches to building a simple i
 2. **Django + HTMX (Progressive Enhancement)**  
    A hybrid method that enhances server-side rendering with partial HTML updates over AJAX using HTMX.
 
-3. **Django + React (CSR hybrid)**  
-   A client-heavy solution using Django for the backend API and React for the frontend.
-
----
-## Structure
-
 
 ---
 ## How to run
-To log in basic account use 
+1. Clone the repository
+2. Copy .env.example to .env and set your environment variables
+3. Build containers and start the application using Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
+4. Access the application at `http://localhost:8000`
+5. To log into a test account use:<br>
+_testuser@test.com<br>
+testuser_
+6. Pick "Test paper company" to see sample invoices
 
 ---
 # About the Thesis

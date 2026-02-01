@@ -80,11 +80,11 @@
       </div>
       <!-- NIP -->
       <div class="text-left text-sm text-gray-700">
-        {{ client.nip }}
+        {{ client.nip|default_if_none:"" }}
       </div>
       <!-- REGON -->
       <div class="text-left text-sm text-gray-700">
-        {{ client.regon }}
+        {{ client.regon|default_if_none:"" }}
       </div>
       <!-- Email -->
       <div class="text-left text-sm text-gray-700">
