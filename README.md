@@ -27,7 +27,11 @@ Focusing on Django as the full-stack framework and adding HTMX for frontend inte
 _testuser@test.com<br>
 testuser_
 6. Pick "Test paper company" to see sample invoices
-
+___
+## Example Screenshots
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
 ---
 # About the Thesis
 
