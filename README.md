@@ -16,13 +16,13 @@ Focusing on Django as the full-stack framework and adding HTMX for frontend inte
 
 ---
 ## How to run
-1. Clone the repository
-2. Copy .env.example to .env and set your environment variables
+1. Clone the repository and create a `.env` file
+2. Copy .env.example to .env or set your own environment variables
 3. Build containers and start the application using Docker Compose:
    ```bash
    docker-compose up --build
    ```
-4. Access the application at `http://localhost:8000`
+4. Access the application at `http://localhost:8000/templates/login/`
 5. To log into a test account use:<br>
 _testuser@test.com<br>
 testuser_
@@ -56,9 +56,14 @@ This project was developed and tested using the following environments:
 
 ### Requirements
 
+- **Docker** is used to containerize the application, ensuring consistent environments across different setups. This project requires Docker and Docker Compose to run.
+
+### Version Details
+
 - **Django 5.2** is a Long-Term Support (LTS) release that ensures stability and modern features.
 - **Python 3.12** provides full compatibility with Django 5.2 and offers strong performance.
 - **Python 3.13** is also supported by Django 5.2 but may require a newer environment and may include experimental features (e.g., JIT compiler).
+- **HTMX 2.0** is compatible with both Python versions as it operates on the frontend.
 
 **Recommendation**: Use **Python 3.12** for maximum stability. Use **Python 3.13** if you want to explore the latest language features.
 
