@@ -2,6 +2,10 @@
   <p class="text-left pl-4">
     <a
       href="?sort={% if request.GET.sort == 'number' %}-number{% else %}number{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'number' %}-number{% else %}number{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Numer
@@ -18,6 +22,10 @@
   <p class="text-left">
     <a
       href="?sort={% if request.GET.sort == 'client__name' %}-client__name{% else %}client__name{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'client__name' %}-client__name{% else %}client__name{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Klient
@@ -34,6 +42,10 @@
   <p class="text-left">
     <a
       href="?sort={% if request.GET.sort == 'issue_date' %}-issue_date{% else %}issue_date{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'issue_date' %}-issue_date{% else %}issue_date{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Data wystawienia
@@ -50,6 +62,10 @@
   <p class="text-center">
     <a
       href="?sort={% if request.GET.sort == 'paid' %}-paid{% else %}paid{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'paid' %}-paid{% else %}paid{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Status
@@ -66,6 +82,10 @@
   <p class="text-right">
     <a
       href="?sort={% if request.GET.sort == 'total_net' %}-total_net{% else %}total_net{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'total_net' %}-total_net{% else %}total_net{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Kwota netto
@@ -82,6 +102,10 @@
   <p class="text-right pr-4">
     <a
       href="?sort={% if request.GET.sort == 'total_gross' %}-total_gross{% else %}total_gross{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'total_gross' %}-total_gross{% else %}total_gross{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Kwota brutto

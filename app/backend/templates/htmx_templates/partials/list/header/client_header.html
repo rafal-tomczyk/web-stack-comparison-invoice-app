@@ -2,6 +2,10 @@
   <p class="text-left pl-4">
     <a
       href="?sort={% if request.GET.sort == 'full_name_or_company' %}-full_name_or_company{% else %}full_name_or_company{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'full_name_or_company' %}-full_name_or_company{% else %}full_name_or_company{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Nazwa klienta
@@ -21,6 +25,10 @@
   <p class="text-left">
     <a
       href="?sort={% if request.GET.sort == 'email' %}-email{% else %}email{% endif %}"
+      hx-get="?sort={% if request.GET.sort == 'email' %}-email{% else %}email{% endif %}"
+      hx-target="#spa-content"
+      hx-swap="innerHTML"
+      hx-push-url="true"
       class="hover:underline"
     >
       Email
